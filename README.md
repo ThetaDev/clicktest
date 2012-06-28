@@ -20,3 +20,6 @@ SampleTestClass.cs: A few basic tests that show how the library can be used.
 
 These classes and all our tests are placed in a project which references UiClickTestDsl. The project contains unit tests that can be run in Visual Studio, and it compiles to an executable that we run on our test computer.
 Note: We have this in a separate solution, since these tests does not allow us to use the computer while they are running.
+
+### More information
+http://einplassskrivenedstuff.blogspot.no/2012/06/click-testing-or-automatic-regression.html
