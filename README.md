@@ -1,7 +1,7 @@
 ClickTest
 =========
 
-Automatic regressiontesting of applications.
+Automatic regressiontesting of applications / Coded UI Tests.
 
 This library has been developed to allow developers and testers to write automated regression-tests in a nice and readable syntax. We think the syntax is only a "bit" more detailed than regular manual test-scripts.
 As of now the library is made to support applications reachable through MS UI Automation. So far we've only developed and tested it with a WPF application, but we hope it will be useful for other types of applications as well.
