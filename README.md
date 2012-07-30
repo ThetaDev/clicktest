@@ -23,5 +23,7 @@ Note: We have this in a separate solution, since these tests does not allow us t
 
 ### More information
 http://einplassskrivenedstuff.blogspot.no/2012/06/click-testing-or-automatic-regression.html
+
 http://einplassskrivenedstuff.blogspot.no/2012/07/overview-of-how-to-use-click-test-dsl.html
+
 http://einplassskrivenedstuff.blogspot.no/2012/07/overview-of-how-click-test-dsl-is.html
