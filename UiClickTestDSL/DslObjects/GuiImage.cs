@@ -36,11 +36,11 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public void IsNotShowing() {
-            Assert.IsTrue(img.Current.BoundingRectangle.IsEmpty);
+            Assert.IsTrue(img.Current.BoundingRectangle.IsEmpty, "Image should not be showing");
         }
 
         public void IsShowing() {
-            Assert.IsFalse(img.Current.BoundingRectangle.IsEmpty);
+            Assert.IsFalse(img.Current.BoundingRectangle.IsEmpty, "Image should be showing");
         }
     }
 }

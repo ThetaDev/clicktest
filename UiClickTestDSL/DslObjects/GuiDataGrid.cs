@@ -86,9 +86,13 @@ namespace UiClickTestDSL.DslObjects {
         public int RowCount { get { return tablePatt.Current.RowCount; } }
 
         public void SelectRow(int rowIndex) {
+            SelectRowNoWait(rowIndex);
+            Thread.Sleep(300);
+        }
+
+        public void SelectRowNoWait(int rowIndex) {
             SelectionItemPattern selPatt = GetRowSelectionPattern(rowIndex);
             selPatt.Select();
-            Thread.Sleep(300);
         }
 
         public void MultiSelectFirstRow(int rowIndex) {
@@ -128,10 +132,11 @@ namespace UiClickTestDSL.DslObjects {
         /// <summary>
         /// Pushes the secret hotkey: ctrl+alt+shift+n
         /// </summary>
-        public void NewDeliveryLineRow() {
+        public int NewDeliveryLineRow() {
             SendKeys.SendWait("%^N");
             UiTestDslCoreCommon.WaitWhileBusy();
             SelectRow(RowCount-2);
+            return RowCount - 2;
         }
 
         private AutomationElement GetNewRowPlaceholder() {
