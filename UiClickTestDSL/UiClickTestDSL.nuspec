@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>ClickTest</id>
+    <version>$version$</version>
+    <title>ClickTest</title>
+    <authors>Delfi Data AS</authors>
+    <owners>Delfi Data AS</owners>
+    <licenseUrl>https://github.com/delfidata/clicktest/blob/master/COPYING</licenseUrl>
+    <projectUrl>https://github.com/delfidata/clicktest</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A library for automatic regressiontesting of applications / Coded UI Tests. This library allows you to write tests for your WPF applications. The library uses MS UI Automation and TestApi to mimic the user interaction.</description>
+    <releaseNotes>Assembly reference fix.</releaseNotes>
+    <copyright>Copyright 2012</copyright>
+    <tags>test UiTest testing UiTesting GuiTesting framework clicktest MsUiAutomation UiAutomation</tags>
+    <references>
+      <reference file="TestApiCore.dll" />
+      <reference file="UiClickTestDSL.dll" />
+    </references>
+  </metadata>
+  <files>
+    <file src="..\TestApi\**\*.*" target="lib\net40" />
+  </files>
+</package>
