@@ -17,7 +17,7 @@ namespace UiClickTestDSL {
     public abstract class UiTestDslCoreCommon {
         public static readonly string AssemblyDir = string.Format(@"{0}\", Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Substring(6));
         static UiTestDslCoreCommon() {
-            var configfile = new FileInfo(AssemblyDir+@"\log4net.config");
+            var configfile = new FileInfo(AssemblyDir + @"\log4net.config");
             if (!configfile.Exists)
                 throw new FileNotFoundException("Log4net config file not found!");
             XmlConfigurator.Configure(configfile);
@@ -211,6 +211,8 @@ namespace UiClickTestDSL {
         public GuiButton ButtonByAutomationId(string automationId) { return GuiButton.GetButtonByAutomationId(Window, automationId); }
         public GuiButton Button(string caption) { return GuiButton.GetButton(Window, caption); }
 
+        public GuiToggleButton ToggleButton(string automationId) { return GuiToggleButton.GetButtonByAutomationId(Window, automationId); }
+
         public GuiRadioButton RadioButton(string caption) { return GuiRadioButton.GetRadioButton(Window, caption); }
         public void PrintCheckBoxes() { PrintControls(GuiCheckBox.GetAll(Window)); }
         public GuiCheckBox CheckBox(string caption) { return GuiCheckBox.Find(Window, caption); }
@@ -223,7 +225,7 @@ namespace UiClickTestDSL {
         public GuiComboBoxes ComboBoxes(string prefix) { return GuiComboBoxes.Find(Window, prefix); }
 
         public void PrintTabs() { PrintControls(GuiTabItem.GetAll(Window)); }
-        protected GuiTabItem Tab(string automationId) { return GuiTabItem.GetTab(Window, automationId); }
+        public GuiTabItem Tab(string automationId) { return GuiTabItem.GetTab(Window, automationId); }
 
         public GuiImage Image(string automationId) { return GuiImage.Find(Window, automationId); }
 

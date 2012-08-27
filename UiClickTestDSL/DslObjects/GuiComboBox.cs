@@ -53,17 +53,22 @@ namespace UiClickTestDSL.DslObjects {
             }
         }
 
+        public void SelectItem(int i) {
+            var all = GetAllItems();
+            Assert.IsTrue(all.Count > i, "Not enough items to select #" + i);
+            all[i].Select();
+        }
+
         public void SelectItem(string caption) {
             List<GuiComboBoxItem> all = GetAllItems();
             IEnumerable<GuiComboBoxItem> item = from i in all
-                                                where i.Text.Trim() == caption || RegexMatch(i.Text.Trim(), caption)
+                                                where RegexMatch(i.Text.Trim(), caption)
                                                 select i;
             item.First().Select();
         }
 
         private static bool RegexMatch(string text, string caption) {
-            if (text == caption) return true;
-            return Regex.IsMatch(text, @"(.* name\:|\[.*,) " + caption + @"(\]){0,1}");
+            return text == caption || Regex.IsMatch(text, @"(.* name\:|\[.*,) " + caption + @"(\]){0,1}") || text.Trim().EndsWith(": " + caption);
         }
 
         public List<GuiComboBoxItem> GetAllItems() {

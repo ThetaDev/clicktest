@@ -50,9 +50,9 @@ namespace UiClickTestDSL.DslObjects {
             Assert.IsTrue(enabled.Count() == GetVisible(except).Count());
         }
 
-        public void AllShouldBeDisabled() {
+        public void AllShouldBeDisabled(string except = "") {
             IEnumerable<GuiTextBox> enabled = from t in this
-                                              where t.IsEditable
+                                              where t.IsEditable && !except.Contains(t.AutomationId)
                                               select t;
             Assert.IsTrue(enabled.Count() == 0);
         }
