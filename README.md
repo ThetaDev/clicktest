@@ -8,7 +8,7 @@ As of now the library is made to support applications reachable through MS UI Au
 The code that hides away all the code needed to use MS UI Automation, is in the classes under AutomationCode and DslObjects.
 
 The library is available as a Visual Studio 2010 project-file to be dropped into your solution and serve as a base library for your ClickTesting command-line/unit test-project. 
-The library is also available as a NuGet package: http://nuget.org/packages/UiClickTestDSL/
+The library is also available as a NuGet package: https://nuget.org/packages/ClickTest
 
 ### External libraries
 The library uses TestApi from CodePlex (http://testapi.codeplex.com/) to do some of the mouse-movement and interaction with applications.
