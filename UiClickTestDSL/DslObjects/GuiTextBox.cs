@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Windows.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
@@ -52,7 +54,21 @@ namespace UiClickTestDSL.DslObjects {
             }
         }
 
+        public void Type(object text) {
+            Type(text.ToString());
+        }
+
         public void Type(string text) {
+            //Focus();
+            var completeText = Text + text;
+            Workarounds.TryUntilElementAvailable(() => value.SetValue(completeText));
+        }
+
+        public void SetText(object text) {
+            SetText(text.ToString());
+        }
+
+        public void SetText(string text) {
             //Focus();
             Workarounds.TryUntilElementAvailable(() => value.SetValue(text));
         }
@@ -61,8 +77,21 @@ namespace UiClickTestDSL.DslObjects {
             Workarounds.TryUntilElementAvailable(() => tbAutoEl.SetFocus());
         }
 
+        public void ShouldRead(object expected) {
+            ShouldRead(expected.ToString());
+        }
+
         public void ShouldRead(string expected) {
             Assert.AreEqual(expected, Text);
+        }
+
+        public void ShouldReadLines(params string[] expectedLines) {
+            var expected = new StringBuilder();
+            foreach (var line in expectedLines) {
+                expected.AppendLine(line);
+            }
+            expected.Length -= Environment.NewLine.Length;
+            ShouldRead(expected.ToString());
         }
 
         public void AssertIsEditable() {

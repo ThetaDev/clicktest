@@ -27,6 +27,10 @@ namespace UiClickTestDSL {
         protected AutomationElement Window;
         public const int MaxConnectionRetries = 120;
 
+        public void DontRunCleanupOnRestart() {
+            Program.RunApplicationClearUp = false;
+        }
+
         public string UniqueIdentifier = null;
         public string CreateNewUniqueIdentifier() {
             UniqueIdentifier = Guid.NewGuid().ToString();
@@ -74,21 +78,20 @@ namespace UiClickTestDSL {
                 Sleep(ms);
         }
 
-        public void MoveMouseHere() {
-            var p = Window.GetClickablePoint();
-            Mouse.MoveTo(new Point((int)p.X, (int)p.Y));
+        public virtual void MoveMouseHere() {
+            Mouse.MoveTo(ClickablePoint);
         }
 
-        public void DoubleClick(MouseButton button) {
+        public virtual void DoubleClick(MouseButton button) {
             MoveMouseHere();
             Mouse.DoubleClick(button);
         }
 
-        public Point ClickablePoint {
+        public virtual Point ClickablePoint {
             get { return Window.GetClickablePoint().Convert(); }
         }
 
-        public void PrintAllControls() {
+        public virtual void PrintAllControls() {
             PrintAllControls(Window);
         }
 
@@ -107,7 +110,7 @@ namespace UiClickTestDSL {
             }
         }
 
-        public void PrintControls() {
+        public virtual void PrintControls() {
             PrintDataGrids();
             PrintTextBoxes();
             PrintButtons();
@@ -154,7 +157,7 @@ namespace UiClickTestDSL {
             SendKeys.SendWait(text);
         }
 
-        public string FindFileInAnyParentFolder(string filename) {
+        public virtual string FindFileInAnyParentFolder(string filename) {
             return FileLocator.LocateFileInfo(filename).FullName;
         }
 
@@ -165,20 +168,22 @@ namespace UiClickTestDSL {
             GuiTabItem.InvalidateCache();
         }
 
-        protected void VerifyFileNotEmpty(string filenameAndPath) {
+        protected virtual void VerifyFileNotEmpty(string filenameAndPath) {
             var file = new FileInfo(filenameAndPath);
             Assert.AreNotEqual(0, file.Length);
         }
 
-        protected void VerifyFileHasGottenSuffix(string filenameAndPath, string fileSuffix) {
+        protected virtual void VerifyFileHasGottenSuffix(string filenameAndPath, string fileSuffix) {
             Assert.IsFalse(File.Exists(filenameAndPath), "File should not have been found: " + filenameAndPath);
             Assert.IsTrue(File.Exists(filenameAndPath + fileSuffix), "Did not find file with correct suffix: " + filenameAndPath + " suffix: " + fileSuffix);
         }
 
-        protected void WaitUntilDialogIsShowing(string caption) {
+        protected int SecondsToWaitForDialogToShow = 30;
+
+        protected virtual void WaitUntilDialogIsShowing(string caption) {
             WaitWhileBusy();
             bool isWaiting = true;
-            int i = 30;
+            int i = SecondsToWaitForDialogToShow * 2;
             while (isWaiting) {
                 try {
                     Dialog(caption);
@@ -193,47 +198,47 @@ namespace UiClickTestDSL {
             WaitWhileBusy();
         }
 
-        public GuiContextMenu ActiveContextMenu { get { return GuiContextMenu.GetActive(Window); } }
-        public GuiButton AppCloseButton { get { return GuiButton.GetAppCloseButton(Window); } }
+        public virtual GuiContextMenu ActiveContextMenu { get { return GuiContextMenu.GetActive(Window); } }
+        public virtual GuiButton AppCloseButton { get { return GuiButton.GetAppCloseButton(Window); } }
 
-        public GuiDialog Dialog(string caption) { return GuiDialog.GetDialog(Program, Window, caption); }
-        public GuiFileDialog OpenFileDialog(string caption) { return GuiFileDialog.Find(Window, caption); }
+        public virtual GuiDialog Dialog(string caption) { return GuiDialog.GetDialog(Program, Window, caption); }
+        public virtual GuiFileDialog OpenFileDialog(string caption) { return GuiFileDialog.Find(Window, caption); }
 
-        public void PrintTextBoxes() { PrintControls(GuiTextBox.GetAll(Window)); }
-        public GuiTextBox TextBox(string automationId) { return GuiTextBox.GetTextBox(Window, automationId); }
-        public GuiTextBoxes TextBoxes(string prefix = "") { return GuiTextBoxes.GetAll(Window, prefix); }
+        public virtual void PrintTextBoxes() { PrintControls(GuiTextBox.GetAll(Window)); }
+        public virtual GuiTextBox TextBox(string automationId) { return GuiTextBox.GetTextBox(Window, automationId); }
+        public virtual GuiTextBoxes TextBoxes(string prefix = "") { return GuiTextBoxes.GetAll(Window, prefix); }
 
-        public void PrintLabels(string prefix = "") { PrintControls(GuiLabel.GetAll(Window, prefix)); }
-        public GuiLabel Label(string automationId) { return GuiLabel.GetLabel(Window, automationId); }
-        public GuiLabels GetLabels(string prefix) { return GuiLabels.GetAll(Window, prefix); }
+        public virtual void PrintLabels(string prefix = "") { PrintControls(GuiLabel.GetAll(Window, prefix)); }
+        public virtual GuiLabel Label(string automationId) { return GuiLabel.GetLabel(Window, automationId); }
+        public virtual GuiLabels GetLabels(string prefix) { return GuiLabels.GetAll(Window, prefix); }
 
-        public void PrintButtons() { PrintControls(GuiButton.GetAll(Window)); }
-        public GuiButton ButtonByAutomationId(string automationId) { return GuiButton.GetButtonByAutomationId(Window, automationId); }
-        public GuiButton Button(string caption) { return GuiButton.GetButton(Window, caption); }
+        public virtual void PrintButtons() { PrintControls(GuiButton.GetAll(Window)); }
+        public virtual GuiButton ButtonByAutomationId(string automationId) { return GuiButton.GetButtonByAutomationId(Window, automationId); }
+        public virtual GuiButton Button(string caption) { return GuiButton.GetButton(Window, caption); }
 
-        public GuiToggleButton ToggleButton(string automationId) { return GuiToggleButton.GetButtonByAutomationId(Window, automationId); }
+        public virtual GuiToggleButton ToggleButton(string automationId) { return GuiToggleButton.GetButtonByAutomationId(Window, automationId); }
 
-        public GuiRadioButton RadioButton(string caption) { return GuiRadioButton.GetRadioButton(Window, caption); }
-        public void PrintCheckBoxes() { PrintControls(GuiCheckBox.GetAll(Window)); }
-        public GuiCheckBox CheckBox(string caption) { return GuiCheckBox.Find(Window, caption); }
+        public virtual GuiRadioButton RadioButton(string caption) { return GuiRadioButton.GetRadioButton(Window, caption); }
+        public virtual void PrintCheckBoxes() { PrintControls(GuiCheckBox.GetAll(Window)); }
+        public virtual GuiCheckBox CheckBox(string caption) { return GuiCheckBox.Find(Window, caption); }
 
-        public void PrintDataGrids() { PrintControls(GuiDataGrid.GetAll(Window)); }
-        public GuiDataGrid DataGrid(string automationId) { return GuiDataGrid.GetDataGrid(Window, automationId); }
+        public virtual void PrintDataGrids() { PrintControls(GuiDataGrid.GetAll(Window)); }
+        public virtual GuiDataGrid DataGrid(string automationId) { return GuiDataGrid.GetDataGrid(Window, automationId); }
 
-        public void PrintComboBoxes() { PrintControls(GuiComboBox.GetAll(Window)); }
-        public GuiComboBox ComboBox(string automationId) { return GuiComboBox.Find(Window, automationId); }
-        public GuiComboBoxes ComboBoxes(string prefix) { return GuiComboBoxes.Find(Window, prefix); }
+        public virtual void PrintComboBoxes() { PrintControls(GuiComboBox.GetAll(Window)); }
+        public virtual GuiComboBox ComboBox(string automationId) { return GuiComboBox.Find(Window, automationId); }
+        public virtual GuiComboBoxes ComboBoxes(string prefix) { return GuiComboBoxes.Find(Window, prefix); }
 
-        public void PrintTabs() { PrintControls(GuiTabItem.GetAll(Window)); }
-        public GuiTabItem Tab(string automationId) { return GuiTabItem.GetTab(Window, automationId); }
+        public virtual void PrintTabs() { PrintControls(GuiTabItem.GetAll(Window)); }
+        public virtual GuiTabItem Tab(string automationId) { return GuiTabItem.GetTab(Window, automationId); }
 
-        public GuiImage Image(string automationId) { return GuiImage.Find(Window, automationId); }
+        public virtual GuiImage Image(string automationId) { return GuiImage.Find(Window, automationId); }
 
-        public GuiMenuItem Menu(string name) { return GuiMenuItem.GetMenuItem(Window, name); }
-        public GuiMenuItem FirstMenuItem() { return GuiMenuItem.GetFirstMenuItem(Window); }
+        public virtual GuiMenuItem Menu(string name) { return GuiMenuItem.GetMenuItem(Window, name); }
+        public virtual GuiMenuItem FirstMenuItem() { return GuiMenuItem.GetFirstMenuItem(Window); }
 
-        public GuiUserControl UserControl(string name) { return GuiUserControl.GetUserControl(Window, name); }
+        public virtual GuiUserControl UserControl(string name) { return GuiUserControl.GetUserControl(Window, name); }
 
-        public GuiListBox ListBox(string name) { return GuiListBox.Find(Window, name); }
+        public virtual GuiListBox ListBox(string name) { return GuiListBox.Find(Window, name); }
     }
 }

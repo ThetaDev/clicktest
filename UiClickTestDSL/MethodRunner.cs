@@ -22,6 +22,14 @@ namespace UiClickTestDSL {
             _filenamesThatStopTheTestRun = new List<string>(filenamesThatStopTheTestRun);
         }
 
+        public Func<string,bool> TestNameFilterHook = null;
+
+        private bool FilterByUserHook(string testname) {
+            if (TestNameFilterHook != null)
+                return TestNameFilterHook(testname);
+            return false;
+        }
+
         public void Run(Assembly testAssembly, string filter) {
             int i = 1;
             try {
@@ -46,7 +54,7 @@ namespace UiClickTestDSL {
                     foreach (var testmethod in methods) {
                         if (_filenamesThatStopTheTestRun.Any(File.Exists))
                             return;
-                        if (filter != "" && !testmethod.Name.ToLower().StartsWith(filter))
+                        if ((filter != "" && !testmethod.Name.ToLower().StartsWith(filter)) || FilterByUserHook(testmethod.Name.ToLower()))
                             continue;
                         if (testmethod.IsDefined(typeof(TestMethodAttribute), true)) {
                             Log.Debug(i + " " + classObj + " " + testmethod.Name);
@@ -74,7 +82,7 @@ namespace UiClickTestDSL {
                                 ErrorCount++;
                                 Log.Error("Error closing program: " + ex.Message, ex);
                             }
-                            Log.Debug("Test done, current error count:" + ErrorCount + " \n\n");
+                            Log.Debug("-- Test # "+i+" done, current error count: " + ErrorCount + " \n\n");
                             //Need to allow the program time to exit, to avoid the next test finding an open program while starting.
                             Thread.Sleep(3000);
                         }

@@ -19,6 +19,7 @@ namespace UiClickTestDSL {
 
         public static string ApplicationFolder;
         public static string ApplicationExeName;
+        public static string Arguments;
         public static List<string> PossibleProcessNames = new List<string>();
 
         private static readonly List<string> ClickTestComputerNames = new List<string>();
@@ -46,6 +47,8 @@ namespace UiClickTestDSL {
                     WorkingDirectory = ApplicationFolder,
                 }
             };
+            if (!string.IsNullOrWhiteSpace(Arguments))
+                Process.StartInfo.Arguments = Arguments;
             Process.Start();
             Thread.Sleep(500);
         }

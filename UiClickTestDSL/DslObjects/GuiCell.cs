@@ -28,9 +28,15 @@ namespace UiClickTestDSL.DslObjects {
         }
          * */
 
-        public void Type(string text) {
+        public void SetText(string text) {
             cell.SetFocus();
             _value.SetValue(text);
+        }
+
+        public void Type(string text) {
+            cell.SetFocus();
+            var completeText = Text + text;
+            _value.SetValue(completeText);
         }
 
         public void DoubleClick() {

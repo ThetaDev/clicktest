@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/delfidata/clicktest</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A library for automatic regressiontesting of applications / Coded UI Tests. This library allows you to write tests for your WPF applications. The library uses MS UI Automation and TestApi to mimic the user interaction.</description>
-    <releaseNotes>Minor change to how one accesses ComboBox-items.</releaseNotes>
+    <releaseNotes>Changed Type to actually add text to a textbox. Set most methods to virtual in main class. Added arguments option to ApplicationLancher. Several minor additions.</releaseNotes>
     <copyright>Copyright 2012</copyright>
     <tags>test UiTest testing UiTesting GuiTesting framework clicktest MsUiAutomation UiAutomation</tags>
     <references>
