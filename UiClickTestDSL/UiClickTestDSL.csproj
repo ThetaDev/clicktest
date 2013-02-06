@@ -56,6 +56,7 @@
     <Compile Include="ApplicationLauncher.cs" />
     <Compile Include="AutomationCode\AutomationElementNotFoundException.cs" />
     <Compile Include="AutomationCode\AutomationExtensions.cs" />
+    <Compile Include="AutomationCode\By.cs" />
     <Compile Include="AutomationCode\MouseExtensions.cs" />
     <Compile Include="AutomationCode\PatternExtensions.cs" />
     <Compile Include="AutomationCode\Workarounds.cs" />

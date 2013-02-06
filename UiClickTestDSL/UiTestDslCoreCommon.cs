@@ -178,12 +178,12 @@ namespace UiClickTestDSL {
             Assert.IsTrue(File.Exists(filenameAndPath + fileSuffix), "Did not find file with correct suffix: " + filenameAndPath + " suffix: " + fileSuffix);
         }
 
-        protected int SecondsToWaitForDialogToShow = 30;
+        protected int RetriesToWaitForDialogToShow = 4;
 
         protected virtual void WaitUntilDialogIsShowing(string caption) {
             WaitWhileBusy();
             bool isWaiting = true;
-            int i = SecondsToWaitForDialogToShow * 2;
+            int i = RetriesToWaitForDialogToShow;
             while (isWaiting) {
                 try {
                     Dialog(caption);
@@ -206,17 +206,21 @@ namespace UiClickTestDSL {
 
         public virtual void PrintTextBoxes() { PrintControls(GuiTextBox.GetAll(Window)); }
         public virtual GuiTextBox TextBox(string automationId) { return GuiTextBox.GetTextBox(Window, automationId); }
+        public virtual GuiTextBox TextBox(ByAutomationId automationId) { return GuiTextBox.GetTextBox(Window, automationId.Value); }
         public virtual GuiTextBoxes TextBoxes(string prefix = "") { return GuiTextBoxes.GetAll(Window, prefix); }
 
         public virtual void PrintLabels(string prefix = "") { PrintControls(GuiLabel.GetAll(Window, prefix)); }
         public virtual GuiLabel Label(string automationId) { return GuiLabel.GetLabel(Window, automationId); }
+        public virtual GuiLabel Label(ByAutomationId automationId) { return GuiLabel.GetLabel(Window, automationId.Value); }
         public virtual GuiLabels GetLabels(string prefix) { return GuiLabels.GetAll(Window, prefix); }
 
         public virtual void PrintButtons() { PrintControls(GuiButton.GetAll(Window)); }
         public virtual GuiButton ButtonByAutomationId(string automationId) { return GuiButton.GetButtonByAutomationId(Window, automationId); }
+        public virtual GuiButton Button(ByAutomationId automationId) { return GuiButton.GetButtonByAutomationId(Window, automationId.Value); }
         public virtual GuiButton Button(string caption) { return GuiButton.GetButton(Window, caption); }
 
         public virtual GuiToggleButton ToggleButton(string automationId) { return GuiToggleButton.GetButtonByAutomationId(Window, automationId); }
+        public virtual GuiToggleButton ToggleButton(ByAutomationId automationId) { return GuiToggleButton.GetButtonByAutomationId(Window, automationId.Value); }
 
         public virtual GuiRadioButton RadioButton(string caption) { return GuiRadioButton.GetRadioButton(Window, caption); }
         public virtual void PrintCheckBoxes() { PrintControls(GuiCheckBox.GetAll(Window)); }
@@ -224,15 +228,19 @@ namespace UiClickTestDSL {
 
         public virtual void PrintDataGrids() { PrintControls(GuiDataGrid.GetAll(Window)); }
         public virtual GuiDataGrid DataGrid(string automationId) { return GuiDataGrid.GetDataGrid(Window, automationId); }
+        public virtual GuiDataGrid DataGrid(ByAutomationId automationId) { return GuiDataGrid.GetDataGrid(Window, automationId.Value); }
 
         public virtual void PrintComboBoxes() { PrintControls(GuiComboBox.GetAll(Window)); }
         public virtual GuiComboBox ComboBox(string automationId) { return GuiComboBox.Find(Window, automationId); }
+        public virtual GuiComboBox ComboBox(ByAutomationId automationId) { return GuiComboBox.Find(Window, automationId.Value); }
         public virtual GuiComboBoxes ComboBoxes(string prefix) { return GuiComboBoxes.Find(Window, prefix); }
 
         public virtual void PrintTabs() { PrintControls(GuiTabItem.GetAll(Window)); }
         public virtual GuiTabItem Tab(string automationId) { return GuiTabItem.GetTab(Window, automationId); }
+        public virtual GuiTabItem Tab(ByAutomationId automationId) { return GuiTabItem.GetTab(Window, automationId.Value); }
 
         public virtual GuiImage Image(string automationId) { return GuiImage.Find(Window, automationId); }
+        public virtual GuiImage Image(ByAutomationId automationId) { return GuiImage.Find(Window, automationId.Value); }
 
         public virtual GuiMenuItem Menu(string name) { return GuiMenuItem.GetMenuItem(Window, name); }
         public virtual GuiMenuItem FirstMenuItem() { return GuiMenuItem.GetFirstMenuItem(Window); }
