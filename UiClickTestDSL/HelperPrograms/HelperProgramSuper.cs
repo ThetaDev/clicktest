@@ -29,6 +29,7 @@ namespace UiClickTestDSL.HelperPrograms {
             };
             Process.Start();
             Thread.Sleep(500);
+            Process.WaitForInputIdle(60000);
             SleepIfOnTestMachine(3000);
             var findProcess = PossibleProcessNames.FindProcess();
             foreach (var p in findProcess)

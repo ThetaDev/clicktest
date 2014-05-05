@@ -25,7 +25,6 @@ namespace UiClickTestDSL.DslObjects {
             _cachedtb = null;
         }
 
-
         private AutomationElement tbAutoEl;
         private ValuePattern value;
         public string AutomationId { get; private set; }

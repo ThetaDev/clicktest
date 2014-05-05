@@ -39,9 +39,9 @@ namespace UiClickTestDSL {
         }
 
         public static void WaitWhileBusy() {
-            Sleep(500);
+            Sleep(1000);
             Program.WaitForInputIdle();
-            Sleep(500);
+            Sleep(1000);
         }
 
         [TestCleanup]

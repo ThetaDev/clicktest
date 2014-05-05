@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Automation;
+using log4net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
 
@@ -32,6 +33,8 @@ namespace UiClickTestDSL {
         public static Action ApplicationClearAfterTestRun;
 
         public List<string> FilesToDelete = new List<string> { @"C:\temp\test", @"C:\temp\test.zip" };
+
+        private static ILog Log = LogManager.GetLogger(typeof(ApplicationLauncher));
 
         public static IEnumerable<Process> FindProcess() {
             return PossibleProcessNames.FindProcess();
@@ -93,7 +96,11 @@ namespace UiClickTestDSL {
                     foreach (var d in dialogs)
                         errorDialogHeading += d.Current.Name + "\n";
                     if (dialogs.Count > 0)
-                        screenShotFilename = ScreenShooter.SaveToFile();
+                        try {
+                            screenShotFilename = ScreenShooter.SaveToFile();
+                        } catch (Exception e) {
+                            Log.Error("Exception while trying to save screenshot: " + e.Message, e);
+                        }
                     if (!ConnectedInsteadOfStarted)
                         KillProcess();
                 } catch (AutomationElementNotFoundException) {

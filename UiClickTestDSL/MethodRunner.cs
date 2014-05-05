@@ -22,7 +22,7 @@ namespace UiClickTestDSL {
             _filenamesThatStopTheTestRun = new List<string>(filenamesThatStopTheTestRun);
         }
 
-        public Func<string,bool> TestNameFilterHook = null;
+        public Func<string, bool> TestNameFilterHook = null;
 
         private bool FilterByUserHook(string testname) {
             if (TestNameFilterHook != null)
@@ -70,7 +70,13 @@ namespace UiClickTestDSL {
                                 testmethod.Invoke(classObj, emptyParams);
                             } catch (Exception ex) {
                                 ErrorCount++;
-                                string filename = ScreenShooter.SaveToFile();
+                                string filename = "";
+                                try {
+                                    filename = ScreenShooter.SaveToFile();
+                                    ErrorCount++;
+                                } catch (Exception innerEx) {
+                                    Log.Error("Exception while trying to save screenshot: " + innerEx.Message, innerEx);
+                                }
                                 Log.Error(ex.Message + " screenshot: " + filename, ex);
                                 if (ex.InnerException != null) {
                                     Log.Error(ex.InnerException.Message, ex.InnerException);
@@ -82,7 +88,7 @@ namespace UiClickTestDSL {
                                 ErrorCount++;
                                 Log.Error("Error closing program: " + ex.Message, ex);
                             }
-                            Log.Debug("-- Test # "+i+" done, current error count: " + ErrorCount + " \n\n");
+                            Log.Debug("-- Test # " + i + " done, current error count: " + ErrorCount + " \n\n");
                             //Need to allow the program time to exit, to avoid the next test finding an open program while starting.
                             Thread.Sleep(3000);
                         }

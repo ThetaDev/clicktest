@@ -4,13 +4,13 @@
     <id>ClickTest</id>
     <version>$version$</version>
     <title>ClickTest</title>
-    <authors>Delfi Data AS</authors>
-    <owners>Delfi Data AS</owners>
-    <licenseUrl>https://github.com/delfidata/clicktest/blob/master/COPYING</licenseUrl>
-    <projectUrl>https://github.com/delfidata/clicktest</projectUrl>
+    <authors>DelfiCert AS</authors>
+    <owners>DelfiCert AS</owners>
+    <licenseUrl>https://github.com/DelfiCert/clicktest/blob/master/COPYING</licenseUrl>
+    <projectUrl>https://github.com/DelfiCert/clicktest</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A library for automatic regressiontesting of applications / Coded UI Tests. This library allows you to write tests for your WPF applications. The library uses MS UI Automation and TestApi to mimic the user interaction.</description>
-    <releaseNotes>Changed Type to actually add text to a textbox. Set most methods to virtual in main class. Added arguments option to ApplicationLancher. Several minor additions.</releaseNotes>
+    <releaseNotes>Minor fixes.</releaseNotes>
     <copyright>Copyright 2012</copyright>
     <tags>test UiTest testing UiTesting GuiTesting framework clicktest MsUiAutomation UiAutomation</tags>
     <references>
