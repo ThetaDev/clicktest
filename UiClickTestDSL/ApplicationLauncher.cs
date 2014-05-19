@@ -86,7 +86,7 @@ namespace UiClickTestDSL {
         }
 
         public void Close() {
-            if (Process != null) {
+            if (Process != null && !Process.HasExited) {
                 List<AutomationElement> dialogs = null;
                 string errorDialogHeading = "";
                 string screenShotFilename = "";

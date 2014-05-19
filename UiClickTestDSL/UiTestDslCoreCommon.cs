@@ -32,8 +32,10 @@ namespace UiClickTestDSL {
         }
 
         public string UniqueIdentifier = null;
+        public string shortUnique = null;
         public string CreateNewUniqueIdentifier() {
             UniqueIdentifier = Guid.NewGuid().ToString();
+            shortUnique = UniqueIdentifier.Replace("-", "").Remove(14);
             Print(UniqueIdentifier);
             return UniqueIdentifier;
         }

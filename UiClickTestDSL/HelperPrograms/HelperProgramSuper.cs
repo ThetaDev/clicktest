@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,6 +9,8 @@ using UiClickTestDSL.AutomationCode;
 
 namespace UiClickTestDSL.HelperPrograms {
     public abstract class HelperProgramSuper : UiTestDslCoreCommon, IDisposable {
+        private static ILog Log = LogManager.GetLogger(typeof(HelperProgramSuper));
+
         public Process Process;
         protected abstract string ApplictionCommand { get; }
         protected List<string> PossibleProcessNames = new List<string>();
@@ -29,7 +32,15 @@ namespace UiClickTestDSL.HelperPrograms {
             };
             Process.Start();
             Thread.Sleep(500);
-            Process.WaitForInputIdle(60000);
+            try
+            {
+                Process.WaitForInputIdle(60000);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error trying to access helper program " + arguments + " - " + ex.Message, ex);
+                throw;
+            }
             SleepIfOnTestMachine(3000);
             var findProcess = PossibleProcessNames.FindProcess();
             foreach (var p in findProcess)
