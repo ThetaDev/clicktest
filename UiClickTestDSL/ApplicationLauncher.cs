@@ -158,7 +158,7 @@ namespace UiClickTestDSL {
 
         public AutomationElement GetDialog(string caption) {
             var mainWindow = GetMainWindow();
-            AutomationElement res = mainWindow.FindChildByLocalizedControlTypeAndName(caption, "Dialog", "dialog", "Window", "window");
+            AutomationElement res = mainWindow.FindChildByLocalizedControlTypeAndName(caption, "Dialog", "dialog", "Window", "window", "Dialogboks", "dialogboks");
             return res;
         }
 

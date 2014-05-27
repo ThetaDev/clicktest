@@ -44,7 +44,8 @@ namespace UiClickTestDSL.DslObjects {
             return GetAllListItems()[0];
         }
 
-        public void SelectElement(string elementName, string value) {
+        public GuiListBoxItem SelectElement(string elementName, string value)
+        {
             IList<GuiListBoxItem> all = GetAllListItems();
             IEnumerable<GuiListBoxItem> items = from i in all
                                                 where i.Label(elementName).Text == value
@@ -62,6 +63,7 @@ namespace UiClickTestDSL.DslObjects {
                 }
             }
             item.Select();
+            return item;
         }
 
         public void ElementNotInList(string elementName, string value) {
