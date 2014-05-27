@@ -6,12 +6,16 @@ using System.Runtime.InteropServices;
 namespace UiClickTestDSL {
     public static class ProgramControl {
         public static Process[] FindProcess(this List<string> possibleProcessNames) {
+            return possibleProcessNames.ToArray().FindProcess();
+        }
+
+        public static Process[] FindProcess(this string[] possibleProcessNames) {
             Process[] procs = null;
             int i = 0;
             while (procs == null || procs.Length == 0 || procs[0].PriorityClass == ProcessPriorityClass.Idle) {
                 procs = Process.GetProcessesByName(possibleProcessNames[i]);
                 i++;
-                if (i >= possibleProcessNames.Count)
+                if (i >= possibleProcessNames.Length)
                     break;
             }
             return procs;

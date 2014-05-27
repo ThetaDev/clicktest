@@ -1,12 +1,16 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows.Automation;
 using Microsoft.Test.Input;
 using UiClickTestDSL.AutomationCode;
 using UiClickTestDSL.DslObjects;
+using log4net;
 
 namespace UiClickTestDSL.HelperPrograms {
     public class Explorer : HelperProgramSuper {
+        private static ILog Log = LogManager.GetLogger(typeof(Explorer));
+
         public Explorer(params string[] possibleProcesNames) {
             PossibleProcessNames.AddRange(possibleProcesNames);
         }
@@ -16,12 +20,21 @@ namespace UiClickTestDSL.HelperPrograms {
         }
 
         public ListUiItem GetFile(string filename) {
-            PrintAllControls(Window);
-            var files = ListBox("Items View").GetAllUiItems();
-            var item = from f in files
-                       where f.Name.ToLower() == filename.ToLower()
-                       select f;
-            return item.First();
+            try {
+                PrintAllControls(Window);
+                var files = ListBox("Items View").GetAllUiItems();
+                foreach (var f in files) {
+                    Log.Debug("Found file: " + f.Name);
+                }
+                var item = from f in files
+                           where f.Name.ToLower() == filename.ToLower()
+                           select f;
+                return item.First();
+            } catch (Exception) {
+                var screen = ScreenShooter.SaveToFile();
+                Log.Debug("File not found; screenshot: " + screen);
+                throw;
+            }
         }
 
         public void ClickFile(string file) {
@@ -31,7 +44,8 @@ namespace UiClickTestDSL.HelperPrograms {
 
         internal void DragDropFileTo(FileInfo file, AutomationElement el) {
             Start(file.DirectoryName);
-            var fileInExplorer = GetFile(file.Name);
+            ListUiItem fileInExplorer;
+            fileInExplorer = GetFile(file.Name);
             Mouse.MoveTo(fileInExplorer.ClickablePoint);
             Mouse.Down(MouseButton.Left);
             Minimize();

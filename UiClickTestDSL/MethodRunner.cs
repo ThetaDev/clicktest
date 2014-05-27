@@ -81,6 +81,9 @@ namespace UiClickTestDSL {
                                 if (ex.InnerException != null) {
                                     Log.Error(ex.InnerException.Message, ex.InnerException);
                                 }
+                                try {
+                                    Log.Error("Latest unique identifiers: " + UiTestDslCoreCommon.UniqueIdentifier + " / " + UiTestDslCoreCommon.shortUnique);
+                                } catch (Exception) { }
                             }
                             try {
                                 closer.Invoke(classObj, emptyParams);

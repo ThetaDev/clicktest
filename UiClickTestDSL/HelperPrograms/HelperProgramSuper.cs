@@ -15,6 +15,15 @@ namespace UiClickTestDSL.HelperPrograms {
         protected abstract string ApplictionCommand { get; }
         protected List<string> PossibleProcessNames = new List<string>();
 
+        public static void TryKillHelperProcesses(params string[] possibleProcessNames) {
+            var procs = possibleProcessNames.FindProcess();
+            foreach (var process in procs) {
+                try {
+                    process.Kill();
+                } catch (Exception) { }
+            }
+        }
+
         public void Start(string arguments) {
             if (!PossibleProcessNames.Contains(ApplictionCommand))
                 PossibleProcessNames.Add(ApplictionCommand);
@@ -32,21 +41,14 @@ namespace UiClickTestDSL.HelperPrograms {
             };
             Process.Start();
             Thread.Sleep(500);
-            try
-            {
+            if (!Process.HasExited)
                 Process.WaitForInputIdle(60000);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Error trying to access helper program " + arguments + " - " + ex.Message, ex);
-                throw;
-            }
             SleepIfOnTestMachine(3000);
             var findProcess = PossibleProcessNames.FindProcess();
             foreach (var p in findProcess)
                 Console.WriteLine("Found process: " + p.Id + " " + p.ProcessName);
             Process = findProcess.First(p => !pidsAlreadyStarted.Contains(p.Id));
-            Console.WriteLine("Found process: " + Process.Id + " " + Process.ProcessName);
+            Console.WriteLine("New process is: " + Process.Id + " " + Process.ProcessName);
             GetActualWindow();
         }
 
