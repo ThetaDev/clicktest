@@ -68,6 +68,7 @@
     <Compile Include="DslObjects\GuiComboBoxItem.cs" />
     <Compile Include="DslObjects\GuiContextMenu.cs" />
     <Compile Include="DslObjects\GuiDataGrid.cs" />
+    <Compile Include="DslObjects\GuiDatePicker.cs" />
     <Compile Include="DslObjects\GuiDialog.cs" />
     <Compile Include="DslObjects\GuiFileDialog.cs" />
     <Compile Include="DslObjects\GuiImage.cs" />

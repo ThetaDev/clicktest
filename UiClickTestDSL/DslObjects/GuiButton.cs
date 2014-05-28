@@ -64,8 +64,7 @@ namespace UiClickTestDSL.DslObjects {
             Assert.IsTrue(_btn.Current.IsOffscreen, "Button: "+_name+" should have been offscreen");
         }
 
-        public void ShouldBeVisible()
-        {
+        public void ShouldBeVisible() {
             Assert.IsFalse(_btn.Current.IsOffscreen, "Button: " + _name + " should have been visible");
         }
     }
