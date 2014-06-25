@@ -175,6 +175,11 @@ namespace UiClickTestDSL {
             Assert.AreNotEqual(0, file.Length);
         }
 
+        protected virtual DateTime GetLastWriteTimeOfFile(string filnameAndPath){
+            var file = new FileInfo(filnameAndPath);
+            return file.LastWriteTime;
+        }
+
         protected virtual void VerifyFileHasGottenSuffix(string filenameAndPath, string fileSuffix) {
             Assert.IsFalse(File.Exists(filenameAndPath), "File should not have been found: " + filenameAndPath);
             Assert.IsTrue(File.Exists(filenameAndPath + fileSuffix), "Did not find file with correct suffix: " + filenameAndPath + " suffix: " + fileSuffix);
