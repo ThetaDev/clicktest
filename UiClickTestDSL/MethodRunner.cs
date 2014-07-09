@@ -67,6 +67,9 @@ namespace UiClickTestDSL {
                             } catch (Exception ex) {
                                 ErrorCount++;
                                 Log.Error("Error starting program: " + ex.Message, ex);
+                                //On error wait a bit extra in case the program is hanging
+                                Thread.Sleep(5000);
+                                CloseProgram(closer, classObj, emptyParams);
                                 continue;
                             }
                             try {
@@ -88,12 +91,7 @@ namespace UiClickTestDSL {
                                     Log.Error("Latest unique identifiers: " + UiTestDslCoreCommon.UniqueIdentifier + " / " + UiTestDslCoreCommon.shortUnique);
                                 } catch (Exception) { }
                             }
-                            try {
-                                closer.Invoke(classObj, emptyParams);
-                            } catch (Exception ex) {
-                                ErrorCount++;
-                                Log.Error("Error closing program: " + ex.Message, ex);
-                            }
+                            CloseProgram(closer, classObj, emptyParams);
                             Log.Debug("-- Test # " + i + " done, current error count: " + ErrorCount + " \n\n");
                             //Need to allow the program time to exit, to avoid the next test finding an open program while starting.
                             Thread.Sleep(3000);
@@ -113,6 +111,15 @@ namespace UiClickTestDSL {
                         Log.Debug("Error closing: " + ex.Message, ex);
                     }
                 }
+            }
+        }
+
+        private void CloseProgram(MethodInfo closer, object classObj, object[] emptyParams) {
+            try {
+                closer.Invoke(classObj, emptyParams);
+            } catch (Exception ex) {
+                ErrorCount++;
+                Log.Error("Error closing program: " + ex.Message, ex);
             }
         }
     }
