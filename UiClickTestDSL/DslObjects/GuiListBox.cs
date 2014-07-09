@@ -48,7 +48,7 @@ namespace UiClickTestDSL.DslObjects {
         {
             IList<GuiListBoxItem> all = GetAllListItems();
             IEnumerable<GuiListBoxItem> items = from i in all
-                                                where i.Label(elementName).Text == value
+                                                where i.HasLabelWithText(elementName, value)
                                                 select i;
             GuiListBoxItem item = items.FirstOrDefault();
             if (item == null) {
@@ -69,7 +69,7 @@ namespace UiClickTestDSL.DslObjects {
         public void ElementNotInList(string elementName, string value) {
             IList<GuiListBoxItem> all = GetAllListItems();
             IEnumerable<GuiListBoxItem> items = from i in all
-                                                where i.Label(elementName).Text == value
+                                                where i.HasLabelWithText(elementName, value)
                                                 select i;
             Assert.AreEqual(0, items.Count());
         }

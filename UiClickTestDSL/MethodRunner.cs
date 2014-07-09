@@ -23,6 +23,7 @@ namespace UiClickTestDSL {
         }
 
         public Func<string, bool> TestNameFilterHook = null;
+        public Action ResetTestEnvironment = null;
 
         private bool FilterByUserHook(string testname) {
             if (TestNameFilterHook != null)
@@ -39,7 +40,7 @@ namespace UiClickTestDSL {
                 foreach (Type testclass in classes) {
                     Log.Debug(testclass.FullName);
 
-                    var methods = testclass.GetMethods();
+                    MethodInfo[] methods = testclass.GetMethods();
                     MethodInfo starter = (from m in methods
                                           where m.Name == "StartApplicationAndLogin"
                                           select m).FirstOrDefault();
@@ -59,6 +60,8 @@ namespace UiClickTestDSL {
                         if (testmethod.IsDefined(typeof(TestMethodAttribute), true)) {
                             Log.Debug(i + " " + classObj + " " + testmethod.Name);
                             i++;
+                            if (ResetTestEnvironment != null)
+                                ResetTestEnvironment();
                             try {
                                 starter.Invoke(classObj, emptyParams);
                             } catch (Exception ex) {
@@ -96,6 +99,9 @@ namespace UiClickTestDSL {
                             Thread.Sleep(3000);
                         }
                     }
+                    var classCleanup = methods.SingleOrDefault(m=>m.IsDefined(typeof(ClassCleanupAttribute), true));
+                    if (classCleanup != null)
+                        classCleanup.Invoke(classObj, emptyParams);
                 }
             } finally {
                 var procs = ApplicationLauncher.FindProcess();

@@ -7,9 +7,10 @@ using UiClickTestDSL.AutomationCode;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiLabel {
-        public static IEnumerable<AutomationElement> GetAll(AutomationElement window, string prefix) {
+        public static IEnumerable<AutomationElement> GetAll(AutomationElement window, string prefix = null) {
             var res = window.FindAllChildrenByControlType(ControlType.Text);
-            res = res.Where(l => l.Current.AutomationId.StartsWith(prefix));
+            if (prefix != null)
+                res = res.Where(l => l.Current.AutomationId.StartsWith(prefix));
             return res;
         }
 

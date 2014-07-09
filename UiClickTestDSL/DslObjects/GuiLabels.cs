@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiLabels : List<GuiLabel> {
-        public static GuiLabels GetAll(AutomationElement window, string prefix) {
+        public static GuiLabels GetAll(AutomationElement window, string prefix = null) {
             var all = GuiLabel.GetAll(window, prefix);
             return new GuiLabels(all.Select(l => new GuiLabel(l)));
         }

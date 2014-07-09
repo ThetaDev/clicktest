@@ -34,5 +34,9 @@ namespace UiClickTestDSL.DslObjects {
                            select l;
             Assert.AreNotEqual(0, contains.Count());
         }
+
+        public bool HasLabelWithText(string labelName, string text) {
+            return GuiLabels.GetAll(Window).VisibleContains(text);
+        }
     }
 }
