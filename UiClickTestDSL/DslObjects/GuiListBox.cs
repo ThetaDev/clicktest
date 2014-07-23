@@ -7,36 +7,38 @@ using UiClickTestDSL.AutomationCode;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiListBox {
-        private readonly AutomationElement _element;
+        public AutomationElement InternalElement { get; private set; }
+        private readonly string _automationId;
 
-        public GuiListBox(AutomationElement listBox) {
-            _element = listBox;
+        public GuiListBox(AutomationElement listBox, string automationId) {
+            InternalElement = listBox;
+            _automationId = automationId;
         }
 
         public static GuiListBox Find(AutomationElement window, string automationId) {
             AutomationElement res = window.FindChildByControlTypeAndAutomationIdOrName(ControlType.List, automationId);
-            return new GuiListBox(res);
+            return new GuiListBox(res, automationId);
         }
 
         public List<GuiListBoxItem> GetAllListItems() {
             try {
-                _element.SetFocus();
+                InternalElement.SetFocus();
             } catch (Exception) {
                 //todo ta bare cannot set focus her
             }
-            UiTestDslCoreCommon.PrintAllControls(_element);
-            IEnumerable<AutomationElement> all = _element.FindAllChildrenByControlType(ControlType.ListItem);
+            UiTestDslCoreCommon.PrintAllControls(InternalElement);
+            IEnumerable<AutomationElement> all = InternalElement.FindAllChildrenByControlType(ControlType.ListItem);
             return all.Select(listItem => new GuiListBoxItem(listItem)).ToList();
         }
 
         public List<ListUiItem> GetAllUiItems() {
             try {
-                _element.SetFocus();
+                InternalElement.SetFocus();
             } catch (Exception) {
                 //todo ta bare cannot set focus her
             }
-            UiTestDslCoreCommon.PrintAllControls(_element);
-            IEnumerable<AutomationElement> all = _element.FindAllChildrenByClassName("UIItem");
+            UiTestDslCoreCommon.PrintAllControls(InternalElement);
+            IEnumerable<AutomationElement> all = InternalElement.FindAllChildrenByClassName("UIItem");
             return all.Select(listItem => new ListUiItem(listItem)).ToList();
         }
 
