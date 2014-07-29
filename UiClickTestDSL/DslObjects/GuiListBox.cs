@@ -46,6 +46,10 @@ namespace UiClickTestDSL.DslObjects {
             return GetAllListItems()[0];
         }
 
+        public void CountShouldBe(int expectedCount) {
+            Assert.AreEqual(expectedCount, GetAllListItems().Count);
+        }
+
         public GuiListBoxItem SelectElement(string elementName, string value)
         {
             IList<GuiListBoxItem> all = GetAllListItems();
