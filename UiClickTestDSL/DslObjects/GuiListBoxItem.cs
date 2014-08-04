@@ -38,5 +38,12 @@ namespace UiClickTestDSL.DslObjects {
         public bool HasLabelWithText(string labelName, string text) {
             return GuiLabels.GetAll(Window).VisibleContains(text);
         }
+        public bool HasButtonWithText(string buttonName) {
+            var all = GuiButton.GetAll(Window);
+            var btns = from btn in all
+                       where btn.Current.Name == buttonName
+                       select btn;
+            return btns.Count() > 0;
+        }
     }
 }

@@ -46,6 +46,19 @@ namespace UiClickTestDSL.DslObjects {
             return GetAllListItems()[0];
         }
 
+        public GuiListBoxItem this[int i] {
+            get { return GetAllListItems()[i]; }
+        }
+
+        public void ShouldContainButton(string elementName) {
+            IList<GuiListBoxItem> all = GetAllListItems();
+            IEnumerable<GuiListBoxItem> items = from i in all
+                                                where i.HasButtonWithText(elementName)
+                                                select i;
+            Assert.AreEqual(1, items.Count());
+        }
+
+
         public void CountShouldBe(int expectedCount) {
             Assert.AreEqual(expectedCount, GetAllListItems().Count);
         }
