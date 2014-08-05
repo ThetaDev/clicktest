@@ -63,6 +63,13 @@ namespace UiClickTestDSL.DslObjects {
             Assert.AreEqual(expectedCount, GetAllListItems().Count);
         }
 
+        public GuiListBoxItem SelectLastItem() {
+            var all = GetAllListItems();
+            var item = all[all.Count - 1];
+            item.Select();
+            return item;
+        }
+
         public GuiListBoxItem SelectElement(string elementName, string value)
         {
             IList<GuiListBoxItem> all = GetAllListItems();
