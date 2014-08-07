@@ -83,6 +83,12 @@ namespace UiClickTestDSL.DslObjects {
         public void ShouldRead(string expected) {
             Assert.AreEqual(expected, Text);
         }
+        public void ShouldNotRead(object expected) {
+            ShouldNotRead(expected.ToString());
+        }
+        public void ShouldNotRead(string expected) {
+            Assert.AreNotEqual(expected, Text);
+        }
 
         public void ShouldReadLines(params string[] expectedLines) {
             var expected = new StringBuilder();
