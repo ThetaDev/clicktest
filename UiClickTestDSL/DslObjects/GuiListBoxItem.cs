@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -40,10 +41,12 @@ namespace UiClickTestDSL.DslObjects {
         }
         public bool HasButtonWithText(string buttonName) {
             var all = GuiButton.GetAll(Window);
-            var btns = from btn in all
-                       where btn.Current.Name == buttonName
-                       select btn;
-            return btns.Count() > 0;
+            return all.Any(btn => btn.Current.Name.Equals(buttonName));
+        }
+
+        public bool HasLabelStartingWithText(string match){
+            var all = GuiLabel.GetAll(Window);
+            return all.Any(i => i.Current.Name.StartsWith(match));
         }
     }
 }

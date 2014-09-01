@@ -99,5 +99,12 @@ namespace UiClickTestDSL.DslObjects {
                                                 select i;
             Assert.AreEqual(0, items.Count());
         }
+
+        public void SelectFirstMatch(string match){
+            var all = GetAllListItems();
+            var guiListBoxItem = all.FirstOrDefault(i => i.HasLabelStartingWithText(match));
+            if (guiListBoxItem != null)
+                guiListBoxItem.Select();
+        }
     }
 }
