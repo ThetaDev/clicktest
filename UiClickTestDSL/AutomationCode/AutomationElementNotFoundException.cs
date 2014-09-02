@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Windows.Automation;
 
 namespace UiClickTestDSL.AutomationCode {
@@ -12,16 +13,26 @@ namespace UiClickTestDSL.AutomationCode {
         }
 
         private static string SearchConditionsToString(IEnumerable<Condition> searchConditions) {
-            var res = " ";
+            var res = new StringBuilder();
             foreach (var searchCondition in searchConditions) {
-                if (searchCondition is PropertyCondition) {
-                    res += (searchCondition as PropertyCondition).Property + " ";
-                    res += (searchCondition as PropertyCondition).Value + " ";
-                } else {
-                    res += searchCondition;
-                }
+                HandleCondition(searchCondition, res);
             }
-            return res;
+            return res.ToString();
+        }
+
+        private static void HandleCondition(Condition searchCondition, StringBuilder res) {
+            if (searchCondition is PropertyCondition) {
+                res.Append((searchCondition as PropertyCondition).Property + " ");
+                res.Append((searchCondition as PropertyCondition).Value + " ");
+            } else if (searchCondition is OrCondition) {
+                foreach (var cond in (searchCondition as OrCondition).GetConditions())
+                    HandleCondition(cond, res);
+            } else if (searchCondition is AndCondition) {
+                foreach (var cond in (searchCondition as AndCondition).GetConditions())
+                    HandleCondition(cond, res);
+            } else {
+                res.Append(searchCondition);
+            }
         }
     }
 }

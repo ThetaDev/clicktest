@@ -60,8 +60,17 @@ namespace UiClickTestDSL.DslObjects {
             return new GuiButton(el, "AppCloseButton");
         }
 
+        public static GuiButton GetAppButton(AutomationElement window, string name) {
+            var searchConditions = new Condition[] {
+                new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button),
+                new PropertyCondition(AutomationElement.IsContentElementProperty, false)
+            };
+            var el = AutomationExtensions.RunSearchWithName(window, name, searchConditions);
+            return new GuiButton(el, "AppButton." + name);
+        }
+
         public void ShouldNotBeVisible() {
-            Assert.IsTrue(_btn.Current.IsOffscreen, "Button: "+_name+" should have been offscreen");
+            Assert.IsTrue(_btn.Current.IsOffscreen, "Button: " + _name + " should have been offscreen");
         }
 
         public void ShouldBeVisible() {

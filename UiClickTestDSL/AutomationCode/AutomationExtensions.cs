@@ -73,7 +73,7 @@ namespace UiClickTestDSL.AutomationCode {
             return RunSearchWithName(element, name, ClassName(className));
         }
 
-        private static AutomationElement RunSearchWithName(AutomationElement element, string name, params Condition[] otherSearchConditions) {
+        public static AutomationElement RunSearchWithName(AutomationElement element, string name, params Condition[] otherSearchConditions) {
             List<Condition> nameConds = BuildNameOptionList(name);
             var temp = new List<Condition>(otherSearchConditions);
             temp.Add(nameConds.Count > 1 ? Or(nameConds) : nameConds[0]);
