@@ -38,13 +38,15 @@ namespace UiClickTestDSL.DslObjects {
 
         public void SelectFile(string filePathAndName) {
             UiTestDslCoreCommon.WaitWhileBusy();
-            Thread.Sleep(1000);
+            Thread.Sleep(500);
             if (ApplicationLauncher.VerifyOnTestMachine())
-                Thread.Sleep(5000);
+                Thread.Sleep(6000);
             UiTestDslCoreCommon.WaitWhileBusy();
             SendKeys.SendWait(filePathAndName);
             SendKeys.SendWait("{Enter}");
-            Thread.Sleep(2000);
+            Thread.Sleep(500);
+            if (ApplicationLauncher.VerifyOnTestMachine())
+                Thread.Sleep(1500);
             UiTestDslCoreCommon.WaitWhileBusy();
             if (ApplicationLauncher.VerifyOnTestMachine())
                 Thread.Sleep(5000);

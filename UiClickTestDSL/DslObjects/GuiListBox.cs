@@ -70,8 +70,14 @@ namespace UiClickTestDSL.DslObjects {
             return item;
         }
 
-        public GuiListBoxItem SelectElement(string elementName, string value)
-        {
+        public GuiListBoxItem SelectFirstItem() {
+            var all = GetAllListItems();
+            var item = all[0];
+            item.Select();
+            return item;
+        }
+
+        public GuiListBoxItem SelectElement(string elementName, string value) {
             IList<GuiListBoxItem> all = GetAllListItems();
             IEnumerable<GuiListBoxItem> items = from i in all
                                                 where i.HasLabelWithText(elementName, value)
@@ -100,11 +106,16 @@ namespace UiClickTestDSL.DslObjects {
             Assert.AreEqual(0, items.Count());
         }
 
-        public void SelectFirstMatch(string match){
+        /// <summary>
+        /// Does not appear to work properly with only .Net 4.0 installed, but works fine with .Net 4.5 installed.
+        /// </summary>
+        private GuiListBoxItem SelectFirstMatch(string match) {
             var all = GetAllListItems();
             var guiListBoxItem = all.FirstOrDefault(i => i.HasLabelStartingWithText(match));
-            if (guiListBoxItem != null)
-                guiListBoxItem.Select();
+            if (guiListBoxItem == null)
+                throw new Exception("Can't find any ListBoxItem starting with: " + match);
+            guiListBoxItem.Select();
+            return guiListBoxItem;
         }
     }
 }

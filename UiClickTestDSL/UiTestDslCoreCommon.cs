@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Automation;
 using System.Windows.Forms;
+using log4net;
 using log4net.Config;
 using Microsoft.Test.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,6 +17,8 @@ namespace UiClickTestDSL {
     [TestClass]
     public abstract class UiTestDslCoreCommon {
         public static readonly string AssemblyDir = string.Format(@"{0}\", Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Substring(6));
+        private static ILog Log = LogManager.GetLogger(typeof (UiTestDslCoreCommon));
+
         static UiTestDslCoreCommon() {
             var configfile = new FileInfo(AssemblyDir + @"\log4net.config");
             if (!configfile.Exists)
@@ -98,7 +101,7 @@ namespace UiClickTestDSL {
         }
 
         public static void PrintAllControls(AutomationElement ae) {
-            Console.WriteLine("All controls:");
+            PrintLine("All controls:");
             var all = ae.FindAll(TreeScope.Subtree, Condition.TrueCondition); // .Descendants
             PrintAutomationElements(all);
         }
@@ -107,7 +110,7 @@ namespace UiClickTestDSL {
             foreach (var c in elements) {
                 try {
                     var ae = (c as AutomationElement);
-                    Console.WriteLine(PadToLength(ae.Current.ClassName) + " " + PadToLength(ae.Current.AutomationId) + " " + ae.Current.Name);
+                    PrintLine(PadToLength(ae.Current.ClassName) + " " + PadToLength(ae.Current.AutomationId) + " " + ae.Current.Name);
                 } catch (Exception) { }
             }
         }
@@ -133,10 +136,12 @@ namespace UiClickTestDSL {
         }
 
         public static void Print(string text) {
+            Log.Debug(text);
             Console.Write(text);
         }
 
         public static void PrintLine(string text = "") {
+            Log.Debug(text);
             Console.WriteLine(text);
         }
 

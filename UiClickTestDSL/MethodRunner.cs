@@ -25,9 +25,9 @@ namespace UiClickTestDSL {
         public Func<string, bool> TestNameFilterHook = null;
         public Action ResetTestEnvironment = null;
 
-        private bool FilterByUserHook(string testname) {
+        private bool FilterByUserHook(string completeTestname) {
             if (TestNameFilterHook != null)
-                return TestNameFilterHook(testname);
+                return TestNameFilterHook(completeTestname);
             return false;
         }
 
@@ -38,7 +38,7 @@ namespace UiClickTestDSL {
 
                 Type[] classes = testAssembly.GetTypes();
                 foreach (Type testclass in classes) {
-                    Log.Debug(testclass.FullName);
+                    //Log.Debug(testclass.FullName);
 
                     MethodInfo[] methods = testclass.GetMethods();
                     MethodInfo starter = (from m in methods
@@ -55,11 +55,11 @@ namespace UiClickTestDSL {
                     foreach (var testmethod in methods) {
                         if (_filenamesThatStopTheTestRun.Any(File.Exists))
                             return;
-                        if ((filter != "" && !testmethod.Name.ToLower().StartsWith(filter)) || FilterByUserHook(testmethod.Name.ToLower()))
-                            continue;
                         if (testmethod.IsDefined(typeof(TestMethodAttribute), true)) {
-                            Log.Debug(i + " " + classObj + " " + testmethod.Name);
+                            Log.Debug(i + " " + classObj + " " + testmethod.Name + " " + i + " (" + ErrorCount + ")");
                             i++;
+                            if ((filter != "" && !testmethod.Name.ToLower().StartsWith(filter)) || FilterByUserHook(classObj + " " + testmethod.Name))
+                                continue;
                             if (ResetTestEnvironment != null)
                                 ResetTestEnvironment();
                             try {
@@ -97,7 +97,7 @@ namespace UiClickTestDSL {
                             Thread.Sleep(3000);
                         }
                     }
-                    var classCleanup = methods.SingleOrDefault(m=>m.IsDefined(typeof(ClassCleanupAttribute), true));
+                    var classCleanup = methods.SingleOrDefault(m => m.IsDefined(typeof(ClassCleanupAttribute), true));
                     if (classCleanup != null)
                         classCleanup.Invoke(classObj, emptyParams);
                 }
