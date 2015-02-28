@@ -212,7 +212,7 @@ namespace UiClickTestDSL {
 
         public virtual GuiContextMenu ActiveContextMenu { get { return GuiContextMenu.GetActive(Window); } }
         public virtual GuiButton AppCloseButton { get { return GuiButton.GetAppCloseButton(Window); } }
-        public virtual GuiExpander ExpanderByAutomadionId(string automationId) { return GuiExpander.GetExpanderByAutomationId(Window, automationId); }
+        public virtual GuiExpander ExpanderByAutomationId(string automationId) { return GuiExpander.GetExpanderByAutomationId(Window, automationId); }
         public virtual GuiExpander Expander(ByAutomationId automationId) { return GuiExpander.GetExpanderByAutomationId(Window, automationId.Value); }
         public virtual GuiExpander Expander(string caption) { return GuiExpander.GetExpander(Window, caption); }
 
