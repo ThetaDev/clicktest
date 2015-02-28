@@ -26,7 +26,6 @@ namespace UiClickTestDSL.DslObjects {
             } catch (Exception) {
                 //todo ta bare cannot set focus her
             }
-            UiTestDslCoreCommon.PrintAllControls(InternalElement);
             IEnumerable<AutomationElement> all = InternalElement.FindAllChildrenByControlType(ControlType.ListItem);
             return all.Select(listItem => new GuiListBoxItem(listItem)).ToList();
         }
@@ -37,9 +36,12 @@ namespace UiClickTestDSL.DslObjects {
             } catch (Exception) {
                 //todo ta bare cannot set focus her
             }
-            UiTestDslCoreCommon.PrintAllControls(InternalElement);
             IEnumerable<AutomationElement> all = InternalElement.FindAllChildrenByClassName("UIItem");
             return all.Select(listItem => new ListUiItem(listItem)).ToList();
+        }
+
+        public void PrintAllControls() {
+            UiTestDslCoreCommon.PrintAllControls(InternalElement);
         }
 
         public GuiListBoxItem GetFirstElement() {
