@@ -30,13 +30,13 @@ namespace UiClickTestDSL {
 
         public static DirectoryInfo LocateFolder(string folderName) {
             var directory = new DirectoryInfo(AssemblyDir);
-            while (directory.GetDirectories(folderName).Length == 0) {
+            while (!Directory.Exists(directory.FullName + Path.DirectorySeparatorChar + folderName)) {
                 directory = Directory.GetParent(directory.FullName);
                 if (directory == null) {
                     throw new Exception(folderName + " not found, starting from " + AssemblyDir);
                 }
             }
-            return directory.GetDirectories(folderName)[0];
+            return new DirectoryInfo(directory.FullName + Path.DirectorySeparatorChar + folderName);
         }
     }
 }
