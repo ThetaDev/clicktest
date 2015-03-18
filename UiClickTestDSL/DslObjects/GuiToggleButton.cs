@@ -31,6 +31,12 @@ namespace UiClickTestDSL.DslObjects {
 
         public void ShouldBeChecked() { Assert.IsTrue(IsChecked); }
         public void ShouldNotBeChecked() { Assert.IsTrue(IsUnChecked); }
+        public void ShouldBeDisabled() {
+            Assert.IsFalse(btn.Current.IsEnabled, btn.Current.Name + " was not disabled.");
+        }
+        public void ShouldBeEnabled() {
+            Assert.IsTrue(btn.Current.IsEnabled, btn.Current.Name + " was disabled.");
+        }
 
         public void Check() {
             while (!IsChecked) {
