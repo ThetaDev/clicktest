@@ -41,5 +41,15 @@ namespace UiClickTestDSL.DslObjects {
         public void ShouldBeSetToDaysFromNow(int days) {
             ShouldRead((DateTime.Now + TimeSpan.FromDays(days)).Date);
         }
+
+        public void ShouldBeEditable() {
+            GuiTextBox.InvalidateCache();
+            TextBox("PART_TextBox").AssertIsEditable();
+        }
+
+        public void ShouldNotBeEditable() {
+            GuiTextBox.InvalidateCache();
+            TextBox("PART_TextBox").AssertIsNotEditable();
+        }
     }
 }
