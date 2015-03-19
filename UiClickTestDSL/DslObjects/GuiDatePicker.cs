@@ -29,9 +29,12 @@ namespace UiClickTestDSL.DslObjects {
             TextBox("PART_TextBox").SetText(value.ToShortDateString());
         }
 
-        public void ShouldRead(DateTime value){
+        public void ShouldRead(DateTime? value){
             GuiTextBox.InvalidateCache();
-            TextBox("PART_TextBox").ShouldRead(value.ToShortDateString());
+            if(value.HasValue)
+                TextBox("PART_TextBox").ShouldRead(value.Value.ToShortDateString());
+            else
+                TextBox("PART_TextBox").ShouldRead("");
         }
 
         public void SetToDaysFromNow(int days) {
