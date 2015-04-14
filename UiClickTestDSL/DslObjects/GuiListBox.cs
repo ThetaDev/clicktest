@@ -24,17 +24,27 @@ namespace UiClickTestDSL.DslObjects {
             try {
                 InternalElement.SetFocus();
             } catch (Exception) {
-                //todo ta bare cannot set focus her
+                //todo cannot set focus
             }
             IEnumerable<AutomationElement> all = InternalElement.FindAllChildrenByControlType(ControlType.ListItem);
             return all.Select(listItem => new GuiListBoxItem(listItem)).ToList();
+        }
+
+        public List<AutomationElement> GetChildItems() {
+            try {
+                InternalElement.SetFocus();
+            } catch (Exception) {
+                //todo cannot set focus
+            }
+            IEnumerable<AutomationElement> all = InternalElement.FindChildrenByControlType(ControlType.ListItem);
+            return all.ToList(); // .Select(listItem => new GuiListBoxItem(listItem))
         }
 
         public List<ListUiItem> GetAllUiItems() {
             try {
                 InternalElement.SetFocus();
             } catch (Exception) {
-                //todo ta bare cannot set focus her
+                //todo cannot set focus
             }
             IEnumerable<AutomationElement> all = InternalElement.FindAllChildrenByClassName("UIItem");
             return all.Select(listItem => new ListUiItem(listItem)).ToList();

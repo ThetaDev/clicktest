@@ -135,6 +135,10 @@ namespace UiClickTestDSL.AutomationCode {
             return res.Cast<AutomationElement>();
         }
 
+        public static IEnumerable<AutomationElement> FindChildrenByControlType(this AutomationElement element, ControlType controlType) {
+            var res = element.FindAll(TreeScope.Children, ControlType(controlType));
+            return res.Cast<AutomationElement>();
+        }
         public static IEnumerable<AutomationElement> FindAllChildrenByByLocalizedControlType(this AutomationElement element, string controlType) {
             var res = element.FindAll(TreeScope.Descendants, LocalizedControlType(controlType));
             return res.Cast<AutomationElement>();
