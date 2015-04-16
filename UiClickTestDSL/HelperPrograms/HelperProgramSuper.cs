@@ -70,6 +70,8 @@ namespace UiClickTestDSL.HelperPrograms {
                 maxRetries--;
             }
             WaitWhileBusy();
+            Window.SetFocus();
+            WaitWhileBusy();
         }
 
         public override void GetThisWindow() {
