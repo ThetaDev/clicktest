@@ -28,6 +28,13 @@ namespace UiClickTestDSL.DslObjects {
             _toggler = _cb.GetPattern<TogglePattern>(TogglePattern.Pattern);
         }
 
+        public void ShouldBeDisabled() {
+            Assert.IsFalse(_cb.Current.IsEnabled, _cb.Current.Name + " was not disabled.");
+        }
+
+        public void ShouldBeEnabled() {
+            Assert.IsTrue(_cb.Current.IsEnabled, _cb.Current.Name + " was disabled.");
+        }
         public bool IsChecked { get { return _toggler.Current.ToggleState == ToggleState.On; } }
         public bool IsUnChecked { get { return _toggler.Current.ToggleState == ToggleState.Off; } }
         public bool IsIndeterminate { get { return _toggler.Current.ToggleState == ToggleState.Indeterminate; } }
