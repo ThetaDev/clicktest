@@ -43,7 +43,7 @@ namespace UiClickTestDSL.HelperPrograms {
             Thread.Sleep(500);
             if (!Process.HasExited)
                 Process.WaitForInputIdle(60000);
-            SleepIfOnTestMachine(3000);
+            SleepIfOnTestMachine(30000);
             var findProcess = PossibleProcessNames.FindProcess();
             foreach (var p in findProcess)
                 Console.WriteLine("Found process: " + p.Id + " " + p.ProcessName);

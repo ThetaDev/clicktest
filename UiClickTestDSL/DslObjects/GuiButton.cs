@@ -1,10 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Automation;
+using log4net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiButton {
+        private static ILog Log = LogManager.GetLogger(typeof(GuiButton));
+
         public static IEnumerable<AutomationElement> GetAll(AutomationElement window) {
             var tbs = window.FindAllChildrenByControlType(ControlType.Button);
             return tbs;
@@ -39,6 +45,10 @@ namespace UiClickTestDSL.DslObjects {
 
         public void ClickNoWait() {
             var invoker = _btn.GetPattern<InvokePattern>(InvokePattern.Pattern);
+            if (_name != "Close" && !_btn.Current.IsEnabled)
+                throw new Exception("Trying to click a button that is disabled: " + _name);
+            if (_name != "Close" && _btn.Current.IsOffscreen)
+                throw new Exception("Trying to click a button that is not visible: " + _name);
             invoker.Invoke();
         }
 

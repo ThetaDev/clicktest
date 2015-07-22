@@ -21,7 +21,7 @@ namespace UiClickTestDSL.HelperPrograms {
 
         public ListUiItem GetFile(string filename) {
             try {
-                PrintAllControls(Window);
+                //PrintAllControls(Window);
                 var files = ListBox("Items View").GetAllUiItems();
                 foreach (var f in files) {
                     Log.Debug("Found file: " + f.Name);

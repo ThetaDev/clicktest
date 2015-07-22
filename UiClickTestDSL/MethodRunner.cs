@@ -39,6 +39,8 @@ namespace UiClickTestDSL {
                 Type[] classes = testAssembly.GetTypes();
                 foreach (Type testclass in classes) {
                     //Log.Debug(testclass.FullName);
+                    if (!testclass.IsDefined(typeof (TestClassAttribute), false)) 
+                        continue;
 
                     MethodInfo[] methods = testclass.GetMethods();
                     MethodInfo starter = (from m in methods
@@ -51,6 +53,15 @@ namespace UiClickTestDSL {
                                          select m).FirstOrDefault();
 
                     ConstructorInfo constructor = testclass.GetConstructor(Type.EmptyTypes);
+                    if (constructor == null) {
+                        Log.Error("--------------------------------------------------------------------------------------------------------");
+                        Log.Error("--------------------------------------------------------------------------------------------------------");
+                        Log.Error("Error: No constructor found for testclass: "+testclass.Name);
+                        Log.Error("--------------------------------------------------------------------------------------------------------");
+                        Log.Error("--------------------------------------------------------------------------------------------------------");
+                        ErrorCount += 666;
+                        continue;
+                    }
                     var classObj = constructor.Invoke(emptyParams);
                     foreach (var testmethod in methods) {
                         if (_filenamesThatStopTheTestRun.Any(File.Exists))
