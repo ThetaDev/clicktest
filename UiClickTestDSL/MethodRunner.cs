@@ -23,6 +23,7 @@ namespace UiClickTestDSL {
         }
 
         public Func<string, bool> TestNameFilterHook = null;
+        public Action<string> ErrorHook = null;
         public Action ResetTestEnvironment = null;
 
         private bool FilterByUserHook(string completeTestname) {
@@ -67,9 +68,10 @@ namespace UiClickTestDSL {
                         if (_filenamesThatStopTheTestRun.Any(File.Exists))
                             return;
                         if (testmethod.IsDefined(typeof(TestMethodAttribute), true)) {
-                            Log.Debug(i + " " + classObj + " " + testmethod.Name + " " + i + " (" + ErrorCount + ")");
+                            var completeTestname = classObj + " " + testmethod.Name;
+                            Log.Debug(i + " " + completeTestname + " " + i + " (" + ErrorCount + ")");
                             i++;
-                            if ((filter != "" && !testmethod.Name.ToLower().StartsWith(filter)) || FilterByUserHook(classObj + " " + testmethod.Name))
+                            if ((filter != "" && !testmethod.Name.ToLower().StartsWith(filter)) || FilterByUserHook(completeTestname))
                                 continue;
                             if (ResetTestEnvironment != null)
                                 ResetTestEnvironment();
@@ -101,6 +103,8 @@ namespace UiClickTestDSL {
                                 try {
                                     Log.Error("Latest unique identifiers: " + UiTestDslCoreCommon.UniqueIdentifier + " / " + UiTestDslCoreCommon.shortUnique);
                                 } catch (Exception) { }
+                                if (ErrorHook != null)
+                                    ErrorHook(completeTestname);
                             }
                             CloseProgram(closer, classObj, emptyParams);
                             Log.Debug("-- Test # " + i + " done, current error count: " + ErrorCount + " \n\n");
