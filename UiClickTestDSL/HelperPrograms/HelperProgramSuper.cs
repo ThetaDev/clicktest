@@ -15,13 +15,14 @@ namespace UiClickTestDSL.HelperPrograms {
         protected abstract string ApplictionCommand { get; }
         protected List<string> PossibleProcessNames = new List<string>();
 
-        public static void TryKillHelperProcesses(params string[] possibleProcessNames) {
-            var procs = possibleProcessNames.FindProcess();
+        public static int TryKillHelperProcesses(params string[] possibleProcessNames) {
+            Process[] procs = possibleProcessNames.FindProcess();
             foreach (var process in procs) {
                 try {
                     process.Kill();
                 } catch (Exception) { }
             }
+            return procs.Length;
         }
 
         public void Start(string arguments) {
