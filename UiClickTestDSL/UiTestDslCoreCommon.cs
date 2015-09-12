@@ -27,7 +27,7 @@ namespace UiClickTestDSL {
         }
 
         protected static ApplicationLauncher Program = new ApplicationLauncher();
-        protected AutomationElement Window;
+        public AutomationElement Window;
         public const int MaxConnectionRetries = 120;
 
         public void DontRunCleanupOnRestart() {

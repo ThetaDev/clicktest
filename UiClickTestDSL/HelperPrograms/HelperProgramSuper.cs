@@ -20,7 +20,9 @@ namespace UiClickTestDSL.HelperPrograms {
             foreach (var process in procs) {
                 try {
                     process.Kill();
-                } catch (Exception) { }
+                } catch (Exception ex) { 
+                    Log.Error("Error killing process: "+ex.Message, ex);
+                }
             }
             return procs.Length;
         }
