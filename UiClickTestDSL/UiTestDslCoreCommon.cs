@@ -50,7 +50,7 @@ namespace UiClickTestDSL {
         }
 
         [TestCleanup]
-        public virtual void CloseApplicaiton() {
+        public virtual void CloseApplication() {
             Program.Close();
             InvalidateCachedObjects();
         }

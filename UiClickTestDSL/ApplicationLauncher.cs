@@ -33,6 +33,7 @@ namespace UiClickTestDSL {
         public static Action ApplicationClearAfterTestRun;
 
         public List<string> FilesToDelete = new List<string> { @"C:\temp\test", @"C:\temp\test.zip" };
+        public List<string> DirectoriesToDelete = new List<string> { @"C:\temp\test" };
 
         private static ILog Log = LogManager.GetLogger(typeof(ApplicationLauncher));
 
@@ -116,9 +117,12 @@ namespace UiClickTestDSL {
                 ApplicationClearAfterTestRun();
             foreach (var file in FilesToDelete) {
                 if (File.Exists(file)) {
-                    try {
-                        File.Delete(file);
-                    } catch (Exception) { }
+                    try { File.Delete(file); } catch { }
+                }
+            }
+            foreach (var directory in DirectoriesToDelete) {
+                if (Directory.Exists(directory)) {
+                    try { Directory.Delete(directory, true); } catch { }
                 }
             }
         }
