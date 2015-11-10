@@ -50,7 +50,7 @@ namespace UiClickTestDSL {
                     if (starter == null || testclass.IsAbstract)
                         continue;
                     MethodInfo closer = (from m in methods
-                                         where m.Name == "CloseApplicaiton"
+                                         where m.Name == "CloseApplication"
                                          select m).FirstOrDefault();
 
                     ConstructorInfo constructor = testclass.GetConstructor(Type.EmptyTypes);
