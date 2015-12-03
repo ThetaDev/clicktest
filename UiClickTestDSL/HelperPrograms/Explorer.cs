@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Automation;
@@ -48,6 +49,7 @@ namespace UiClickTestDSL.HelperPrograms {
             fileInExplorer = GetFile(file.Name);
             Mouse.MoveTo(fileInExplorer.ClickablePoint);
             Mouse.Down(MouseButton.Left);
+            Mouse.MoveTo(new Point(750, 500)); //trying to always move the cursor to an approximated center on a 1080p display, which is still within a 1366x768 display
             Minimize();
             Mouse.MoveTo(el.GetClickablePoint().Convert());
             Mouse.Up(MouseButton.Left);
@@ -65,6 +67,7 @@ namespace UiClickTestDSL.HelperPrograms {
             Mouse.MoveTo(fileInExplorer.ClickablePoint);
             Mouse.Down(MouseButton.Left);
             Keyboard.Release(Key.Ctrl);
+            Mouse.MoveTo(new Point(750, 500)); //trying to always move the cursor to an approximated center on a 1080p display, which is still within a 1366x768 display
 
             Minimize();
             Mouse.MoveTo(el.GetClickablePoint().Convert());
