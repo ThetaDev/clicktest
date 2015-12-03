@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows.Automation;
 using Microsoft.Test.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -41,6 +42,18 @@ namespace UiClickTestDSL.DslObjects {
 
         public void IsShowing() {
             Assert.IsFalse(img.Current.BoundingRectangle.IsEmpty, "Image should be showing");
+        }
+
+        public void ShouldBeLandscape() {
+            if (img.Current.BoundingRectangle.IsEmpty)
+                throw new Exception("Image is not showing.");
+            Assert.IsTrue(img.Current.BoundingRectangle.Width > img.Current.BoundingRectangle.Height);
+        }
+
+        public void ShouldBePortrait() {
+            if (img.Current.BoundingRectangle.IsEmpty)
+                throw new Exception("Image is not showing.");
+            Assert.IsFalse(img.Current.BoundingRectangle.Width > img.Current.BoundingRectangle.Height);
         }
     }
 }
