@@ -17,7 +17,7 @@ namespace UiClickTestDSL {
     [TestClass]
     public abstract class UiTestDslCoreCommon {
         public static readonly string AssemblyDir = string.Format(@"{0}\", Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Substring(6));
-        private static ILog Log = LogManager.GetLogger(typeof (UiTestDslCoreCommon));
+        private static ILog Log = LogManager.GetLogger(typeof(UiTestDslCoreCommon));
 
         static UiTestDslCoreCommon() {
             var configfile = new FileInfo(AssemblyDir + @"\log4net.config");
@@ -85,6 +85,11 @@ namespace UiClickTestDSL {
 
         public virtual void MoveMouseHere() {
             Mouse.MoveTo(ClickablePoint);
+        }
+
+        public virtual void SingleClick(MouseButton button) {
+            MoveMouseHere();
+            Mouse.Click(button);
         }
 
         public virtual void DoubleClick(MouseButton button) {
@@ -180,7 +185,7 @@ namespace UiClickTestDSL {
             Assert.AreNotEqual(0, file.Length);
         }
 
-        protected virtual DateTime GetLastWriteTimeOfFile(string filnameAndPath){
+        protected virtual DateTime GetLastWriteTimeOfFile(string filnameAndPath) {
             var file = new FileInfo(filnameAndPath);
             return file.LastWriteTime;
         }
