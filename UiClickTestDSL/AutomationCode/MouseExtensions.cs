@@ -28,6 +28,12 @@ namespace UiClickTestDSL.AutomationCode {
 
             int centerX = leftEdge ? (int)bounds.X : (int)(bounds.X + bounds.Width / 2);
             int centerY = (int)(bounds.Y + bounds.Height / 2) + offSetHeightFromCenter;
+            if (centerX == 0 && centerY == 0) {
+                //this is most likely because we are waiting for the image to start showing.
+                Thread.Sleep(5000);
+                centerX = leftEdge ? (int)bounds.X : (int)(bounds.X + bounds.Width / 2);
+                centerY = (int)(bounds.Y + bounds.Height / 2) + offSetHeightFromCenter;
+            }
             //Console.WriteLine("X: " + centerX + " Y: " + centerY);
             Mouse.MoveTo(new Point(centerX, centerY));
         }
