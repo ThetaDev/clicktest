@@ -89,9 +89,8 @@ namespace UiClickTestDSL.DslObjects {
             return item;
         }
 
-        public GuiListBoxItem SelectSpecificItemInList(int no) {
-            var all = GetAllListItems();
-            var item = all[no];
+        public GuiListBoxItem SelectItemByIndex(int index) {
+            var item = this[index];
             item.Select();
             return item;
         }
