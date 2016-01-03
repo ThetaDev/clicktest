@@ -79,6 +79,7 @@ namespace UiClickTestDSL.DslObjects {
             var all = GetAllListItems();
             var item = all[all.Count - 1];
             item.Select();
+            UiTestDslCoreCommon.WaitWhileBusy();
             return item;
         }
 
@@ -86,12 +87,14 @@ namespace UiClickTestDSL.DslObjects {
             var all = GetAllListItems();
             var item = all[0];
             item.Select();
+            UiTestDslCoreCommon.WaitWhileBusy();
             return item;
         }
 
         public GuiListBoxItem SelectItemByIndex(int index) {
             var item = this[index];
             item.Select();
+            UiTestDslCoreCommon.WaitWhileBusy();
             return item;
         }
 
@@ -113,6 +116,7 @@ namespace UiClickTestDSL.DslObjects {
                 }
             }
             item.Select();
+            UiTestDslCoreCommon.WaitWhileBusy();
             return item;
         }
 
@@ -133,6 +137,7 @@ namespace UiClickTestDSL.DslObjects {
             if (guiListBoxItem == null)
                 throw new Exception("Can't find any ListBoxItem starting with: " + match);
             guiListBoxItem.Select();
+            UiTestDslCoreCommon.WaitWhileBusy();
             return guiListBoxItem;
         }
     }

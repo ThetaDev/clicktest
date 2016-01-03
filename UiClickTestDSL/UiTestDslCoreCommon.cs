@@ -44,9 +44,9 @@ namespace UiClickTestDSL {
         }
 
         public static void WaitWhileBusy() {
-            Sleep(1000);
+            Sleep(1);
             Program.WaitForInputIdle();
-            Sleep(1000);
+            Sleep(1);
         }
 
         [TestCleanup]
@@ -74,13 +74,16 @@ namespace UiClickTestDSL {
             WaitWhileBusy();
         }
 
-        public static void Sleep(int ms) {
-            Thread.Sleep(ms);
+        public static void Sleep(int seconds) {
+            if (seconds >= 100)
+                seconds /= 1000;
+            seconds = Math.Max(1, seconds);
+            Thread.Sleep(seconds * 1000);
         }
 
-        public static void SleepIfOnTestMachine(int ms) {
+        public static void SleepIfOnTestMachine(int seconds) {
             if (ApplicationLauncher.VerifyOnTestMachine())
-                Sleep(ms);
+                Sleep(seconds);
         }
 
         public virtual void MoveMouseHere() {

@@ -34,6 +34,7 @@ namespace UiClickTestDSL.DslObjects {
 
         private void ClickMouse(int offSetHeightFromCenter, MouseButton btn, bool leftEdge) {
             img.ClickPointFromCenter(btn, offSetHeightFromCenter, leftEdge);
+            UiTestDslCoreCommon.WaitWhileBusy();
         }
 
         public void IsNotShowing() {
