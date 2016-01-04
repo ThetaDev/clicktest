@@ -46,7 +46,12 @@ namespace UiClickTestDSL.HelperPrograms {
         internal void DragDropFileTo(FileInfo file, AutomationElement el) {
             Start(file.DirectoryName);
             ListUiItem fileInExplorer;
-            fileInExplorer = GetFile(file.Name);
+            try {
+                fileInExplorer = GetFile(file.Name);
+            } catch (Exception) {
+                Sleep(15);
+                fileInExplorer = GetFile(file.Name);
+            }
             Mouse.MoveTo(fileInExplorer.ClickablePoint);
             Mouse.Down(MouseButton.Left);
             Mouse.MoveTo(new Point(750, 500)); //trying to always move the cursor to an approximated center on a 1080p display, which is still within a 1366x768 display
@@ -58,7 +63,12 @@ namespace UiClickTestDSL.HelperPrograms {
         internal void DragDropMultipleFilesTo(string[] files, string folder, AutomationElement el) {
             var dir = FileLocator.LocateFolder(folder);
             Start(dir.FullName);
-            ClickFile(files[0]);
+            try {
+                ClickFile(files[0]);
+            } catch (Exception) {
+                Sleep(15);
+                ClickFile(files[0]);
+            }
             Keyboard.Press(Key.Ctrl);
             for (int i = 1; i < files.Count() - 1; i++) {
                 ClickFile(files[i]);
