@@ -8,6 +8,7 @@ using System.Windows.Automation;
 using log4net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
+using UiClickTestDSL.HelperPrograms;
 
 namespace UiClickTestDSL {
     public class ApplicationLauncher : IDisposable {
@@ -27,6 +28,21 @@ namespace UiClickTestDSL {
         public static void AddNamesOfDedicatedClicktestComputers(params string[] names) {
             foreach (var name in names)
                 ClickTestComputerNames.Add(name.ToUpper());
+        }
+        public static bool VerifyOnTestMachine() {
+            string name = Environment.MachineName.ToUpper();
+            return ClickTestComputerNames.Contains(name);
+        }
+
+        private static readonly List<string> SingleClickComputerNames = new List<string>();
+        public static void AddNamesOfSingleClickComputers(params string[] names) {
+            foreach (var name in names) {
+                SingleClickComputerNames.Add(name);
+            }
+        }
+        public static bool VerifyOnSingleClickMachine() {
+            string name = Environment.MachineName.ToUpper();
+            return SingleClickComputerNames.Contains(name);
         }
 
         public static Action CommonApplicationInit;
@@ -81,54 +97,68 @@ namespace UiClickTestDSL {
             ConnectedInsteadOfStarted = true;
         }
 
-        public static bool VerifyOnTestMachine() {
-            string name = Environment.MachineName.ToUpper();
-            return ClickTestComputerNames.Contains(name);
-        }
-
         public void Close() {
-            if (Process != null && !Process.HasExited) {
-                List<AutomationElement> dialogs = null;
-                string errorDialogHeading = "";
-                string screenShotFilename = "";
-                try {
-                    var mainWindow = GetMainWindow();
-                    dialogs = mainWindow.FindAllChildrenByByLocalizedControlType("Dialog").ToList();
-                    foreach (var d in dialogs)
-                        errorDialogHeading += d.Current.Name + "\n";
-                    if (dialogs.Count > 0)
+            try {
+                if (Process != null && !Process.HasExited) {
+                    List<AutomationElement> dialogs = null;
+                    string errorDialogHeading = "";
+                    string screenShotFilename = "";
+                    try {
+                        var mainWindow = GetMainWindow();
+                        dialogs = mainWindow.FindAllChildrenByByLocalizedControlType("Dialog").ToList();
+                        foreach (var d in dialogs)
+                            errorDialogHeading += d.Current.Name + "\n";
+                        if (dialogs.Count > 0)
+                            try {
+                                screenShotFilename = ScreenShooter.SaveToFile();
+                            } catch (Exception e) {
+                                Log.Error("Exception while trying to save screenshot: " + e.Message, e);
+                            }
+                        if (!ConnectedInsteadOfStarted)
+                            KillProcess();
+                    } catch (AutomationElementNotFoundException) {
+                        //I expect not to find these dialogs.
+                    }
+                    if (dialogs != null && dialogs.Count > 0)
+                        Assert.AreEqual(0, dialogs.Count,
+                            "Error dialog labeled \"" + errorDialogHeading +
+                            "\" found when trying to close program. Screenshot: " + screenShotFilename);
+                }
+            } finally {
+                if (!ConnectedInsteadOfStarted) {
+                    KillProcess();
+                }
+                if (RunApplicationClearUp && ApplicationClearAfterTestRun != null)
+                    ApplicationClearAfterTestRun();
+                foreach (var file in FilesToDelete) {
+                    if (File.Exists(file)) {
                         try {
-                            screenShotFilename = ScreenShooter.SaveToFile();
-                        } catch (Exception e) {
-                            Log.Error("Exception while trying to save screenshot: " + e.Message, e);
+                            File.Delete(file);
+                        } catch {
                         }
-                    if (!ConnectedInsteadOfStarted)
-                        KillProcess();
-                } catch (AutomationElementNotFoundException) {
-                    //I expect not to find these dialogs.
+                    }
                 }
-                if (dialogs != null && dialogs.Count > 0)
-                    Assert.AreEqual(0, dialogs.Count, "Error dialog labeled \"" + errorDialogHeading + "\" found when trying to close program. Screenshot: " + screenShotFilename);
-            }
-            if (!ConnectedInsteadOfStarted) {
-                KillProcess();
-            }
-            if (RunApplicationClearUp && ApplicationClearAfterTestRun != null)
-                ApplicationClearAfterTestRun();
-            foreach (var file in FilesToDelete) {
-                if (File.Exists(file)) {
-                    try { File.Delete(file); } catch { }
-                }
-            }
-            foreach (var directory in DirectoriesToDelete) {
-                if (Directory.Exists(directory)) {
-                    try { Directory.Delete(directory, true); } catch { }
+                foreach (var directory in DirectoriesToDelete) {
+                    if (Directory.Exists(directory)) {
+                        try {
+                            Directory.Delete(directory, true);
+                        } catch {
+                        }
+                    }
                 }
             }
         }
 
         public void Dispose() {
             Close();
+        }
+
+        public static void KillAllOptionalProcesses() {
+            try {
+                HelperProgramSuper.TryKillHelperProcesses(PossibleProcessNames.ToArray());
+            } catch (Exception ex) {
+                Log.Error("Error trying to kill all primary processes: " + ex.Message, ex);
+            }
         }
 
         private void KillProcess() {
@@ -144,6 +174,8 @@ namespace UiClickTestDSL {
                     Process = null;
                 }
             }
+            Thread.Sleep(2000);
+            KillAllOptionalProcesses();
             //Need to wait a bit to ensure the next test does not find this process just before it manages to exit
             Thread.Sleep(3000);
         }

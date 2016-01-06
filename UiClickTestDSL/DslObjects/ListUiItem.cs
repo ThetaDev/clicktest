@@ -17,5 +17,9 @@ namespace UiClickTestDSL.DslObjects {
         public Point ClickablePoint {
             get { return _ae.GetClickablePoint().Convert(); }
         }
+
+        public void SetFocus() {
+            _ae.SetFocus();
+        }
     }
 }

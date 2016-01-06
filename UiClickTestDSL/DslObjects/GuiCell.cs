@@ -33,8 +33,12 @@ namespace UiClickTestDSL.DslObjects {
             _value.SetValue(text);
         }
 
-        public void Type(string text) {
+        public void SetFocus() {
             cell.SetFocus();
+        }
+
+        public void Type(string text) {
+            SetFocus();
             var completeText = Text + text;
             _value.SetValue(completeText);
         }

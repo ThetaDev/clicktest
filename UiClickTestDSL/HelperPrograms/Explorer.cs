@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Automation;
 using Microsoft.Test.Input;
 using UiClickTestDSL.AutomationCode;
@@ -38,9 +39,14 @@ namespace UiClickTestDSL.HelperPrograms {
             }
         }
 
-        public void ClickFile(string file) {
-            Mouse.MoveTo(GetFile(file).ClickablePoint);
-            Mouse.Click(MouseButton.Left);
+        public void SelectFile(string file) {
+            ListUiItem f = GetFile(file);
+            f.SetFocus();
+            Mouse.MoveTo(f.ClickablePoint);
+            if (ApplicationLauncher.VerifyOnSingleClickMachine())
+                Thread.Sleep(1000);
+            else
+                Mouse.Click(MouseButton.Left);
         }
 
         internal void DragDropFileTo(FileInfo file, AutomationElement el) {
@@ -63,15 +69,17 @@ namespace UiClickTestDSL.HelperPrograms {
         internal void DragDropMultipleFilesTo(string[] files, string folder, AutomationElement el) {
             var dir = FileLocator.LocateFolder(folder);
             Start(dir.FullName);
+            WaitWhileBusy();
+            ListBox("Items View").TrySetFocus();
             try {
-                ClickFile(files[0]);
+                SelectFile(files[0]);
             } catch (Exception) {
                 Sleep(15);
-                ClickFile(files[0]);
+                SelectFile(files[0]);
             }
             Keyboard.Press(Key.Ctrl);
             for (int i = 1; i < files.Count() - 1; i++) {
-                ClickFile(files[i]);
+                SelectFile(files[i]);
             }
             var fileInExplorer = GetFile(files.Last());
             Mouse.MoveTo(fileInExplorer.ClickablePoint);
