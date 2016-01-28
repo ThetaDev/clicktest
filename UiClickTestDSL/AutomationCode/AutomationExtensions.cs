@@ -12,7 +12,8 @@ namespace UiClickTestDSL.AutomationCode {
                 { "Save", new List<string>{ "Lagre" } },
                 { "_Update", new List<string>{ "Update" } },
                 { "Yes", new List<string>{ "Ja" } },
-                { "Items View", new List<string>{ "Elementvisning" }}
+                { "Items View", new List<string>{ "Elementvisning" }},
+                { "OK", new List<string>{ "Ok" }}
         };
 
         public static void AddNameOption(string what, params string[] options) {
