@@ -54,5 +54,21 @@ namespace UiClickTestDSL.DslObjects {
             string visibleText = GetVisibleText();
             Assert.IsFalse(visibleText.Contains(text));
         }
+
+        public void VisibleTextBoxesContains(string text) {
+            string visibleText = GetVisibleTextBoxText();
+            Assert.IsTrue(visibleText.Contains(text));
+        }
+        public void VisibleTextBoxesDoesNotContain(string text) {
+            string visibleText = GetVisibleTextBoxText();
+            Assert.IsFalse(visibleText.Contains(text));
+        }
+        private string GetVisibleTextBoxText() {
+            GuiTextBoxes textBoxes = TextBoxes();
+            IEnumerable<string> texts = from tb in textBoxes
+                                        where tb.Visible
+                                        select tb.Text;
+            return texts.Aggregate("", (current, t) => current + t);
+        }
     }
 }
