@@ -16,7 +16,7 @@ using UiClickTestDSL.DslObjects;
 namespace UiClickTestDSL {
     [TestClass]
     public abstract class UiTestDslCoreCommon {
-        public static readonly string AssemblyDir = string.Format(@"{0}\", Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Substring(6));
+        public static readonly string AssemblyDir = String.Format(@"{0}\", Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Substring(6));
         private static ILog Log = LogManager.GetLogger(typeof(UiTestDslCoreCommon));
 
         static UiTestDslCoreCommon() {
@@ -47,6 +47,25 @@ namespace UiClickTestDSL {
             Sleep(1);
             Program.WaitForInputIdle();
             Sleep(1);
+        }
+
+        public static void RepeatTryingFor(TimeSpan time, Action todo) {
+            int timespent = 0;
+            bool waiting = true;
+            Exception lastException = null;
+            while (waiting && timespent < time.TotalMilliseconds) {
+                try {
+                    todo();
+                    lastException = null;
+                    waiting = false;
+                } catch (Exception ex) {
+                    lastException = ex;
+                }
+                Thread.Sleep(1000);
+                timespent += 1000;
+            }
+            if (lastException != null)
+                throw lastException;
         }
 
         [TestCleanup]

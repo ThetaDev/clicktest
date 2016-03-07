@@ -2,45 +2,57 @@
 using System.Threading;
 using System.Windows.Automation;
 using System.Windows.Forms;
+using log4net;
+using log4net.Config;
 using UiClickTestDSL.AutomationCode;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiFileDialog {
+        private static ILog Log = LogManager.GetLogger(typeof (GuiFileDialog));
+
         public static GuiFileDialog Find(AutomationElement window, string caption) {
-            int maxRetries = UiTestDslCoreCommon.MaxConnectionRetries;
-            AutomationElement res = null;
-            while (window == null && maxRetries > 0) {
+            int maxRetries = 60;
+            AutomationElement dlg = null;
+            /* Works fine on Windows 8.1, but not on Windows 7 with only .Net 4.0 installed.
+             * We need to retest this after upgrading to .Net 4.6
+            while (dlg == null && maxRetries > 0) {
                 try {
-                    window = window.FindChildByLocalizedControlTypeAndName(caption, "Dialog");
+                    dlg = window.FindChildByLocalizedControlTypeAndName(caption, "Dialog", "dialog", "dialogue");
                 } catch (Exception) {
                     if (maxRetries > 0)
                         maxRetries--;
                     else
                         throw;
                 }
-                if (window == null)
+                if (dlg == null) {
+                    Log.Debug("File dialog not found: "+maxRetries);
                     Thread.Sleep(500);
+                }
                 maxRetries--;
             }
             Thread.Sleep(500);
-            return new GuiFileDialog(res, window, caption);
+             */
+            Thread.Sleep(60000);
+            return new GuiFileDialog(dlg, window, caption);
         }
 
-        private AutomationElement dialog;
-        private readonly AutomationElement parent;
-        private readonly string caption;
+        private readonly AutomationElement _dialog;
+        private readonly AutomationElement _parent;
+        private readonly string _caption;
 
         public GuiFileDialog(AutomationElement dialog, AutomationElement parent, string caption) {
-            this.dialog = dialog;
-            this.parent = parent;
-            this.caption = caption;
+            _dialog = dialog;
+            _parent = parent;
+            _caption = caption;
+        }
+
+        public override string ToString() {
+            return GetType().Name + ": " + _caption + "; " + _parent;
         }
 
         public void SelectFile(string filePathAndName) {
             UiTestDslCoreCommon.WaitWhileBusy();
-            Thread.Sleep(500);
-            if (ApplicationLauncher.VerifyOnTestMachine())
-                Thread.Sleep(6000);
+            //todo after upgradering to .Net 4.6: UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromMinutes(3), () => GuiTextBox.GetTextBox(_dialog, "File name:"));
             UiTestDslCoreCommon.WaitWhileBusy();
             SendKeys.SendWait(filePathAndName);
             SendKeys.SendWait("{Enter}");
@@ -54,9 +66,7 @@ namespace UiClickTestDSL.DslObjects {
 
         public void Cancel() {
             UiTestDslCoreCommon.WaitWhileBusy();
-            Thread.Sleep(1000);
-            if (ApplicationLauncher.VerifyOnTestMachine())
-                Thread.Sleep(5000);
+            //todo after upgradering to .Net 4.6: UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromMinutes(3), () => GuiTextBox.GetTextBox(_dialog, "File name:"));
             UiTestDslCoreCommon.WaitWhileBusy();
             SendKeys.SendWait("{Esc}");
             Thread.Sleep(2000);

@@ -20,8 +20,8 @@ namespace UiClickTestDSL.HelperPrograms {
             foreach (var process in procs) {
                 try {
                     process.Kill();
-                } catch (Exception ex) { 
-                    Log.Error("Error killing process: "+ex.Message, ex);
+                } catch (Exception ex) {
+                    Log.Error("Error killing process: " + ex.Message, ex);
                 }
             }
             return procs.Length;
@@ -44,15 +44,16 @@ namespace UiClickTestDSL.HelperPrograms {
             };
             Process.Start();
             Thread.Sleep(500);
-            if (!Process.HasExited)
-                Process.WaitForInputIdle(60000);
-            SleepIfOnTestMachine(30000);
-            var findProcess = PossibleProcessNames.FindProcess();
-            foreach (var p in findProcess)
-                Console.WriteLine("Found process: " + p.Id + " " + p.ProcessName);
-            Process = findProcess.First(p => !pidsAlreadyStarted.Contains(p.Id));
-            Console.WriteLine("New process is: " + Process.Id + " " + Process.ProcessName);
-            GetActualWindow();
+            RepeatTryingFor(TimeSpan.FromMinutes(5), () => {
+                if (!Process.HasExited)
+                    Process.WaitForInputIdle(10000);
+                var findProcess = PossibleProcessNames.FindProcess();
+                foreach (var p in findProcess)
+                    Console.WriteLine("Found process: " + p.Id + " " + p.ProcessName);
+                Process = findProcess.First(p => !pidsAlreadyStarted.Contains(p.Id));
+                Console.WriteLine("New process is: " + Process.Id + " " + Process.ProcessName);
+                GetActualWindow();
+            });
         }
 
         public void GetActualWindow() {

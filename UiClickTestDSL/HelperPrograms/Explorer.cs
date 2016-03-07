@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -21,13 +22,23 @@ namespace UiClickTestDSL.HelperPrograms {
             get { return "explorer"; }
         }
 
-        public ListUiItem GetFile(string filename) {
-            try {
-                //PrintAllControls(Window);
-                var files = ListBox("Items View").GetAllUiItems();
+        private List<ListUiItem> GetAllFiles() {
+            List<ListUiItem> files = null;
+            RepeatTryingFor(TimeSpan.FromMinutes(3), () => files = ListBox("Items View").GetAllUiItems());
+            if (files != null && files.Any()) {
                 foreach (var f in files) {
                     Log.Debug("Found file: " + f.Name);
                 }
+            } else {
+                var screen = ScreenShooter.SaveToFile();
+                throw new Exception("No files not found; screenshot: " + screen);
+            }
+            return files;
+        }
+
+        public ListUiItem GetFile(List<ListUiItem> files, string filename) {
+            try {
+                //PrintAllControls(Window);
                 var item = from f in files
                            where f.Name.ToLower() == filename.ToLower()
                            select f;
@@ -39,8 +50,8 @@ namespace UiClickTestDSL.HelperPrograms {
             }
         }
 
-        public void SelectFile(string file) {
-            ListUiItem f = GetFile(file);
+        public void SelectFile(List<ListUiItem> files, string file) {
+            ListUiItem f = GetFile(files, file);
             f.SetFocus();
             Mouse.MoveTo(f.ClickablePoint);
             if (ApplicationLauncher.VerifyOnSingleClickMachine())
@@ -51,13 +62,8 @@ namespace UiClickTestDSL.HelperPrograms {
 
         internal void DragDropFileTo(FileInfo file, AutomationElement el) {
             Start(file.DirectoryName);
-            ListUiItem fileInExplorer;
-            try {
-                fileInExplorer = GetFile(file.Name);
-            } catch (Exception) {
-                Sleep(15);
-                fileInExplorer = GetFile(file.Name);
-            }
+            List<ListUiItem> files = GetAllFiles();
+            ListUiItem fileInExplorer = GetFile(files, file.Name);
             Mouse.MoveTo(fileInExplorer.ClickablePoint);
             Mouse.Down(MouseButton.Left);
             Mouse.MoveTo(new Point(750, 500)); //trying to always move the cursor to an approximated center on a 1080p display, which is still within a 1366x768 display
@@ -66,22 +72,18 @@ namespace UiClickTestDSL.HelperPrograms {
             Mouse.Up(MouseButton.Left);
         }
 
-        internal void DragDropMultipleFilesTo(string[] files, string folder, AutomationElement el) {
+        internal void DragDropMultipleFilesTo(string[] filenames, string folder, AutomationElement el) {
             var dir = FileLocator.LocateFolder(folder);
             Start(dir.FullName);
             WaitWhileBusy();
             ListBox("Items View").TrySetFocus();
-            try {
-                SelectFile(files[0]);
-            } catch (Exception) {
-                Sleep(15);
-                SelectFile(files[0]);
-            }
+            List<ListUiItem> files = GetAllFiles();
+            SelectFile(files, filenames[0]);
             Keyboard.Press(Key.Ctrl);
-            for (int i = 1; i < files.Count() - 1; i++) {
-                SelectFile(files[i]);
+            for (int i = 1; i < filenames.Count() - 1; i++) {
+                SelectFile(files, filenames[i]);
             }
-            var fileInExplorer = GetFile(files.Last());
+            var fileInExplorer = GetFile(files, filenames.Last());
             Mouse.MoveTo(fileInExplorer.ClickablePoint);
             Mouse.Down(MouseButton.Left);
             Keyboard.Release(Key.Ctrl);
