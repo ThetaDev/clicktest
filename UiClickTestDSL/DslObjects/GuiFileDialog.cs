@@ -11,7 +11,7 @@ namespace UiClickTestDSL.DslObjects {
         private static ILog Log = LogManager.GetLogger(typeof (GuiFileDialog));
 
         public static GuiFileDialog Find(AutomationElement window, string caption) {
-            int maxRetries = 60;
+            //int maxRetries = 60;
             AutomationElement dlg = null;
             /* Works fine on Windows 8.1, but not on Windows 7 with only .Net 4.0 installed.
              * We need to retest this after upgrading to .Net 4.6
