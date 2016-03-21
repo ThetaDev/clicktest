@@ -24,9 +24,12 @@ namespace UiClickTestDSL.DslObjects {
             AutomationId = datepicker.Current.AutomationId;
         }
 
-        public void SetText(DateTime value) {
+        public void SetText(DateTime? value) {
             GuiTextBox.InvalidateCache();
-            TextBox("PART_TextBox").SetText(value.ToShortDateString());
+            if(value.HasValue)
+                TextBox("PART_TextBox").SetText(value.Value.ToShortDateString());
+            else
+                TextBox("PART_TextBox").SetText("");
         }
 
         public void ShouldRead(DateTime? value){
