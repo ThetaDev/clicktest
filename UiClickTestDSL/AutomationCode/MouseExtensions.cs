@@ -58,8 +58,8 @@ namespace UiClickTestDSL.AutomationCode {
             Mouse.Click(btn);
         }
 
-        public static void DragAndDropFileFromExplorerToCenter(this AutomationElement el, FileInfo file) {
-            var explorer = new Explorer("TestFiles");
+        public static void DragAndDropFileFromExplorerToCenter(this AutomationElement el, FileInfo file, Explorer preStartedExplorer = null) {
+            var explorer = preStartedExplorer ?? new Explorer("TestFiles");
             try {
                 explorer.DragDropFileTo(file, el);
             } finally {
@@ -68,10 +68,10 @@ namespace UiClickTestDSL.AutomationCode {
             }
         }
 
-        public static void DragAndDropMultipleFilesFromExplorerToCenter(this AutomationElement el, string folder, params string[] files) {
+        public static void DragAndDropMultipleFilesFromExplorerToCenter(this AutomationElement el, string folder, Explorer preStartedExplorer, params string[] files) {
             if (files.Count() < 2)
                 throw new Exception("Must have at least two files");
-            var explorer = new Explorer("TestFiles");
+            var explorer = preStartedExplorer ?? new Explorer("TestFiles");
             try {
                 explorer.DragDropMultipleFilesTo(files, folder, el);
             } finally {

@@ -11,6 +11,7 @@ namespace UiClickTestDSL.HelperPrograms {
     public abstract class HelperProgramSuper : UiTestDslCoreCommon, IDisposable {
         private static ILog Log = LogManager.GetLogger(typeof(HelperProgramSuper));
 
+        public bool Started = false;
         public Process Process;
         protected abstract string ApplictionCommand { get; }
         protected List<string> PossibleProcessNames = new List<string>();
@@ -28,6 +29,11 @@ namespace UiClickTestDSL.HelperPrograms {
         }
 
         public void Start(string arguments) {
+            if (Started) {
+                Window.SetFocus();
+                WaitWhileBusy();
+                return;
+            }
             if (!PossibleProcessNames.Contains(ApplictionCommand))
                 PossibleProcessNames.Add(ApplictionCommand);
             var pidsAlreadyStarted = from p in PossibleProcessNames.FindProcess()
