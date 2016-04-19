@@ -84,6 +84,7 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public int RowCount { get { return tablePatt.Current.RowCount; } }
+        public int ColumnCount { get { return tablePatt.Current.ColumnCount; } }
 
         public void SelectRow(int rowIndex) {
             SelectRowNoWait(rowIndex);

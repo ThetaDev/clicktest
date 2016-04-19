@@ -40,7 +40,7 @@ namespace UiClickTestDSL {
                 Type[] classes = testAssembly.GetTypes();
                 foreach (Type testclass in classes) {
                     //Log.Debug(testclass.FullName);
-                    if (!testclass.IsDefined(typeof (TestClassAttribute), false)) 
+                    if (!testclass.IsDefined(typeof(TestClassAttribute), false))
                         continue;
 
                     MethodInfo[] methods = testclass.GetMethods();
@@ -57,7 +57,7 @@ namespace UiClickTestDSL {
                     if (constructor == null) {
                         Log.Error("--------------------------------------------------------------------------------------------------------");
                         Log.Error("--------------------------------------------------------------------------------------------------------");
-                        Log.Error("Error: No constructor found for testclass: "+testclass.Name);
+                        Log.Error("Error: No constructor found for testclass: " + testclass.Name);
                         Log.Error("--------------------------------------------------------------------------------------------------------");
                         Log.Error("--------------------------------------------------------------------------------------------------------");
                         ErrorCount += 666;
@@ -107,7 +107,7 @@ namespace UiClickTestDSL {
                                     ErrorHook(completeTestname);
                             }
                             CloseProgram(closer, classObj, emptyParams);
-                            Log.Debug("-- Test # " + i + " done, current error count: " + ErrorCount + " \n\n");
+                            Log.Debug("-- Test # " + (i - 1) + " done, current error count: " + ErrorCount + " \n\n");
                             //Need to allow the program time to exit, to avoid the next test finding an open program while starting.
                             Thread.Sleep(3000);
                         }

@@ -18,8 +18,12 @@ namespace UiClickTestDSL.DslObjects {
 
         public string Text {
             get {
-                return _value.Current.Value; 
+                return _value.Current.Value;
             }
+        }
+
+        public string ColumnHeader {
+            get { return _owningColumnName; }
         }
 
         /* todo:
@@ -50,7 +54,7 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public void ShouldRead(string expectedText) {
-            Assert.AreEqual(expectedText.ToLower(), Text.ToLower(), "Cell was in column "+_owningColumnName);
+            Assert.AreEqual(expectedText.ToLower(), Text.ToLower(), "Cell was in column " + _owningColumnName);
         }
 
         public void RightClick() {
