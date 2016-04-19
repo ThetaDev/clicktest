@@ -36,8 +36,8 @@ namespace UiClickTestDSL.HelperPrograms {
             }
             if (!PossibleProcessNames.Contains(ApplictionCommand))
                 PossibleProcessNames.Add(ApplictionCommand);
-            var pidsAlreadyStarted = from p in PossibleProcessNames.FindProcess()
-                                     select p.Id;
+            var pidsAlreadyStarted = (from p in PossibleProcessNames.FindProcess()
+                                     select p.Id).ToList();
             foreach (var i in pidsAlreadyStarted) {
                 Console.Write(i + ", ");
             }
