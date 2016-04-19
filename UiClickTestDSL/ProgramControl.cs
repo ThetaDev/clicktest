@@ -27,5 +27,9 @@ namespace UiClickTestDSL {
         public static void Minimize(this Process process) {
             ShowWindow(process.MainWindowHandle, 2);
         }
+
+        public static void Maximize(this Process process) {
+            ShowWindow(process.MainWindowHandle, 3);
+        }
     }
 }

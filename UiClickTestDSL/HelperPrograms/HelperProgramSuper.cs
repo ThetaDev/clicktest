@@ -49,6 +49,7 @@ namespace UiClickTestDSL.HelperPrograms {
                 }
             };
             Process.Start();
+            Started = true;
             Thread.Sleep(500);
             RepeatTryingFor(TimeSpan.FromMinutes(5), () => {
                 if (!Process.HasExited)
@@ -107,6 +108,10 @@ namespace UiClickTestDSL.HelperPrograms {
 
         public void Dispose() {
             KillProcess();
+        }
+
+        public void Maximize() {
+            Process.Maximize();
         }
 
         public void Minimize() {

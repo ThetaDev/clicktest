@@ -62,6 +62,9 @@ namespace UiClickTestDSL.HelperPrograms {
 
         internal void DragDropFileTo(FileInfo file, AutomationElement el) {
             Start(file.DirectoryName);
+            Maximize();
+            WaitWhileBusy();
+            ListBox("Items View").TrySetFocus();
             List<ListUiItem> files = GetAllFiles();
             ListUiItem fileInExplorer = GetFile(files, file.Name);
             Mouse.MoveTo(fileInExplorer.ClickablePoint);
@@ -75,6 +78,7 @@ namespace UiClickTestDSL.HelperPrograms {
         internal void DragDropMultipleFilesTo(string[] filenames, string folder, AutomationElement el) {
             var dir = FileLocator.LocateFolder(folder);
             Start(dir.FullName);
+            Maximize();
             WaitWhileBusy();
             ListBox("Items View").TrySetFocus();
             List<ListUiItem> files = GetAllFiles();
