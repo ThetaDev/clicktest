@@ -45,7 +45,7 @@ namespace UiClickTestDSL.AutomationCode {
         }
 
         private static PropertyCondition Name(string name) {
-            return new PropertyCondition(AutomationElement.NameProperty, name);
+            return new PropertyCondition(AutomationElement.NameProperty, name, PropertyConditionFlags.IgnoreCase);
         }
 
         public static AutomationElement FindChildByControlTypeAndAutomationId(this AutomationElement element, ControlType controlType, string automationId) {
