@@ -67,11 +67,15 @@ namespace UiClickTestDSL.HelperPrograms {
             ListBox("Items View").TrySetFocus();
             List<ListUiItem> files = GetAllFiles();
             ListUiItem fileInExplorer = GetFile(files, file.Name);
+            fileInExplorer.SetFocus();
             Mouse.MoveTo(fileInExplorer.ClickablePoint);
             Mouse.Down(MouseButton.Left);
             Mouse.MoveTo(new Point(750, 500)); //trying to always move the cursor to an approximated center on a 1080p display, which is still within a 1366x768 display
             Minimize();
-            Mouse.MoveTo(el.GetClickablePoint().Convert());
+            var centerElement = el.GetClickablePoint().Convert();
+            Log.DebugFormat("Point to drag to x/y: {0}, {1}", centerElement.X, centerElement.Y);
+            if (!(centerElement.X < 10 && centerElement.Y < 10)) //failsafe, for our tests it's better to keep the position of 750,500 than end up with 0,0
+                Mouse.MoveTo(centerElement);
             Mouse.Up(MouseButton.Left);
         }
 
@@ -94,7 +98,10 @@ namespace UiClickTestDSL.HelperPrograms {
             Mouse.MoveTo(new Point(750, 500)); //trying to always move the cursor to an approximated center on a 1080p display, which is still within a 1366x768 display
 
             Minimize();
-            Mouse.MoveTo(el.GetClickablePoint().Convert());
+            var centerElement = el.GetClickablePoint().Convert();
+            Log.DebugFormat("Point to drag to x/y: {0}, {1}", centerElement.X, centerElement.Y);
+            if (!(centerElement.X == 0 && centerElement.Y == 0)) //failsafe, for our tests it's better to keep the position of 750,500 than end up with 0,0
+                Mouse.MoveTo(centerElement);
             Mouse.Up(MouseButton.Left);
         }
     }
