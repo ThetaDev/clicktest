@@ -57,6 +57,10 @@ namespace UiClickTestDSL.DslObjects {
             Assert.AreEqual(expectedText.ToLower(), Text.ToLower(), "Cell was in column " + _owningColumnName);
         }
 
+        public void ShouldNotRead(string expectedText) {
+            Assert.AreNotEqual(expectedText.ToLower(), Text.ToLower(), "Cell was in column " + _owningColumnName);
+        }
+
         public void RightClick() {
             cell.ClickPointInCenter(MouseButton.Right);
         }
