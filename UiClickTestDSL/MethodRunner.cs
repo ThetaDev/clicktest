@@ -92,8 +92,8 @@ namespace UiClickTestDSL {
                                 string filename = "";
                                 try {
                                     filename = ScreenShooter.SaveToFile();
-                                    ErrorCount++;
                                 } catch (Exception innerEx) {
+                                    ErrorCount++;
                                     Log.Error("Exception while trying to save screenshot: " + innerEx.Message, innerEx);
                                 }
                                 Log.Error(ex.Message + " screenshot: " + filename, ex);
