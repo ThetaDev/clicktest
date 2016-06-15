@@ -8,7 +8,7 @@ using UiClickTestDSL.AutomationCode;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiFileDialog {
-        private static ILog Log = LogManager.GetLogger(typeof (GuiFileDialog));
+        private static ILog Log = LogManager.GetLogger(typeof(GuiFileDialog));
 
         public static GuiFileDialog Find(AutomationElement window, string caption) {
             //int maxRetries = 60;
@@ -32,7 +32,13 @@ namespace UiClickTestDSL.DslObjects {
             }
             Thread.Sleep(500);
              */
-            Thread.Sleep(60000);
+
+            //Until this method gets reworked, let developer-machines sleep for 6 seconds instead of 60, for faster testing
+            if (ApplicationLauncher.VerifyOnDeveloperMachine()) {
+                Thread.Sleep(6000);
+            } else {
+                Thread.Sleep(60000);
+            }
             return new GuiFileDialog(dlg, window, caption);
         }
 

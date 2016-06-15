@@ -45,6 +45,16 @@ namespace UiClickTestDSL {
             return SingleClickComputerNames.Contains(name);
         }
 
+        private static readonly List<string> DeveloperComputerNames = new List<string>();
+        public static void AddNamesOfDeveloperComputers(params string[] names) {
+            foreach (var name in names)
+                DeveloperComputerNames.Add(name.ToUpper());
+        }
+        public static bool VerifyOnDeveloperMachine() {
+            string name = Environment.MachineName.ToUpper();
+            return DeveloperComputerNames.Contains(name);
+        }
+
         public static Action CommonApplicationInit;
         public static Action ApplicationClearAfterTestRun;
 
