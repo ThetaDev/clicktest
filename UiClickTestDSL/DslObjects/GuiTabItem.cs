@@ -13,10 +13,19 @@ namespace UiClickTestDSL.DslObjects {
         private static GuiTabItem _cachedTab = null;
         private static AutomationElement _currentParentWindow = null;
 
-        public static GuiTabItem GetTab(AutomationElement parentWindow, string automationId) {
+        public static GuiTabItem GetTabByAutomationId(AutomationElement parentWindow, string automationId) {
             if (_cachedTab == null || _cachedTab.AutomationId != automationId) {
                 var res = parentWindow.FindChildByControlTypeAndAutomationId(ControlType.TabItem, automationId);
                 _cachedTab = new GuiTabItem(res, automationId);
+                _currentParentWindow = parentWindow;
+            }
+            return _cachedTab;
+        }
+
+        public static GuiTabItem GetTabByName(AutomationElement parentWindow, string name) {
+            if (_cachedTab == null || _cachedTab.AutomationId != name) {
+                var res = parentWindow.FindChildByControlTypeAndName(ControlType.TabItem, name);
+                _cachedTab = new GuiTabItem(res, name);
                 _currentParentWindow = parentWindow;
             }
             return _cachedTab;
@@ -26,13 +35,13 @@ namespace UiClickTestDSL.DslObjects {
             _cachedTab = null;
         }
 
-        public static void ShouldExist(AutomationElement window, string tabName) {
+        public static void ShouldExist(AutomationElement window, string automationId) {
             GuiTabItem tabItem = null;
             try {
-                tabItem = GetTab(window, tabName);
+                tabItem = GetTabByAutomationId(window, automationId);
             } catch { }
             Assert.IsNotNull(tabItem);
-            Assert.AreEqual(tabName, tabItem.AutomationId);
+            Assert.AreEqual(automationId, tabItem.AutomationId);
         }
 
         private SelectionItemPattern _selection;
@@ -52,7 +61,7 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public override void GetThisWindow() {
-            _cachedTab = GetTab(_currentParentWindow, AutomationId);
+            _cachedTab = GetTabByAutomationId(_currentParentWindow, AutomationId);
         }
 
         public void VerifyIsCurrentTab() {

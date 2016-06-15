@@ -279,8 +279,8 @@ namespace UiClickTestDSL {
         public virtual GuiComboBoxes ComboBoxes(string prefix) { return GuiComboBoxes.Find(Window, prefix); }
 
         public virtual void PrintTabs() { PrintControls(GuiTabItem.GetAll(Window)); }
-        public virtual GuiTabItem Tab(string automationId) { return GuiTabItem.GetTab(Window, automationId); }
-        public virtual GuiTabItem Tab(ByAutomationId automationId) { return GuiTabItem.GetTab(Window, automationId.Value); }
+        public virtual GuiTabItem Tab(string name) { return GuiTabItem.GetTabByName(Window, name); }
+        public virtual GuiTabItem Tab(ByAutomationId automationId) { return GuiTabItem.GetTabByAutomationId(Window, automationId.Value); }
 
         public virtual GuiImage Image(string automationId) { return GuiImage.Find(Window, automationId); }
         public virtual GuiImage Image(ByAutomationId automationId) { return GuiImage.Find(Window, automationId.Value); }
