@@ -94,6 +94,7 @@
     <Compile Include="ProgramControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenShooter.cs" />
+    <Compile Include="TestDef.cs" />
     <Compile Include="UiTestDslCoreCommon.cs" />
   </ItemGroup>
   <ItemGroup>
