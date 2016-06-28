@@ -18,6 +18,7 @@ namespace UiClickTestDSL {
         public int ErrorCount { get; set; }
         private readonly List<string> _filenamesThatStopTheTestRun;
         public string _settingsFilePath;
+        public string _sectionedResultFilePath;
 
         public MethodRunner(params string[] filenamesThatStopTheTestRun) {
             emptyParams = new object[] { };
@@ -83,12 +84,13 @@ namespace UiClickTestDSL {
                     var tid = DateTime.Now;
                     RunTests(sect, filter);
                     var info = new List<string>();
+                    info.Add(Environment.MachineName);
                     info.Add(string.Format("Tests run: {0} - {1}", start, stop));
                     info.Add("Starttime: " + tid);
                     info.Add("Elapsed: " + (DateTime.Now - tid));
                     if (ErrorCount > 0) {
                         info.Add("Error count: " + ErrorCount);
-                        File.WriteAllLines(new FileInfo(_settingsFilePath).DirectoryName + @"\sectionResult.log", info);
+                        File.WriteAllLines(_sectionedResultFilePath, info);
                         Thread.Sleep(TimeSpan.FromMinutes(0.2)); //time to allow outside executor handle any files
                     }
                     //writing a log-file with the machinename as filename to be able to compare run times when trying to balance which computers should run which tests
