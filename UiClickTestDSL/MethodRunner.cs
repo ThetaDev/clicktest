@@ -79,15 +79,16 @@ namespace UiClickTestDSL {
             }
             try {
                 List<TestDef> tests = GetAllTests(testAssembly);
+                int lastTestRun = 0;
+                var startTime = DateTime.Now;
+                var info = new List<string>();
+                info.Add(Environment.MachineName);
                 if (start != -1 || stop != -1) {
                     var sect = tests.Where(t => t.i >= start && (stop == -1 || t.i <= stop)).ToList();
-                    var tid = DateTime.Now;
-                    RunTests(sect, filter);
-                    var info = new List<string>();
-                    info.Add(Environment.MachineName);
-                    info.Add(string.Format("Tests run: {0} - {1}", start, stop));
-                    info.Add("Starttime: " + tid);
-                    info.Add("Elapsed: " + (DateTime.Now - tid));
+                    lastTestRun = RunTests(sect, filter);
+                    info.Add(string.Format("Sectioned test run: {0} - {1}", start, lastTestRun));
+                    info.Add("Start time: " + startTime);
+                    info.Add("Elapsed: " + (DateTime.Now - startTime));
                     if (ErrorCount > 0) {
                         info.Add("Error count: " + ErrorCount);
                         File.WriteAllLines(_sectionedResultFilePath, info);
@@ -100,7 +101,11 @@ namespace UiClickTestDSL {
                     else
                         tests = tests.Except(sect).ToList();
                 }
-                RunTests(tests, filter);
+                lastTestRun = RunTests(tests, filter);
+                info.Add(string.Format("First and last test run after section: {0} - {1}", tests.OrderBy(t => t.i).First().i, lastTestRun));
+                info.Add("The sectioned tests was not re-run.");
+                info.Add("Total elapsed: " + (DateTime.Now - startTime));
+                File.WriteAllLines(new FileInfo(_settingsFilePath).DirectoryName + @"\" + Environment.MachineName + ".log", info);
             } finally {
                 var procs = ApplicationLauncher.FindProcess();
                 foreach (var p in procs) {
@@ -114,11 +119,11 @@ namespace UiClickTestDSL {
             }
         }
 
-        private void RunTests(List<TestDef> tests, string filter) {
+        private int RunTests(List<TestDef> tests, string filter) {
             Type lastClass = null;
             MethodInfo starter = null, closer = null, classCleanup = null;
             ConstructorInfo constructor = null;
-
+            int lastTestRun = 0;
             foreach (var t in tests) {
                 Type testclass = t.TestClass;
                 //Log.Debug(testclass.FullName);
@@ -143,9 +148,11 @@ namespace UiClickTestDSL {
                 }
                 var classObj = constructor.Invoke(emptyParams);
                 RunTestMethod(t.Test, classObj, starter, closer, filter, t.i);
+                lastTestRun = t.i;
                 if (classCleanup != null)
                     classCleanup.Invoke(classObj, emptyParams);
             }
+            return lastTestRun;
         }
 
         private void RunTestMethod(MethodInfo testmethod, object classObj, MethodInfo starter, MethodInfo closer, string filter, int i) {
