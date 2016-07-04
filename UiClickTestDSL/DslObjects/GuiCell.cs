@@ -68,5 +68,13 @@ namespace UiClickTestDSL.DslObjects {
         public void LeftClick() {
             cell.ClickPointInCenter(MouseButton.Left);
         }
+
+        public GuiButton Button(ByAutomationId automationId) { return GuiButton.GetButtonByAutomationId(cell, automationId.Value); }
+        public GuiButton Button(string caption) { return GuiButton.GetButton(cell, caption); }
+        public GuiRadioButton RadioButton(string caption) { return GuiRadioButton.GetRadioButton(cell, caption); }
+        public GuiCheckBox CheckBox(string caption) { return GuiCheckBox.Find(cell, caption); }
+        public GuiCheckBox CheckBox(ByAutomationId automationId) { return GuiCheckBox.Find(cell, automationId); }
+        public GuiComboBox ComboBox(string automationId) { return GuiComboBox.Find(cell, automationId); }
+        public GuiComboBox ComboBox(ByAutomationId automationId) { return GuiComboBox.Find(cell, automationId.Value); }
     }
 }
