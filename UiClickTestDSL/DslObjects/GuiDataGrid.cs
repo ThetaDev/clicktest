@@ -158,7 +158,7 @@ namespace UiClickTestDSL.DslObjects {
 
         public void DoubleClickFirstCellInNewRowMarker() {
             AutomationElement newRowPlaceholder = GetNewRowPlaceholder();
-            var newRowCell = newRowPlaceholder.FindChildByClassAndName("DataGridCell", "Item: {NewItemPlaceholder}, Column Display Index: 1"); //first cell
+            var newRowCell = newRowPlaceholder.FindAllChildrenByClassName("DataGridCell").First();
             newRowCell.MoveMouseToCenter();
             Mouse.DoubleClick(MouseButton.Left);
         }
