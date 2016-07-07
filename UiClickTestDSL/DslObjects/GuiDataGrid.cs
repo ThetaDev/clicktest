@@ -136,7 +136,7 @@ namespace UiClickTestDSL.DslObjects {
         public int NewDeliveryLineRow() {
             SendKeys.SendWait("%^N");
             UiTestDslCoreCommon.WaitWhileBusy();
-            SelectRow(RowCount-2);
+            SelectRow(RowCount - 2);
             return RowCount - 2;
         }
 
@@ -156,6 +156,13 @@ namespace UiClickTestDSL.DslObjects {
             Mouse.Click(MouseButton.Right);
         }
 
+        public void DoubleClickFirstCellInNewRowMarker() {
+            AutomationElement newRowPlaceholder = GetNewRowPlaceholder();
+            var newRowCell = newRowPlaceholder.FindChildByClassAndName("DataGridCell", "Item: {NewItemPlaceholder}, Column Display Index: 1"); //first cell
+            newRowCell.MoveMouseToCenter();
+            Mouse.DoubleClick(MouseButton.Left);
+        }
+
         private AutomationElement GetFirstColumnHeader() {
             return dgAutoEl.FindAllChildrenByClassName("DecoratedHeader").First();
         }
@@ -163,7 +170,7 @@ namespace UiClickTestDSL.DslObjects {
         public void RightClickColumnHeader() {
             AutomationElement header = GetFirstColumnHeader();
             var clickablePoint = header.GetClickablePoint();
-            Mouse.MoveTo(new Point((int)clickablePoint.X, (int)clickablePoint.Y));
+            Mouse.MoveTo(new Point((int) clickablePoint.X, (int) clickablePoint.Y));
             Mouse.Click(MouseButton.Right);
         }
 
