@@ -136,6 +136,7 @@ namespace UiClickTestDSL.DslObjects {
         public int NewDeliveryLineRow() {
             SendKeys.SendWait("%^N");
             UiTestDslCoreCommon.WaitWhileBusy();
+            UiTestDslCoreCommon.Sleep(1);
             SelectRow(RowCount - 2);
             return RowCount - 2;
         }
