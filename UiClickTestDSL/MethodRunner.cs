@@ -102,7 +102,8 @@ namespace UiClickTestDSL {
                         tests = tests.Except(sect).ToList();
                 }
                 lastTestRun = RunTests(tests, filter);
-                info.Add(string.Format("First and last test run after section: {0} - {1}", tests.OrderBy(t => t.i).First().i, lastTestRun));
+                if (!stopAfterSection)
+                    info.Add(string.Format("First and last test run after section: {0} - {1}", tests.OrderBy(t => t.i).First().i, lastTestRun));
                 info.Add("The sectioned tests was not re-run.");
                 info.Add("Total elapsed: " + (DateTime.Now - startTime));
                 File.WriteAllLines(new FileInfo(_settingsFilePath).DirectoryName + @"\" + Environment.MachineName + ".log", info);
