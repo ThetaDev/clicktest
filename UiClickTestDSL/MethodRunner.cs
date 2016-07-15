@@ -122,7 +122,7 @@ namespace UiClickTestDSL {
 
         private int RunTests(List<TestDef> tests, string filter) {
             Type lastClass = null;
-            MethodInfo starter = null, closer = null, classCleanup = null;
+            MethodInfo starter = null, setup = null, closer = null, classCleanup = null;
             ConstructorInfo constructor = null;
             int lastTestRun = 0;
             foreach (var t in tests) {
@@ -135,6 +135,9 @@ namespace UiClickTestDSL {
                                select m).FirstOrDefault();
                     if (starter == null || testclass.IsAbstract)
                         continue;
+                    setup = (from m in methods
+                             where m.Name == "SetupEnvironment"
+                             select m).FirstOrDefault();
                     closer = (from m in methods
                               where m.Name == "CloseApplication"
                               select m).FirstOrDefault();
@@ -148,7 +151,7 @@ namespace UiClickTestDSL {
                     lastClass = testclass;
                 }
                 var classObj = constructor.Invoke(emptyParams);
-                RunTestMethod(t.Test, classObj, starter, closer, filter, t.i);
+                RunTestMethod(t.Test, classObj, starter, setup, closer, filter, t.i);
                 lastTestRun = t.i;
                 if (classCleanup != null)
                     classCleanup.Invoke(classObj, emptyParams);
@@ -156,7 +159,7 @@ namespace UiClickTestDSL {
             return lastTestRun;
         }
 
-        private void RunTestMethod(MethodInfo testmethod, object classObj, MethodInfo starter, MethodInfo closer, string filter, int i) {
+        private void RunTestMethod(MethodInfo testmethod, object classObj, MethodInfo starter, MethodInfo setup, MethodInfo closer, string filter, int i) {
             if (_filenamesThatStopTheTestRun.Any(File.Exists))
                 return;
             var completeTestname = classObj + " " + testmethod.Name;
@@ -165,6 +168,13 @@ namespace UiClickTestDSL {
                 return;
             if (ResetTestEnvironment != null)
                 ResetTestEnvironment();
+            try {
+                setup.Invoke(classObj, emptyParams);
+            } catch (Exception ex) {
+                ErrorCount++;
+                Log.Error("Error setting up environment: " + ex.Message, ex);
+                return;
+            }
             try {
                 starter.Invoke(classObj, emptyParams);
             } catch (Exception ex) {
