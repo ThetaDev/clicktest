@@ -184,8 +184,10 @@ namespace UiClickTestDSL {
         }
 
         private void RunTestMethod(TestDef test, object classObj, MethodInfo starter, MethodInfo setup, MethodInfo closer, string filter, int i) {
-            if (_filenamesThatStopTheTestRun.Any(File.Exists))
+            if (_filenamesThatStopTheTestRun.Any(File.Exists)) {
+                Log.Debug("Found file defined to stop test-run");
                 return;
+            }
             MethodInfo testmethod = test.Test;
             Log.Debug(i + " " + test.CompleteTestName + " " + i + " (" + ErrorCount + ")");
             if ((filter != "" && !testmethod.Name.ToLower().StartsWith(filter.ToLower())) || FilterByUserHook(test.CompleteTestName))
