@@ -49,7 +49,7 @@ namespace UiClickTestDSL {
             Sleep(1);
         }
 
-        public static void RepeatTryingFor(TimeSpan time, Action todo) {
+        public static void RepeatTryingFor(TimeSpan time, Action todo, int sleepInterval = 1000) {
             int timespent = 0;
             bool waiting = true;
             Exception lastException = null;
@@ -61,8 +61,8 @@ namespace UiClickTestDSL {
                 } catch (Exception ex) {
                     lastException = ex;
                 }
-                Thread.Sleep(1000);
-                timespent += 1000;
+                Thread.Sleep(sleepInterval);
+                timespent += sleepInterval;
             }
             if (lastException != null)
                 throw lastException;
