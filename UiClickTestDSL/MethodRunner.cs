@@ -36,7 +36,7 @@ namespace UiClickTestDSL {
             return false;
         }
 
-        private List<TestDef> GetAllTests(Assembly testAssembly) {
+        private List<TestDef> GetAllTests(Assembly testAssembly, List<string> skipOnThisComputer) {
             Type[] classes = testAssembly.GetTypes();
             List<TestDef> tests = new List<TestDef>();
             int i = 1;
@@ -46,7 +46,11 @@ namespace UiClickTestDSL {
                 MethodInfo[] methods = testclass.GetMethods();
                 foreach (MethodInfo testmethod in methods) {
                     if (testmethod.IsDefined(typeof(TestMethodAttribute), true)) {
-                        tests.Add(new TestDef { TestClass = testclass, Test = testmethod, i = i++ });
+                        var t = new TestDef { TestClass = testclass, Test = testmethod, };
+                        if (skipOnThisComputer.Contains(t.CompleteTestName))
+                            continue;
+                        t.i = i++;
+                        tests.Add(t);
                     }
                 }
             }
@@ -65,6 +69,8 @@ namespace UiClickTestDSL {
         public void Run(Assembly testAssembly, string filter) {
             int start = -1, stop = -1;
             bool stopAfterSection = false;
+            var initialTests = new List<string>();
+            var skipOnThisComputer = new List<string>();
             if (_settingsFilePath != null && File.Exists(_settingsFilePath)) {
                 var settings = File.ReadAllLines(_settingsFilePath); //"manual" ini-file handling to avoid extra dependencies
                 var set = settings.FirstOrDefault(s => s.StartsWith("start="));
@@ -76,26 +82,34 @@ namespace UiClickTestDSL {
                 set = settings.FirstOrDefault(s => s.StartsWith("stopAfterSection="));
                 if (set != null)
                     stopAfterSection = bool.Parse(set.Split('=')[1]);
+                set = settings.FirstOrDefault(s => s.StartsWith("InitialTestsFile"));
+                if (set != null)
+                    initialTests = File.ReadAllLines(set.Split('=')[1]).Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
+                set = settings.FirstOrDefault(s => s.StartsWith("SkipOnThisComputerFile"));
+                if (set != null)
+                    skipOnThisComputer = File.ReadAllLines(set.Split('=')[1]).Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
             }
+            var startTime = DateTime.Now;
+            var info = new List<string>();
+            info.Add(Environment.MachineName);
+            info.Add("Start time: " + startTime);
             try {
-                List<TestDef> tests = GetAllTests(testAssembly);
+                List<TestDef> tests = GetAllTests(testAssembly, skipOnThisComputer);
                 int lastTestRun = 0;
-                var startTime = DateTime.Now;
-                var info = new List<string>();
-                info.Add(Environment.MachineName);
+                if (initialTests.Any()) {
+                    var initial = tests.Where(t => initialTests.Contains(t.CompleteTestName)).ToList();
+                    info.Add(string.Format("Starting run of initial tests. # {0} ({1})", initial.Count, skipOnThisComputer.Count));
+                    lastTestRun = RunTests(initial, filter);
+                    info.Add("Elapsed: " + (DateTime.Now - startTime) + " last test run: " + lastTestRun);
+                    WriteSectionedResultFiles(info);
+                    tests = tests.Except(initial).ToList();
+                }
                 if (start != -1 || stop != -1) {
                     var sect = tests.Where(t => t.i >= start && (stop == -1 || t.i <= stop)).ToList();
                     lastTestRun = RunTests(sect, filter);
                     info.Add(string.Format("Sectioned test run: {0} - {1}", start, lastTestRun));
-                    info.Add("Start time: " + startTime);
                     info.Add("Elapsed: " + (DateTime.Now - startTime));
-                    if (ErrorCount > 0) {
-                        info.Add("Error count: " + ErrorCount);
-                        File.WriteAllLines(_sectionedResultFilePath, info);
-                        Thread.Sleep(TimeSpan.FromMinutes(0.2)); //time to allow outside executor handle any files
-                    }
-                    //writing a log-file with the machinename as filename to be able to compare run times when trying to balance which computers should run which tests
-                    File.WriteAllLines(new FileInfo(_settingsFilePath).DirectoryName + @"\" + Environment.MachineName + ".log", info);
+                    WriteSectionedResultFiles(info);
                     if (stopAfterSection)
                         tests = new List<TestDef>();
                     else
@@ -106,8 +120,8 @@ namespace UiClickTestDSL {
                     info.Add(string.Format("First and last test run after section: {0} - {1}", tests.OrderBy(t => t.i).First().i, lastTestRun));
                 info.Add("The sectioned tests was not re-run.");
                 info.Add("Total elapsed: " + (DateTime.Now - startTime));
-                File.WriteAllLines(new FileInfo(_settingsFilePath).DirectoryName + @"\" + Environment.MachineName + ".log", info);
             } finally {
+                File.WriteAllLines(new FileInfo(_settingsFilePath).DirectoryName + @"\" + Environment.MachineName + ".log", info);
                 var procs = ApplicationLauncher.FindProcess();
                 foreach (var p in procs) {
                     Log.Debug("Found running application: " + p.ProcessName);
@@ -118,6 +132,16 @@ namespace UiClickTestDSL {
                     }
                 }
             }
+        }
+
+        private void WriteSectionedResultFiles(List<string> info) {
+            if (ErrorCount > 0) {
+                info.Add("Error count: " + ErrorCount);
+                File.WriteAllLines(_sectionedResultFilePath, info);
+                Thread.Sleep(TimeSpan.FromMinutes(0.2)); //time to allow outside executor handle any files
+            }
+            //writing a log-file with the machinename as filename to be able to compare run times when trying to balance which computers should run which tests
+            File.WriteAllLines(new FileInfo(_settingsFilePath).DirectoryName + @"\" + Environment.MachineName + ".log", info);
         }
 
         private int RunTests(List<TestDef> tests, string filter) {
@@ -151,7 +175,7 @@ namespace UiClickTestDSL {
                     lastClass = testclass;
                 }
                 var classObj = constructor.Invoke(emptyParams);
-                RunTestMethod(t.Test, classObj, starter, setup, closer, filter, t.i);
+                RunTestMethod(t, classObj, starter, setup, closer, filter, t.i);
                 lastTestRun = t.i;
                 if (classCleanup != null)
                     classCleanup.Invoke(classObj, emptyParams);
@@ -159,12 +183,12 @@ namespace UiClickTestDSL {
             return lastTestRun;
         }
 
-        private void RunTestMethod(MethodInfo testmethod, object classObj, MethodInfo starter, MethodInfo setup, MethodInfo closer, string filter, int i) {
+        private void RunTestMethod(TestDef test, object classObj, MethodInfo starter, MethodInfo setup, MethodInfo closer, string filter, int i) {
             if (_filenamesThatStopTheTestRun.Any(File.Exists))
                 return;
-            var completeTestname = classObj + " " + testmethod.Name;
-            Log.Debug(i + " " + completeTestname + " " + i + " (" + ErrorCount + ")");
-            if ((filter != "" && !testmethod.Name.ToLower().StartsWith(filter)) || FilterByUserHook(completeTestname))
+            MethodInfo testmethod = test.Test;
+            Log.Debug(i + " " + test.CompleteTestName + " " + i + " (" + ErrorCount + ")");
+            if ((filter != "" && !testmethod.Name.ToLower().StartsWith(filter.ToLower())) || FilterByUserHook(test.CompleteTestName))
                 return;
             if (ResetTestEnvironment != null)
                 ResetTestEnvironment();
@@ -204,7 +228,7 @@ namespace UiClickTestDSL {
                     Log.Error("Latest unique identifiers: " + UiTestDslCoreCommon.UniqueIdentifier + " / " + UiTestDslCoreCommon.shortUnique);
                 } catch (Exception) { }
                 if (ErrorHook != null)
-                    ErrorHook(completeTestname);
+                    ErrorHook(test.CompleteTestName);
             }
             CloseProgram(closer, classObj, emptyParams);
             Log.Debug("-- Test # " + i + " done, current error count: " + ErrorCount + " \n\n");

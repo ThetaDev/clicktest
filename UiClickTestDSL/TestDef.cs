@@ -9,5 +9,9 @@ namespace UiClickTestDSL {
         public int i;
         public Type TestClass;
         public MethodInfo Test;
+
+        public string CompleteTestName {
+            get { return TestClass.AssemblyQualifiedName + " " + Test.Name; }
+        }
     }
 }
