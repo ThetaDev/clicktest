@@ -82,10 +82,10 @@ namespace UiClickTestDSL {
                 set = settings.FirstOrDefault(s => s.StartsWith("stopAfterSection="));
                 if (set != null)
                     stopAfterSection = bool.Parse(set.Split('=')[1]);
-                set = settings.FirstOrDefault(s => s.StartsWith("InitialTestsFile"));
+                set = settings.FirstOrDefault(s => s.StartsWith("InitialTestsFile="));
                 if (set != null)
                     initialTests = File.ReadAllLines(set.Split('=')[1]).Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
-                set = settings.FirstOrDefault(s => s.StartsWith("SkipOnThisComputerFile"));
+                set = settings.FirstOrDefault(s => s.StartsWith("SkipOnThisComputerFile="));
                 if (set != null)
                     skipOnThisComputer = File.ReadAllLines(set.Split('=')[1]).Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
             }
@@ -94,11 +94,12 @@ namespace UiClickTestDSL {
             info.Add(Environment.MachineName);
             info.Add("Start time: " + startTime);
             try {
+                info.Add(string.Format("Total marked to be skipped: {0}", skipOnThisComputer.Count));
                 List<TestDef> tests = GetAllTests(testAssembly, skipOnThisComputer);
                 int lastTestRun = 0;
                 if (initialTests.Any()) {
                     var initial = tests.Where(t => initialTests.Contains(t.CompleteTestName)).ToList();
-                    info.Add(string.Format("Starting run of initial tests. # {0} ({1})", initial.Count, skipOnThisComputer.Count));
+                    info.Add(string.Format("Starting run of initial tests. # {0} ({1})", initial.Count, initialTests.Count));
                     lastTestRun = RunTests(initial, filter);
                     info.Add("Elapsed: " + (DateTime.Now - startTime) + " last test run: " + lastTestRun);
                     WriteSectionedResultFiles(info);
@@ -189,7 +190,7 @@ namespace UiClickTestDSL {
                 return;
             }
             MethodInfo testmethod = test.Test;
-            Log.Debug(i + " " + test.CompleteTestName + " " + i + " (" + ErrorCount + ")");
+            Log.Debug(i + " (" + ErrorCount + ") " + test.CompleteTestName + " " + i);
             if ((filter != "" && !testmethod.Name.ToLower().StartsWith(filter.ToLower())) || FilterByUserHook(test.CompleteTestName))
                 return;
             if (ResetTestEnvironment != null)

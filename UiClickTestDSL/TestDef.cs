@@ -11,7 +11,7 @@ namespace UiClickTestDSL {
         public MethodInfo Test;
 
         public string CompleteTestName {
-            get { return TestClass.AssemblyQualifiedName + " " + Test.Name; }
+            get { return TestClass.FullName + " " + Test.Name; }
         }
     }
 }
