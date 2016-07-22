@@ -62,7 +62,7 @@ namespace UiClickTestDSL.DslObjects {
 
         public static GuiButton GetAppCloseButton(AutomationElement window) {
             var searchConditions = new Condition[] {
-                new PropertyCondition(AutomationElement.NameProperty, "Close"),
+                new PropertyCondition(AutomationElement.AutomationIdProperty, "Close"),
                 new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button),
                 new PropertyCondition(AutomationElement.IsContentElementProperty, false)
             };
