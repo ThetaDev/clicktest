@@ -76,6 +76,7 @@ namespace UiClickTestDSL.DslObjects {
                 BuildHeaderDictCache();
             string colName = HeaderIndexToNames[columnIndex];
             var temp = tablePatt.GetItem(row, columnIndex);
+            Assert.IsNotNull(temp, "Could not find cell in row: " + row + ", column: " + colName);
             return new GuiCell(temp, colName);
         }
 
