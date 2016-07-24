@@ -37,9 +37,11 @@ namespace UiClickTestDSL.DslObjects {
             _cachedDialog = GetDialog(_currentProgram, _currentParentWindow, Caption);
         }
 
-        public void VisibleTextContains(string text) {
+        public void VisibleTextContains(params string[] texts) {
             string visibleText = GetVisibleText();
-            Assert.IsTrue(visibleText.Contains(text));
+            foreach (var text in texts) {
+                Assert.IsTrue(visibleText.Contains(text), "Visible text did not contain: " + text);
+            }
         }
 
         private string GetVisibleText() {
