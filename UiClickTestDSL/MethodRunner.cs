@@ -20,6 +20,8 @@ namespace UiClickTestDSL {
         public string _settingsFilePath;
         public string _sectionedResultFilePath;
 
+        private string DebugLogPath { get { return new FileInfo(_settingsFilePath).DirectoryName + @"\___" + Environment.MachineName + ".log"; } }
+
         public MethodRunner(params string[] filenamesThatStopTheTestRun) {
             emptyParams = new object[] { };
             _filenamesThatStopTheTestRun = new List<string>(filenamesThatStopTheTestRun);
@@ -84,7 +86,7 @@ namespace UiClickTestDSL {
                     stopAfterSection = bool.Parse(set.Split('=')[1]);
                 set = settings.FirstOrDefault(s => s.StartsWith("InitialTestsFile="));
                 if (set != null)
-                    initialTests = File.ReadAllLines(set.Split('=')[1]).Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
+                    initialTests = File.ReadAllLines(set.Split('=')[1]).Where(t => !(string.IsNullOrWhiteSpace(t) || t.StartsWith("--"))).ToList();
                 set = settings.FirstOrDefault(s => s.StartsWith("SkipOnThisComputerFile="));
                 if (set != null)
                     skipOnThisComputer = File.ReadAllLines(set.Split('=')[1]).Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
@@ -108,7 +110,7 @@ namespace UiClickTestDSL {
                 if (start != -1 || stop != -1) {
                     var sect = tests.Where(t => t.i >= start && (stop == -1 || t.i <= stop)).ToList();
                     lastTestRun = RunTests(sect, filter);
-                    info.Add(string.Format("Sectioned test run: {0} - {1}", start, lastTestRun));
+                    info.Add(string.Format("Sectioned test run: {0} - {1}; total # run: {2}", start, lastTestRun, sect.Count));
                     info.Add("Elapsed: " + (DateTime.Now - startTime));
                     WriteSectionedResultFiles(info);
                     if (stopAfterSection)
@@ -118,11 +120,11 @@ namespace UiClickTestDSL {
                 }
                 lastTestRun = RunTests(tests, filter);
                 if (!stopAfterSection)
-                    info.Add(string.Format("First and last test run after section: {0} - {1}", tests.OrderBy(t => t.i).First().i, lastTestRun));
+                    info.Add(string.Format("First and last test run after section: {0} - {1}; total # run: {2}", tests.OrderBy(t => t.i).First().i, lastTestRun, tests.Count));
                 info.Add("The sectioned tests was not re-run.");
                 info.Add("Total elapsed: " + (DateTime.Now - startTime));
             } finally {
-                File.WriteAllLines(new FileInfo(_settingsFilePath).DirectoryName + @"\" + Environment.MachineName + ".log", info);
+                File.WriteAllLines(DebugLogPath, info);
                 var procs = ApplicationLauncher.FindProcess();
                 foreach (var p in procs) {
                     Log.Debug("Found running application: " + p.ProcessName);
@@ -136,13 +138,13 @@ namespace UiClickTestDSL {
         }
 
         private void WriteSectionedResultFiles(List<string> info) {
+            info.Add("Error count: " + ErrorCount);
             if (ErrorCount > 0) {
-                info.Add("Error count: " + ErrorCount);
                 File.WriteAllLines(_sectionedResultFilePath, info);
                 Thread.Sleep(TimeSpan.FromMinutes(0.2)); //time to allow outside executor handle any files
             }
             //writing a log-file with the machinename as filename to be able to compare run times when trying to balance which computers should run which tests
-            File.WriteAllLines(new FileInfo(_settingsFilePath).DirectoryName + @"\" + Environment.MachineName + ".log", info);
+            File.WriteAllLines(DebugLogPath, info);
         }
 
         private int RunTests(List<TestDef> tests, string filter) {
