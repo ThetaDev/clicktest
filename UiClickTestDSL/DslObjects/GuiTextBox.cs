@@ -21,6 +21,14 @@ namespace UiClickTestDSL.DslObjects {
             return _cachedtb;
         }
 
+        public static GuiTextBox GetTextBoxByName(AutomationElement window, string name) {
+            if (_cachedtb == null || _cachedtb.Name != name) {
+                var tb = window.FindChildByControlTypeAndName(ControlType.Edit, name);
+                _cachedtb = new GuiTextBox(tb);
+            }
+            return _cachedtb;
+        }
+
         public static void InvalidateCache() {
             _cachedtb = null;
         }
@@ -28,10 +36,12 @@ namespace UiClickTestDSL.DslObjects {
         private AutomationElement tbAutoEl;
         private ValuePattern value;
         public string AutomationId { get; private set; }
+        public string Name { get; private set; }
 
         public GuiTextBox(AutomationElement textbox) {
             tbAutoEl = textbox;
             AutomationId = textbox.Current.AutomationId;
+            Name = textbox.Current.Name;
             value = tbAutoEl.GetPattern<ValuePattern>(ValuePattern.Pattern);
         }
 
