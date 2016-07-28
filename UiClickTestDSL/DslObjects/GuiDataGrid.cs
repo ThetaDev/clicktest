@@ -104,6 +104,16 @@ namespace UiClickTestDSL.DslObjects {
             Thread.Sleep(300);
         }
 
+        public int FindRowByCellContent(string columnName, string content) {
+            int colIndex = HeaderNamesToIndex[columnName];
+            for (int i = 0; i < RowCount; i++) {
+                var cell = Cell(i, colIndex);
+                if (cell.Text == content)
+                    return i;
+            }
+            throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
+        }
+
         private SelectionItemPattern GetRowSelectionPattern(int rowIndex) {
             var rows = dgAutoEl.FindAllChildrenByClassName("DataGridRow");
             Console.WriteLine("found rows: " + rows.Count() + ";  index to select: " + rowIndex);
@@ -135,6 +145,7 @@ namespace UiClickTestDSL.DslObjects {
         /// Pushes the secret hotkey: ctrl+alt+shift+n
         /// </summary>
         public int NewDeliveryLineRow() {
+            SetFocus();
             SendKeys.SendWait("%^N");
             UiTestDslCoreCommon.WaitWhileBusy();
             UiTestDslCoreCommon.Sleep(1);
