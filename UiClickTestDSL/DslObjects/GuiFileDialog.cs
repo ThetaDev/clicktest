@@ -16,7 +16,7 @@ namespace UiClickTestDSL.DslObjects {
             int maxRetries = 60;
             while (dlg == null && maxRetries > 0) {
                 try {
-                    dlg = window.FindChildByLocalizedControlTypeAndName(caption, "Dialog", "dialog", "dialogue");
+                    dlg = window.FindChildByLocalizedControlTypeAndName(caption, "Dialog", "dialog", "dialogboks", "dialogue"); //different name options on different language settings
                 } catch (Exception) {
                     if (maxRetries > 0)
                         maxRetries--;
@@ -24,7 +24,7 @@ namespace UiClickTestDSL.DslObjects {
                         throw;
                 }
                 if (dlg == null) {
-                    Log.Debug("File dialog not found: " + maxRetries);
+                    Log.DebugFormat("File dialog not found: {0}   Caption: {1}", maxRetries, caption);
                     Thread.Sleep(500);
                 }
                 maxRetries--;

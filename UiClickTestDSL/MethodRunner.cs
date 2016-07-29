@@ -16,6 +16,7 @@ namespace UiClickTestDSL {
         private static ILog Log = LogManager.GetLogger(typeof(MethodRunner));
 
         public int ErrorCount { get; set; }
+        public int TestsRun { get; private set; }
         private readonly List<string> _filenamesThatStopTheTestRun;
         public string _settingsFilePath;
         public string _sectionedResultFilePath;
@@ -98,18 +99,23 @@ namespace UiClickTestDSL {
             try {
                 info.Add(string.Format("Total marked to be skipped: {0}", skipOnThisComputer.Count));
                 List<TestDef> tests = GetAllTests(testAssembly, skipOnThisComputer);
+                int noToBeRun = initialTests.Count;
+                if (stopAfterSection)
+                    noToBeRun += tests.Count(t => t.i >= start && (stop == -1 || t.i <= stop));
+                else
+                    noToBeRun = tests.Count;
                 int lastTestRun = 0;
                 if (initialTests.Any()) {
                     var initial = tests.Where(t => initialTests.Contains(t.CompleteTestName)).ToList();
                     info.Add(string.Format("Starting run of initial tests. # {0} ({1})", initial.Count, initialTests.Count));
-                    lastTestRun = RunTests(initial, filter);
+                    lastTestRun = RunTests(initial, filter, noToBeRun);
                     info.Add("Elapsed: " + (DateTime.Now - startTime) + " last test run: " + lastTestRun);
                     WriteSectionedResultFiles(info);
                     tests = tests.Except(initial).ToList();
                 }
                 if (start != -1 || stop != -1) {
                     var sect = tests.Where(t => t.i >= start && (stop == -1 || t.i <= stop)).ToList();
-                    lastTestRun = RunTests(sect, filter);
+                    lastTestRun = RunTests(sect, filter, noToBeRun);
                     info.Add(string.Format("Sectioned test run: {0} - {1}; total # run: {2}", start, lastTestRun, sect.Count));
                     info.Add("Elapsed: " + (DateTime.Now - startTime));
                     WriteSectionedResultFiles(info);
@@ -118,7 +124,7 @@ namespace UiClickTestDSL {
                     else
                         tests = tests.Except(sect).ToList();
                 }
-                lastTestRun = RunTests(tests, filter);
+                lastTestRun = RunTests(tests, filter, noToBeRun);
                 if (!stopAfterSection)
                     info.Add(string.Format("First and last test run after section: {0} - {1}; total # run: {2}", tests.OrderBy(t => t.i).First().i, lastTestRun, tests.Count));
                 info.Add("The sectioned tests was not re-run.");
@@ -147,7 +153,7 @@ namespace UiClickTestDSL {
             File.WriteAllLines(DebugLogPath, info);
         }
 
-        private int RunTests(List<TestDef> tests, string filter) {
+        private int RunTests(List<TestDef> tests, string filter, int totalNoToBeRun) {
             Type lastClass = null;
             MethodInfo starter = null, setup = null, closer = null, classCleanup = null;
             ConstructorInfo constructor = null;
@@ -178,7 +184,7 @@ namespace UiClickTestDSL {
                     lastClass = testclass;
                 }
                 var classObj = constructor.Invoke(emptyParams);
-                RunTestMethod(t, classObj, starter, setup, closer, filter, t.i);
+                RunTestMethod(t, classObj, starter, setup, closer, filter, totalNoToBeRun);
                 lastTestRun = t.i;
                 if (classCleanup != null)
                     classCleanup.Invoke(classObj, emptyParams);
@@ -186,13 +192,14 @@ namespace UiClickTestDSL {
             return lastTestRun;
         }
 
-        private void RunTestMethod(TestDef test, object classObj, MethodInfo starter, MethodInfo setup, MethodInfo closer, string filter, int i) {
+        private void RunTestMethod(TestDef test, object classObj, MethodInfo starter, MethodInfo setup, MethodInfo closer, string filter, int totalNoTestsToRun) {
             if (_filenamesThatStopTheTestRun.Any(File.Exists)) {
                 Log.Debug("Found file defined to stop test-run");
                 return;
             }
             MethodInfo testmethod = test.Test;
-            Log.Debug(i + " (" + ErrorCount + ") " + test.CompleteTestName + " " + i);
+            TestsRun++;
+            Log.DebugFormat("{0}/{1} - {2} - E:{3}    {4} - {2}", TestsRun, totalNoTestsToRun, test.i, ErrorCount, test.CompleteTestName);
             if ((filter != "" && !testmethod.Name.ToLower().StartsWith(filter.ToLower())) || FilterByUserHook(test.CompleteTestName))
                 return;
             if (ResetTestEnvironment != null)
@@ -236,7 +243,7 @@ namespace UiClickTestDSL {
                     ErrorHook(test.CompleteTestName);
             }
             CloseProgram(closer, classObj, emptyParams);
-            Log.Debug("-- Test # " + i + " done, current error count: " + ErrorCount + " \n\n");
+            Log.Debug("-- Test # " + test.i + " done, current error count: " + ErrorCount + " \n\n");
             //Need to allow the program time to exit, to avoid the next test finding an open program while starting.
             Thread.Sleep(3000);
         }
