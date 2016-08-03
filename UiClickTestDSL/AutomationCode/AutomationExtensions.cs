@@ -17,6 +17,10 @@ namespace UiClickTestDSL.AutomationCode {
                 { "File name:", new List<string>{ "Filnavn:" }}
         };
 
+        public static string[] DialogLocalizedControlNameOptions = { //different name options on different language settings
+            "Dialog", "dialog", "Dialogue", "dialogue", "Window", "window", "Dialogboks", "dialogboks", "Vindu", "vindu"
+        };
+
         public static void AddNameOption(string what, params string[] options) {
             if (!NameOptions.ContainsKey(what))
                 NameOptions[what] = new List<string>();

@@ -199,7 +199,7 @@ namespace UiClickTestDSL {
             }
             MethodInfo testmethod = test.Test;
             TestsRun++;
-            Log.DebugFormat("{0}/{1} - {2} - E:{3}    {4} - {2}", TestsRun, totalNoTestsToRun, test.i, ErrorCount, test.CompleteTestName);
+            Log.DebugFormat(Environment.NewLine + "{0}/{1} - {2} - E:{3}    {4} - {2}", TestsRun, totalNoTestsToRun, test.i, ErrorCount, test.CompleteTestName);
             if ((filter != "" && !testmethod.Name.ToLower().StartsWith(filter.ToLower())) || FilterByUserHook(test.CompleteTestName))
                 return;
             if (ResetTestEnvironment != null)

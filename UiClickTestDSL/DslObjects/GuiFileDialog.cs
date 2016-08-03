@@ -13,23 +13,21 @@ namespace UiClickTestDSL.DslObjects {
             AutomationElement dlg = null;
             //* Works fine on Windows 8.1, but not on Windows 7 with only .Net 4.0 installed.
             // * We need to retest this after upgrading to .Net 4.6
-            int maxRetries = 60;
+            int maxRetries = 120;
             while (dlg == null && maxRetries > 0) {
                 try {
-                    dlg = window.FindChildByLocalizedControlTypeAndName(caption, "Dialog", "dialog", "dialogboks", "dialogue"); //different name options on different language settings
+                    //dlg = window.FindChildByLocalizedControlTypeAndName(caption, AutomationExtensions.DialogLocalizedControlNameOptions); //different name options on different language settings
+                    dlg = window.FindChildByControlTypeAndName(ControlType.Window, caption);
                 } catch (Exception) {
-                    if (maxRetries > 0)
-                        maxRetries--;
-                    else
+                    if (maxRetries <= 0)
                         throw;
                 }
-                if (dlg == null) {
+                if (dlg == null && maxRetries % 10 == 0) {
                     Log.DebugFormat("File dialog not found: {0}   Caption: {1}", maxRetries, caption);
-                    Thread.Sleep(500);
                 }
+                Thread.Sleep(500);
                 maxRetries--;
             }
-            Thread.Sleep(500);
             //*/
 
             //Until this method gets reworked, let developer-machines sleep for 6 seconds instead of 60, for faster testing
