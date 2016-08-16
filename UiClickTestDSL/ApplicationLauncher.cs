@@ -191,7 +191,7 @@ namespace UiClickTestDSL {
         }
 
         public void WaitForInputIdle() {
-            if (Process.HasExited)
+            if (Process == null || Process.HasExited)
                 return;
             Process.WaitForInputIdle();
         }
