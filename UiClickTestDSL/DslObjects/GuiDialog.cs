@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UiClickTestDSL.AutomationCode;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiDialog : UiTestDslCoreCommon {
@@ -31,6 +32,11 @@ namespace UiClickTestDSL.DslObjects {
         public GuiDialog(AutomationElement dialogWindow, string caption) {
             Window = dialogWindow;
             Caption = caption;
+        }
+
+        public void CloseDialog() {
+            var windowPattern = Window.GetPattern<WindowPattern>(WindowPattern.Pattern);
+            windowPattern.Close();
         }
 
         public override void GetThisWindow() {

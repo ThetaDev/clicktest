@@ -8,6 +8,7 @@ using System.Windows.Automation;
 using log4net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
+using UiClickTestDSL.DslObjects;
 using UiClickTestDSL.HelperPrograms;
 
 namespace UiClickTestDSL {
@@ -111,28 +112,34 @@ namespace UiClickTestDSL {
             try {
                 if (Process != null && !Process.HasExited) {
                     List<AutomationElement> dialogs = null;
-                    string errorDialogHeading = "";
-                    string screenShotFilename = "";
                     try {
                         var mainWindow = GetMainWindow();
                         dialogs = mainWindow.FindAllChildrenByByLocalizedControlType("Dialog").ToList();
-                        foreach (var d in dialogs)
-                            errorDialogHeading += d.Current.Name + "\n";
-                        if (dialogs.Count > 0)
-                            try {
-                                screenShotFilename = ScreenShooter.SaveToFile();
-                            } catch (Exception e) {
-                                Log.Error("Exception while trying to save screenshot: " + e.Message, e);
-                            }
-                        if (!ConnectedInsteadOfStarted)
-                            KillProcess();
                     } catch (AutomationElementNotFoundException) {
                         //I expect not to find these dialogs.
                     }
-                    if (dialogs != null && dialogs.Count > 0)
-                        Assert.AreEqual(0, dialogs.Count,
-                            "Error dialog labeled \"" + errorDialogHeading +
-                            "\" found when trying to close program. Screenshot: " + screenShotFilename);
+                    if (dialogs != null) {
+                        foreach (var d in dialogs) {
+                            Thread.Sleep(1);
+                            var errorDialogHeading = d.Current.Name;
+                            string screenShotFilename = string.Empty;
+                            try {
+                                screenShotFilename = ScreenShooter.SaveToFile();
+                            } catch (Exception ex) {
+                                Log.Error("Exception while trying to save screenshot: " + ex.Message, ex);
+                            }
+                            Log.Error(string.Format("Error dialog labeled \"{0}\" found when trying to close program. Screenshot: {1}", errorDialogHeading, screenShotFilename));
+                            try {
+                                var guiDialog = new GuiDialog(d, errorDialogHeading);
+                                guiDialog.CloseDialog();
+                            } catch (Exception ex) {
+                                Log.Error(string.Format("Attempted to close dialog labeled \"{0}\", but an exception occurred.", errorDialogHeading), ex);
+                            }
+                        }
+                        if (!ConnectedInsteadOfStarted)
+                            KillProcess();
+                        Assert.AreEqual(0, dialogs.Count, "Error dialogs found whehn trying to close program.");
+                    }
                 }
             } finally {
                 if (!ConnectedInsteadOfStarted) {
@@ -144,7 +151,8 @@ namespace UiClickTestDSL {
                     if (File.Exists(file)) {
                         try {
                             File.Delete(file);
-                        } catch {
+                        } catch (Exception ex) {
+                            Log.Error(string.Format("Failed to delete file during cleanup. Filename: {0}", file), ex);
                         }
                     }
                 }
@@ -152,7 +160,8 @@ namespace UiClickTestDSL {
                     if (Directory.Exists(directory)) {
                         try {
                             Directory.Delete(directory, true);
-                        } catch {
+                        } catch (Exception ex) {
+                            Log.Error(string.Format("Failed to delete directory during cleanup. Directory: {0}", directory), ex);
                         }
                     }
                 }
