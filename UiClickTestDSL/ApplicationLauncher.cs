@@ -120,7 +120,8 @@ namespace UiClickTestDSL {
                     }
                     if (dialogs != null) {
                         foreach (var d in dialogs) {
-                            Thread.Sleep(1);
+                            Thread.Sleep(1000);
+                            WaitForInputIdle();
                             var errorDialogHeading = d.Current.Name;
                             string screenShotFilename = string.Empty;
                             try {
@@ -138,7 +139,7 @@ namespace UiClickTestDSL {
                         }
                         if (!ConnectedInsteadOfStarted)
                             KillProcess();
-                        Assert.AreEqual(0, dialogs.Count, "Error dialogs found whehn trying to close program.");
+                        Assert.AreEqual(0, dialogs.Count, "Error dialogs found when trying to close program.");
                     }
                 }
             } finally {
