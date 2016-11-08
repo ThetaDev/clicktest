@@ -195,6 +195,10 @@ namespace UiClickTestDSL {
             return FileLocator.LocateFileInfo(filename).FullName;
         }
 
+        public virtual string FindFolderInAnyParentFolder(string filename) {
+            return FileLocator.LocateFolder(filename).FullName;
+        }
+
         protected virtual void InvalidateCachedObjects() {
             GuiDataGrid.InvalidateCache();
             GuiTextBox.InvalidateCache();
