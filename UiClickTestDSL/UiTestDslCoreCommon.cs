@@ -94,7 +94,7 @@ namespace UiClickTestDSL {
         }
 
         public static void Sleep(int seconds) {
-            if (seconds >= 100)
+            if (seconds >= 300)
                 seconds /= 1000;
             seconds = Math.Max(1, seconds);
             Thread.Sleep(seconds * 1000);
