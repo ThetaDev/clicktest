@@ -55,7 +55,7 @@ namespace UiClickTestDSL.HelperPrograms {
             f.SetFocus();
             Mouse.MoveTo(f.ClickablePoint);
             if (ApplicationLauncher.VerifyOnSingleClickMachine())
-                Thread.Sleep(1000);
+                Thread.Sleep(4000);
             else
                 Mouse.Click(MouseButton.Left);
         }

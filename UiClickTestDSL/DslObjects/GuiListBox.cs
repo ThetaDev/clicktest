@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Automation;
+using log4net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiListBox {
+        private static ILog Log = LogManager.GetLogger(typeof(GuiListBox));
+
         public AutomationElement InternalElement { get; private set; }
         private readonly string _automationId;
 
@@ -23,8 +26,9 @@ namespace UiClickTestDSL.DslObjects {
         public void TrySetFocus() {
             try {
                 InternalElement.SetFocus();
-            } catch (Exception) {
+            } catch (Exception ex) {
                 //todo cannot set focus
+                Log.Debug("Unable to set focus to " + _automationId, ex);
             }
         }
 
