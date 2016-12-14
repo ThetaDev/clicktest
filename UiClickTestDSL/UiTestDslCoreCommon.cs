@@ -189,6 +189,8 @@ namespace UiClickTestDSL {
         /// </summary>
         public static void TypeText(string text) {
             SendKeys.SendWait(text);
+            SendKeys.Flush();
+            Sleep(2); //workaround for timing issues on different operating systems
         }
 
         public virtual string FindFileInAnyParentFolder(string filename) {
