@@ -59,8 +59,8 @@ namespace UiClickTestDSL {
         public static Action CommonApplicationInit;
         public static Action ApplicationClearAfterTestRun;
 
-        public List<string> FilesToDelete = new List<string> { @"C:\temp\test", @"C:\temp\test.zip" };
-        public List<string> DirectoriesToDelete = new List<string> { @"C:\temp\test" };
+        public static readonly string[] FilesToDelete = { @"C:\temp\test", @"C:\temp\test.zip" };
+        public static readonly string[] DirectoriesToDelete = { @"C:\temp\test" };
 
         private static ILog Log = LogManager.GetLogger(typeof(ApplicationLauncher));
 
@@ -148,22 +148,26 @@ namespace UiClickTestDSL {
                 }
                 if (RunApplicationClearUp && ApplicationClearAfterTestRun != null)
                     ApplicationClearAfterTestRun();
-                foreach (var file in FilesToDelete) {
-                    if (File.Exists(file)) {
-                        try {
-                            File.Delete(file);
-                        } catch (Exception ex) {
-                            Log.Error(string.Format("Failed to delete file during cleanup. Filename: {0}", file), ex);
-                        }
+                CleanUpFilesAndDirectories();
+            }
+        }
+
+        public static void CleanUpFilesAndDirectories() {
+            foreach (var file in FilesToDelete) {
+                if (File.Exists(file)) {
+                    try {
+                        File.Delete(file);
+                    } catch (Exception ex) {
+                        Log.Error(string.Format("Failed to delete file during cleanup. Filename: {0}", file), ex);
                     }
                 }
-                foreach (var directory in DirectoriesToDelete) {
-                    if (Directory.Exists(directory)) {
-                        try {
-                            Directory.Delete(directory, true);
-                        } catch (Exception ex) {
-                            Log.Error(string.Format("Failed to delete directory during cleanup. Directory: {0}", directory), ex);
-                        }
+            }
+            foreach (var directory in DirectoriesToDelete) {
+                if (Directory.Exists(directory)) {
+                    try {
+                        Directory.Delete(directory, true);
+                    } catch (Exception ex) {
+                        Log.Error(string.Format("Failed to delete directory during cleanup. Directory: {0}", directory), ex);
                     }
                 }
             }
