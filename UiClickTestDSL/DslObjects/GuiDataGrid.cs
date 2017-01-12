@@ -129,7 +129,7 @@ namespace UiClickTestDSL.DslObjects {
         public void SelectLastRow() {
             try {
                 var scroll = dgAutoEl.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
-                scroll.SetScrollPercent(-1, 100);
+                scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 100);
             } catch (InvalidOperationException) {
                 //This means there was no scrollbar because the list in the grid is to short to be scrollable   
             }

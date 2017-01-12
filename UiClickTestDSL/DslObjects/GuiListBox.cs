@@ -98,15 +98,29 @@ namespace UiClickTestDSL.DslObjects {
             return item;
         }
 
-        public GuiListBoxItem SelectElement(string elementName, string value) {
+        public GuiListBoxItem SelectElementWithLabel(string value) {
             IList<GuiListBoxItem> all = GetAllListItems();
             IEnumerable<GuiListBoxItem> items = from i in all
-                                                where i.HasLabelWithText(elementName, value)
+                                                where i.HasLabelWithText(null, value)
                                                 select i;
             GuiListBoxItem item = items.FirstOrDefault();
             if (item == null) {
+                //try to scroll to the bottom, to see if we can find it there.
+                try {
+                    var scroll = InternalElement.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
+                    scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 100);
+                } catch (InvalidOperationException) {
+                    //This means there was no scrollbar because the list in the TreeView is to short to be scrollable   
+                }
+                all = GetAllListItems();
+                items = from i in all
+                        where i.HasLabelWithText(null, value)
+                        select i;
+                item = items.FirstOrDefault();
+            }
+            if (item == null) {
                 var allLabels = from i in all
-                                from l in i.GetLabels(elementName)
+                                from l in i.GetLabels(null)
                                 select l.Text;
                 Console.Write("\nValue: ");
                 Console.WriteLine(value);
