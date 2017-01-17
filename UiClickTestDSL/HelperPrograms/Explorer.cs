@@ -54,10 +54,13 @@ namespace UiClickTestDSL.HelperPrograms {
             ListUiItem f = GetFile(files, file);
             f.SetFocus();
             Mouse.MoveTo(f.ClickablePoint);
-            if (ApplicationLauncher.VerifyOnSingleClickMachine())
+            if (ApplicationLauncher.VerifyExplorerUsesCheckBoxes()) {
+                f.AddToSelection();
+            } else if (ApplicationLauncher.VerifyOnSingleClickMachine()) {
                 Thread.Sleep(4000);
-            else
+            } else {
                 Mouse.Click(MouseButton.Left);
+            }
         }
 
         internal void DragDropFileTo(FileInfo file, AutomationElement el) {

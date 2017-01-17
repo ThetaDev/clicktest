@@ -46,6 +46,17 @@ namespace UiClickTestDSL {
             return SingleClickComputerNames.Contains(name);
         }
 
+        private static readonly List<string> MachinesWhereExplorerUsesCheckBoxes = new List<string>();
+        public static void AddNamesOfComputersWhereExplorerUsesCheckBoxes(params string[] names) {
+            foreach (var name in names) {
+                MachinesWhereExplorerUsesCheckBoxes.Add(name);
+            }
+        }
+        public static bool VerifyExplorerUsesCheckBoxes() {
+            string name = Environment.MachineName.ToUpper();
+            return MachinesWhereExplorerUsesCheckBoxes.Contains(name);
+        }
+
         private static readonly List<string> DeveloperComputerNames = new List<string>();
         public static void AddNamesOfDeveloperComputers(params string[] names) {
             foreach (var name in names)
