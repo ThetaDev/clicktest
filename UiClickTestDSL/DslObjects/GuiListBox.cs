@@ -25,7 +25,9 @@ namespace UiClickTestDSL.DslObjects {
 
         public void TrySetFocus() {
             try {
-                InternalElement.SetFocus();
+                UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromSeconds(20), () => {
+                    InternalElement.SetFocus();
+                });
             } catch (Exception ex) {
                 //todo cannot set focus
                 Log.Debug("Unable to set focus to " + _automationId, ex);
