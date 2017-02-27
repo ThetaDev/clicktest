@@ -178,5 +178,29 @@ namespace UiClickTestDSL.AutomationCode {
             var result = conditionPath.Aggregate(element, (parentElement, nextCondition) => parentElement == null ? null : parentElement.FindChildByCondition(nextCondition));
             return result;
         }
+
+        public static bool HasChildByClass(this AutomationElement element, string className) {
+            return RunHasSearchWithName(element, "", ClassName(className));
+        }
+
+        public static bool RunHasSearchWithName(AutomationElement element, string name, params Condition[] otherSearchConditions) {
+            List<Condition> nameConds = BuildNameOptionList(name);
+            var temp = new List<Condition>(otherSearchConditions);
+            temp.Add(nameConds.Count > 1 ? Or(nameConds) : nameConds[0]);
+            return RunActualHasSearch(element, temp.ToArray());
+        }
+
+        internal static bool RunActualHasSearch(AutomationElement element, params Condition[] searchConditions) {
+            var searchCond = new AndCondition(searchConditions);
+            int retries = 20; //= 10sekund ventetid, som typisk kan komme når applikasjonen åpnes
+            while (retries > 0) {
+                var result = element.FindFirst(TreeScope.Descendants, searchCond);
+                if (result != null)
+                    return true;
+                retries--;
+                Thread.Sleep(500);
+            }
+            return false;
+        }
     }
 }
