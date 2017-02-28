@@ -192,7 +192,7 @@ namespace UiClickTestDSL.AutomationCode {
 
         internal static bool RunActualHasSearch(AutomationElement element, params Condition[] searchConditions) {
             var searchCond = new AndCondition(searchConditions);
-            int retries = 20; //= 10sekund ventetid, som typisk kan komme når applikasjonen åpnes
+            int retries = 20; //= 10 seconds wait, typically when an application starts
             while (retries > 0) {
                 var result = element.FindFirst(TreeScope.Descendants, searchCond);
                 if (result != null)
