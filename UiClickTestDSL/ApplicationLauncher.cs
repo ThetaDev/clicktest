@@ -128,6 +128,12 @@ namespace UiClickTestDSL {
                         dialogs = mainWindow.FindAllChildrenByByLocalizedControlType("Dialog").ToList();
                     } catch (AutomationElementNotFoundException) {
                         //I expect not to find these dialogs.
+                    } catch {
+                        try {
+                            Log.Error("Error finding Main window and its dialogs, screenshot: " + ScreenShooter.SaveToFile());
+                        } catch (Exception ex) {
+                            Log.Error("Exception while trying to save screenshot: " + ex.Message, ex);
+                        }
                     }
                     if (dialogs != null) {
                         foreach (var d in dialogs) {
