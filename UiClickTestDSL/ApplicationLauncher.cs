@@ -8,6 +8,7 @@ using System.Windows.Automation;
 using log4net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
+using UiClickTestDSL.DslObjects;
 using UiClickTestDSL.HelperPrograms;
 
 namespace UiClickTestDSL {
@@ -45,6 +46,17 @@ namespace UiClickTestDSL {
             return SingleClickComputerNames.Contains(name);
         }
 
+        private static readonly List<string> MachinesWhereExplorerUsesCheckBoxes = new List<string>();
+        public static void AddNamesOfComputersWhereExplorerUsesCheckBoxes(params string[] names) {
+            foreach (var name in names) {
+                MachinesWhereExplorerUsesCheckBoxes.Add(name);
+            }
+        }
+        public static bool VerifyExplorerUsesCheckBoxes() {
+            string name = Environment.MachineName.ToUpper();
+            return MachinesWhereExplorerUsesCheckBoxes.Contains(name);
+        }
+
         private static readonly List<string> DeveloperComputerNames = new List<string>();
         public static void AddNamesOfDeveloperComputers(params string[] names) {
             foreach (var name in names)
@@ -58,8 +70,8 @@ namespace UiClickTestDSL {
         public static Action CommonApplicationInit;
         public static Action ApplicationClearAfterTestRun;
 
-        public List<string> FilesToDelete = new List<string> { @"C:\temp\test", @"C:\temp\test.zip" };
-        public List<string> DirectoriesToDelete = new List<string> { @"C:\temp\test" };
+        public static readonly string[] FilesToDelete = { @"C:\temp\test", @"C:\temp\test.zip" };
+        public static readonly string[] DirectoriesToDelete = { @"C:\temp\test" };
 
         private static ILog Log = LogManager.GetLogger(typeof(ApplicationLauncher));
 
@@ -111,28 +123,41 @@ namespace UiClickTestDSL {
             try {
                 if (Process != null && !Process.HasExited) {
                     List<AutomationElement> dialogs = null;
-                    string errorDialogHeading = "";
-                    string screenShotFilename = "";
                     try {
                         var mainWindow = GetMainWindow();
                         dialogs = mainWindow.FindAllChildrenByByLocalizedControlType("Dialog").ToList();
-                        foreach (var d in dialogs)
-                            errorDialogHeading += d.Current.Name + "\n";
-                        if (dialogs.Count > 0)
-                            try {
-                                screenShotFilename = ScreenShooter.SaveToFile();
-                            } catch (Exception e) {
-                                Log.Error("Exception while trying to save screenshot: " + e.Message, e);
-                            }
-                        if (!ConnectedInsteadOfStarted)
-                            KillProcess();
                     } catch (AutomationElementNotFoundException) {
                         //I expect not to find these dialogs.
+                    } catch {
+                        try {
+                            Log.Error("Error finding Main window and its dialogs, screenshot: " + ScreenShooter.SaveToFile());
+                        } catch (Exception ex) {
+                            Log.Error("Exception while trying to save screenshot: " + ex.Message, ex);
+                        }
                     }
-                    if (dialogs != null && dialogs.Count > 0)
-                        Assert.AreEqual(0, dialogs.Count,
-                            "Error dialog labeled \"" + errorDialogHeading +
-                            "\" found when trying to close program. Screenshot: " + screenShotFilename);
+                    if (dialogs != null) {
+                        foreach (var d in dialogs) {
+                            Thread.Sleep(1000);
+                            WaitForInputIdle();
+                            var errorDialogHeading = d.Current.Name;
+                            string screenShotFilename = string.Empty;
+                            try {
+                                screenShotFilename = ScreenShooter.SaveToFile();
+                            } catch (Exception ex) {
+                                Log.Error("Exception while trying to save screenshot: " + ex.Message, ex);
+                            }
+                            Log.Error(string.Format("Error dialog labeled \"{0}\" found when trying to close program. Screenshot: {1}", errorDialogHeading, screenShotFilename));
+                            try {
+                                var guiDialog = new GuiDialog(d, errorDialogHeading);
+                                guiDialog.CloseDialog();
+                            } catch (Exception ex) {
+                                Log.Error(string.Format("Attempted to close dialog labeled \"{0}\", but an exception occurred.", errorDialogHeading), ex);
+                            }
+                        }
+                        if (!ConnectedInsteadOfStarted)
+                            KillProcess();
+                        Assert.AreEqual(0, dialogs.Count, "Error dialogs found when trying to close program.");
+                    }
                 }
             } finally {
                 if (!ConnectedInsteadOfStarted) {
@@ -140,20 +165,26 @@ namespace UiClickTestDSL {
                 }
                 if (RunApplicationClearUp && ApplicationClearAfterTestRun != null)
                     ApplicationClearAfterTestRun();
-                foreach (var file in FilesToDelete) {
-                    if (File.Exists(file)) {
-                        try {
-                            File.Delete(file);
-                        } catch {
-                        }
+                CleanUpFilesAndDirectories();
+            }
+        }
+
+        public static void CleanUpFilesAndDirectories() {
+            foreach (var file in FilesToDelete) {
+                if (File.Exists(file)) {
+                    try {
+                        File.Delete(file);
+                    } catch (Exception ex) {
+                        Log.Error(string.Format("Failed to delete file during cleanup. Filename: {0}", file), ex);
                     }
                 }
-                foreach (var directory in DirectoriesToDelete) {
-                    if (Directory.Exists(directory)) {
-                        try {
-                            Directory.Delete(directory, true);
-                        } catch {
-                        }
+            }
+            foreach (var directory in DirectoriesToDelete) {
+                if (Directory.Exists(directory)) {
+                    try {
+                        Directory.Delete(directory, true);
+                    } catch (Exception ex) {
+                        Log.Error(string.Format("Failed to delete directory during cleanup. Directory: {0}", directory), ex);
                     }
                 }
             }

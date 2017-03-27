@@ -114,6 +114,21 @@ namespace UiClickTestDSL.DslObjects {
             throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
         }
 
+        public void SelectRowByCellContent(string columnName, string content) {
+            int foundRow = -1;
+            int colIndex = HeaderNamesToIndex[columnName];
+            for (int i = 0; i < RowCount; i++) {
+                var cell = Cell(i, colIndex);
+                if (cell.Text == content) {
+                    foundRow = i;
+                    break;
+                }
+            }
+            if (foundRow == -1)
+                throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
+            SelectRow(foundRow);
+        }
+
         private SelectionItemPattern GetRowSelectionPattern(int rowIndex) {
             var rows = dgAutoEl.FindAllChildrenByClassName("DataGridRow");
             Console.WriteLine("found rows: " + rows.Count() + ";  index to select: " + rowIndex);
@@ -129,7 +144,7 @@ namespace UiClickTestDSL.DslObjects {
         public void SelectLastRow() {
             try {
                 var scroll = dgAutoEl.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
-                scroll.SetScrollPercent(-1, 100);
+                scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 100);
             } catch (InvalidOperationException) {
                 //This means there was no scrollbar because the list in the grid is to short to be scrollable   
             }

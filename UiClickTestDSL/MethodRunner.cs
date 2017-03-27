@@ -21,7 +21,7 @@ namespace UiClickTestDSL {
         public string _settingsFilePath;
         public string _sectionedResultFilePath;
 
-        private string DebugLogPath { get { return new FileInfo(_settingsFilePath).DirectoryName + @"\___" + Environment.MachineName + ".log"; } }
+        private string DebugLogPath { get { return new FileInfo(_settingsFilePath).DirectoryName + @"\___" + Environment.MachineName.ToUpper() + ".log"; } }
 
         public MethodRunner(params string[] filenamesThatStopTheTestRun) {
             emptyParams = new object[] { };
@@ -94,7 +94,7 @@ namespace UiClickTestDSL {
             }
             var startTime = DateTime.Now;
             var info = new List<string>();
-            info.Add(Environment.MachineName);
+            info.Add(Environment.MachineName.ToUpper());
             info.Add("Start time: " + startTime);
             try {
                 info.Add(string.Format("Total marked to be skipped: {0}", skipOnThisComputer.Count));
@@ -147,7 +147,7 @@ namespace UiClickTestDSL {
             info.Add("Error count: " + ErrorCount);
             if (ErrorCount > 0) {
                 File.WriteAllLines(_sectionedResultFilePath, info);
-                Thread.Sleep(TimeSpan.FromMinutes(0.2)); //time to allow outside executor handle any files
+                Thread.Sleep(TimeSpan.FromMinutes(5)); //time to allow outside executor handle any files
             }
             //writing a log-file with the machinename as filename to be able to compare run times when trying to balance which computers should run which tests
             File.WriteAllLines(DebugLogPath, info);

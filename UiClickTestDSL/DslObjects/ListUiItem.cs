@@ -21,5 +21,10 @@ namespace UiClickTestDSL.DslObjects {
         public void SetFocus() {
             _ae.SetFocus();
         }
+
+        public void AddToSelection() {
+            var patt = _ae.GetPattern<SelectionItemPattern>(SelectionItemPattern.Pattern);
+            patt.AddToSelection();
+        }
     }
 }

@@ -94,7 +94,7 @@ namespace UiClickTestDSL {
         }
 
         public static void Sleep(int seconds) {
-            if (seconds >= 100)
+            if (seconds >= 300)
                 seconds /= 1000;
             seconds = Math.Max(1, seconds);
             Thread.Sleep(seconds * 1000);
@@ -189,10 +189,16 @@ namespace UiClickTestDSL {
         /// </summary>
         public static void TypeText(string text) {
             SendKeys.SendWait(text);
+            SendKeys.Flush();
+            Sleep(2); //workaround for timing issues on different operating systems
         }
 
         public virtual string FindFileInAnyParentFolder(string filename) {
             return FileLocator.LocateFileInfo(filename).FullName;
+        }
+
+        public virtual string FindFolderInAnyParentFolder(string filename) {
+            return FileLocator.LocateFolder(filename).FullName;
         }
 
         protected virtual void InvalidateCachedObjects() {

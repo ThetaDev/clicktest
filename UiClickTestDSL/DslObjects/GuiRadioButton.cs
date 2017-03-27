@@ -43,5 +43,14 @@ namespace UiClickTestDSL.DslObjects {
         public void ShouldBeEnabled() {
             Assert.IsTrue(btn.Current.IsEnabled, btn.Current.Name + " was disabled.");
         }
+
+        public void ShouldBeSelected() {
+            var invoker = btn.GetPattern<SelectionItemPattern>(SelectionItemPattern.Pattern);
+            Assert.IsTrue(invoker.Current.IsSelected, btn.Current.Name + " was not selected.");
+        }
+        public void ShouldNotBeSelected() {
+            var invoker = btn.GetPattern<SelectionItemPattern>(SelectionItemPattern.Pattern);
+            Assert.IsFalse(invoker.Current.IsSelected, btn.Current.Name + " was selected.");
+        }
     }
 }
