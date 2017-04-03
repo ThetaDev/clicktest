@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
+using UiClickTestDSL.HelperPrograms;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiComboBox {
@@ -93,7 +94,12 @@ namespace UiClickTestDSL.DslObjects {
 
         public void ShouldRead(string text) {
             string displayed = DisplayText;
-            Assert.IsTrue(RegexMatch(displayed, text), "Wrong value in combobox, should be: " + text + " was: " + displayed);
+            Assert.IsTrue(RegexMatch(displayed, text), "Wrong value in combobox, should be: " + text + ", was: " + displayed);
+        }
+
+        public void ShouldReadContaining(string text) {
+            string displayed = DisplayText;
+            Assert.IsTrue(displayed.ContainsIgnoreCase(text), "Wrong value in combobox, should contain: " + text + ", was: " + displayed);
         }
 
         public void ShouldContainItems() {
