@@ -125,7 +125,7 @@ namespace UiClickTestDSL {
                     List<AutomationElement> dialogs = null;
                     try {
                         var mainWindow = GetMainWindow();
-                        dialogs = mainWindow.FindAllChildrenByByLocalizedControlType("Dialog").ToList();
+                        dialogs = mainWindow.FindAllChildrenByByLocalizedControlType(AutomationExtensions.DialogLocalizedControlNameOptions).ToList();
                     } catch (AutomationElementNotFoundException) {
                         //I expect not to find these dialogs.
                     } catch {

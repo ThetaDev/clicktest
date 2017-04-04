@@ -7,7 +7,7 @@ namespace UiClickTestDSL.AutomationCode {
     public static class AutomationExtensions {
         private static readonly Dictionary<string, List<string>> NameOptions = new Dictionary<string, List<string>> {
                 { "Cancel", new List<string>{ "Avbryt" } },
-                { "No", new List<string>{ "Nei" } },     
+                { "No", new List<string>{ "Nei" } },
                 { "Open", new List<string>{ "Åpne" } },
                 { "Save", new List<string>{ "Lagre" } },
                 { "_Update", new List<string>{ "Update" } },
@@ -147,6 +147,10 @@ namespace UiClickTestDSL.AutomationCode {
         }
         public static IEnumerable<AutomationElement> FindAllChildrenByByLocalizedControlType(this AutomationElement element, string controlType) {
             var res = element.FindAll(TreeScope.Descendants, LocalizedControlType(controlType));
+            return res.Cast<AutomationElement>();
+        }
+        public static IEnumerable<AutomationElement> FindAllChildrenByByLocalizedControlType(this AutomationElement element, params string[] controlTypes) {
+            var res = element.FindAll(TreeScope.Descendants, Or(controlTypes.Select(LocalizedControlType)));
             return res.Cast<AutomationElement>();
         }
 
