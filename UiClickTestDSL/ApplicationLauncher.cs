@@ -135,11 +135,17 @@ namespace UiClickTestDSL {
                             Log.Error("Exception while trying to save screenshot: " + ex.Message, ex);
                         }
                     }
+                    int problemDialogCounter = 0;
                     if (dialogs != null) {
                         foreach (var d in dialogs) {
                             Thread.Sleep(1000);
                             WaitForInputIdle();
                             var errorDialogHeading = d.Current.Name;
+                            if (string.IsNullOrEmpty(errorDialogHeading)) {
+                                continue; //Some controls like ContextMenus show up as dialogs, even though they do not support the WindowPattern
+                            }
+                            problemDialogCounter++;
+
                             string screenShotFilename = string.Empty;
                             try {
                                 screenShotFilename = ScreenShooter.SaveToFile();
@@ -156,7 +162,7 @@ namespace UiClickTestDSL {
                         }
                         if (!ConnectedInsteadOfStarted)
                             KillProcess();
-                        Assert.AreEqual(0, dialogs.Count, "Error dialogs found when trying to close program.");
+                        Assert.AreEqual(0, problemDialogCounter, "Error dialogs found when trying to close program.");
                     }
                 }
             } finally {
