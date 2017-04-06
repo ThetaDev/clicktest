@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-﻿
+
 namespace UiClickTestDSL.DslObjects {
     public class GuiTextBoxes : List<GuiTextBox> {
         public static GuiTextBoxes GetAll(AutomationElement window, string prefix) {
@@ -25,7 +25,7 @@ namespace UiClickTestDSL.DslObjects {
             var visible = from t in this
                           where t.Visible && !except.Contains(t.AutomationId)
                           select t;
-            Console.WriteLine("Visible: " + visible.Aggregate("", (current, tb) => current + tb.AutomationId + ": " + tb.Text + ", "));
+            UiTestDslCoreCommon.PrintLine("Visible: " + visible.Aggregate("", (current, tb) => current + tb.AutomationId + ": " + tb.Text + ", "));
             return visible;
         }
 

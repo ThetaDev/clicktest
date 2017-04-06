@@ -88,7 +88,7 @@ namespace UiClickTestDSL.DslObjects {
 
         public void PrintAllItems() {
             foreach (var item in GetAllItems()) {
-                Console.WriteLine(item.Text);
+                UiTestDslCoreCommon.PrintLine(item.Text);
             }
         }
 

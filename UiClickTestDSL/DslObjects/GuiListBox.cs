@@ -124,12 +124,9 @@ namespace UiClickTestDSL.DslObjects {
                 var allLabels = from i in all
                                 from l in i.GetLabels(null)
                                 select l.Text;
-                Console.Write("\nValue: ");
-                Console.WriteLine(value);
-                Console.WriteLine("All found:");
-                foreach (var label in allLabels) {
-                    Console.WriteLine(label);
-                }
+                var labelsStr = string.Join(Environment.NewLine, allLabels);
+                var msg = $"Unable to find element with label, even after scrolling to the bottom. Searching for \"{value}\". Found: {Environment.NewLine}{labelsStr}";
+                UiTestDslCoreCommon.PrintLine(msg);
             }
             item.Select();
             UiTestDslCoreCommon.WaitWhileBusy();

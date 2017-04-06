@@ -131,7 +131,7 @@ namespace UiClickTestDSL.DslObjects {
 
         private SelectionItemPattern GetRowSelectionPattern(int rowIndex) {
             var rows = dgAutoEl.FindAllChildrenByClassName("DataGridRow");
-            Console.WriteLine("found rows: " + rows.Count() + ";  index to select: " + rowIndex);
+            UiTestDslCoreCommon.PrintLine("found rows: " + rows.Count() + ";  index to select: " + rowIndex);
             var row = rows.ToList()[rowIndex];
             return row.GetPattern<SelectionItemPattern>(SelectionItemPattern.Pattern);
         }
@@ -214,7 +214,7 @@ namespace UiClickTestDSL.DslObjects {
 
         public void PrintColumns() {
             foreach (var name in HeaderNamesToIndex.Keys) {
-                Console.WriteLine(name);
+                UiTestDslCoreCommon.PrintLine(name);
             }
         }
 
