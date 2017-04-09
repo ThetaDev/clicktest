@@ -100,13 +100,27 @@ namespace UiClickTestDSL.DslObjects {
             return item;
         }
 
+        public void ScrollToTop() {
+            try {
+                var scroll = InternalElement.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
+                scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 0);
+            } catch (InvalidOperationException) {
+                //This means there was no scrollbar because the list in the TreeView is to short to be scrollable   
+            }
+        }
+
         public GuiListBoxItem SelectElementWithLabel(string value) {
-            IList<GuiListBoxItem> all = GetAllListItems();
+            List<GuiListBoxItem> completeSet = new List<GuiListBoxItem>();
+            List<GuiListBoxItem> all = GetAllListItems();
+            Log.Debug("Found elements: " + all.Count);
+            completeSet.AddRange(all);
             IEnumerable<GuiListBoxItem> items = from i in all
                                                 where i.HasLabelWithText(null, value)
                                                 select i;
             GuiListBoxItem item = items.FirstOrDefault();
             if (item == null) {
+                var screenshotNo = ScreenShooter.SaveToFile();
+                Log.Debug("Saved screenshot of view of listbox before scrolling: " + screenshotNo);
                 //try to scroll to the bottom, to see if we can find it there.
                 try {
                     var scroll = InternalElement.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
@@ -115,15 +129,15 @@ namespace UiClickTestDSL.DslObjects {
                     //This means there was no scrollbar because the list in the TreeView is to short to be scrollable   
                 }
                 all = GetAllListItems();
+                Log.Debug("Found elements: " + all.Count);
+                completeSet.AddRange(all);
                 items = from i in all
                         where i.HasLabelWithText(null, value)
                         select i;
                 item = items.FirstOrDefault();
             }
             if (item == null) {
-                var allLabels = from i in all
-                                from l in i.GetLabels(null)
-                                select l.Text;
+                var allLabels = completeSet.Select(l => string.Join("\t", l.GetLabels(null)));
                 var labelsStr = string.Join(Environment.NewLine, allLabels);
                 var msg = $"Unable to find element with label, even after scrolling to the bottom. Searching for \"{value}\". Found: {Environment.NewLine}{labelsStr}";
                 UiTestDslCoreCommon.PrintLine(msg);

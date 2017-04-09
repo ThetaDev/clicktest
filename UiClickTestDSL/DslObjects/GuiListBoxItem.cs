@@ -22,10 +22,16 @@ namespace UiClickTestDSL.DslObjects {
             _selection.Select();
         }
 
+        public void NameShouldBe(string text) {
+            Assert.AreEqual(text, Window.Current.Name);
+        }
+
         public void OneLabelShouldHaveText(string text) {
             var labels = new List<GuiLabel>();
             AutomationElement el = TreeWalker.RawViewWalker.GetFirstChild(Window);
+            int i = 0;
             while (el != null) {
+                i++;
                 if (el.Current.ControlType == ControlType.Text)
                     labels.Add(new GuiLabel(el));
                 el = TreeWalker.RawViewWalker.GetNextSibling(el);
@@ -33,7 +39,11 @@ namespace UiClickTestDSL.DslObjects {
             var contains = from l in labels
                            where l.Text == text
                            select l;
-            Assert.AreNotEqual(0, contains.Count());
+            Assert.AreNotEqual(0, contains.Count(), "Expected text: " + text + "  ; # elements found; " + i + " ; Texts actually found: " + string.Join(Environment.NewLine, labels.Select(l => l.Text)));
+        }
+
+        public void VerifyHasLabelWithText(string text) {
+            Assert.IsTrue(HasLabelWithText(null, text), "No label found with text: " + text);
         }
 
         public bool HasLabelWithText(string labelName, string text) {

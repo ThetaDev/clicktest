@@ -249,8 +249,8 @@ namespace UiClickTestDSL {
         public virtual GuiExpander Expander(ByAutomationId automationId) { return GuiExpander.GetExpanderByAutomationId(Window, automationId.Value); }
         public virtual GuiExpander Expander(string caption) { return GuiExpander.GetExpander(Window, caption); }
 
-        public virtual GuiDialog Dialog(string caption) { return GuiDialog.GetDialog(Program, Window, caption); }
-        public virtual GuiFileDialog OpenFileDialog(string caption) { return GuiFileDialog.Find(Window, caption); }
+        protected virtual GuiDialog Dialog(string caption) { return GuiDialog.GetDialog(Program, Window, caption); }
+        protected virtual GuiFileDialog OpenFileDialog(string caption) { return GuiFileDialog.Find(Window, caption); }
 
         public virtual void PrintTextBoxes() { PrintControls(GuiTextBox.GetAll(Window)); }
         public virtual GuiTextBox TextBox(string automationId) { return GuiTextBox.GetTextBox(Window, automationId); }
