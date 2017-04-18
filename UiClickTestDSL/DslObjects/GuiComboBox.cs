@@ -46,11 +46,11 @@ namespace UiClickTestDSL.DslObjects {
 
         public string DisplayText {
             get {
-                List<GuiComboBoxItem> all = GetAllItems();
-                IEnumerable<string> displayText = from i in all
-                                                  where i.IsSelected
-                                                  select i.Text;
-                return displayText.First();
+                var selectionPattern = _cmb.GetPattern<SelectionPattern>(SelectionPattern.Pattern);
+                var selection = selectionPattern.Current.GetSelection();
+                var first = selection.First();
+                var comboBoxItem = new GuiComboBoxItem(first);
+                return comboBoxItem.Text;
             }
         }
 
