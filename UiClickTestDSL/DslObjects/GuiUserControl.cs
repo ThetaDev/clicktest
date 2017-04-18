@@ -1,4 +1,5 @@
-﻿using System.Windows.Automation;
+﻿using System.Collections.Generic;
+using System.Windows.Automation;
 using UiClickTestDSL.AutomationCode;
 
 namespace UiClickTestDSL.DslObjects {
@@ -16,6 +17,11 @@ namespace UiClickTestDSL.DslObjects {
             AutomationElement ele;
             ele = window.FindChildByControlTypeAndAutomationId(ControlType.Custom, name);
             return new GuiUserControl(ele);
+        }
+
+        public static IEnumerable<AutomationElement> GetAll(AutomationElement window) {
+            var children = window.FindAllChildrenByControlType(ControlType.Custom);
+            return children;
         }
 
         public override void GetThisWindow() {
