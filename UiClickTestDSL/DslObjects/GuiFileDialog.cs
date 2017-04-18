@@ -58,7 +58,7 @@ namespace UiClickTestDSL.DslObjects {
         public void SelectFile(string filePathAndName) {
             //UiTestDslCoreCommon.WaitWhileBusy();
             //todo after upgradering to .Net 4.6: 
-            UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromMinutes(3), () => GuiTextBox.GetTextBoxByName(_dialog, "File name:"));
+            UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromMinutes(5), () => GuiTextBox.GetTextBoxByName(_dialog, "File name:"));
             UiTestDslCoreCommon.WaitWhileBusy();
             SendKeys.SendWait(filePathAndName);
             SendKeys.SendWait("{Enter}");
@@ -73,7 +73,7 @@ namespace UiClickTestDSL.DslObjects {
         public void Cancel() {
             //UiTestDslCoreCommon.WaitWhileBusy();
             //todo after upgradering to .Net 4.6: 
-            UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromMinutes(3), () => GuiTextBox.GetTextBoxByName(_dialog, "File name:"));
+            UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromMinutes(5), () => GuiTextBox.GetTextBoxByName(_dialog, "File name:"));
             UiTestDslCoreCommon.WaitWhileBusy();
             SendKeys.SendWait("{Esc}");
             Thread.Sleep(2000);
