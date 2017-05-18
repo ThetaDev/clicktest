@@ -58,9 +58,12 @@ namespace UiClickTestDSL.DslObjects {
             return texts.Aggregate("", (current, t) => current + t);
         }
 
-        public void VisibleTextDoesNotContain(string text) {
+        public void VisibleTextDoesNotContain(params string[] texts) {
             string visibleText = GetVisibleText();
-            Assert.IsFalse(visibleText.Contains(text));
+            foreach (var text in texts) {
+                Assert.IsFalse(visibleText.Contains(text), "Visible text should not, but contained: " + text);
+            }
+            
         }
 
         public void VisibleTextBoxesContains(string text) {
