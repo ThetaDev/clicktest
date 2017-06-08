@@ -209,6 +209,7 @@ namespace UiClickTestDSL.DslObjects {
         public void ClearSelection() {
             for (int i = 0; i < RowCount; i++) {
                 GetRowSelectionPattern(i).RemoveFromSelection();
+                UiTestDslCoreCommon.WaitWhileBusy();
             }
         }
 
@@ -230,6 +231,14 @@ namespace UiClickTestDSL.DslObjects {
 
         public void RowCountShouldBeLargerThan(int count) {
             Assert.IsTrue(count < RowCount, "Row count should be larger than: " + count + " was: " + RowCount);
+        }
+
+        public void ShouldBeDisabled() {
+            Assert.IsTrue(dgAutoEl.Current.IsEnabled, AutomationId + " was disabled.");
+        }
+
+        public void ShouldBeEnabled() {
+            Assert.IsTrue(dgAutoEl.Current.IsEnabled, AutomationId + " was disabled.");
         }
     }
 }
