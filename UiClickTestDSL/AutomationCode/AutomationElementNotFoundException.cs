@@ -21,18 +21,41 @@ namespace UiClickTestDSL.AutomationCode {
         }
 
         private static void HandleCondition(Condition searchCondition, StringBuilder res) {
-            if (searchCondition is PropertyCondition) {
-                res.Append((searchCondition as PropertyCondition).Property + " ");
-                res.Append((searchCondition as PropertyCondition).Value + " ");
-            } else if (searchCondition is OrCondition) {
-                foreach (var cond in (searchCondition as OrCondition).GetConditions())
-                    HandleCondition(cond, res);
-            } else if (searchCondition is AndCondition) {
-                foreach (var cond in (searchCondition as AndCondition).GetConditions())
-                    HandleCondition(cond, res);
+            res.Append("(");
+            if (searchCondition is PropertyCondition prop) {
+                var readablePropName = prop.Property.ProgrammaticName.Replace("AutomationElementIdentifiers.", "");
+                res.Append(readablePropName);
+                if (prop.Flags == PropertyConditionFlags.IgnoreCase) {
+                    res.Append("[IgnoreCase]");
+                }
+                res.Append(": ");
+                res.Append(GetStringFromPropertyConditionValue(prop));
+            } else if (searchCondition is OrCondition or) {
+                foreach (var sub in or.GetConditions()) {
+                    HandleCondition(sub, res);
+                    res.Append(" OR ");
+                }
+                res.Length -= 4; //" OR "
+            } else if (searchCondition is AndCondition and) {
+                foreach (var sub in and.GetConditions()) {
+                    HandleCondition(sub, res);
+                    res.Append(" AND ");
+                }
+                res.Length -= 5; //" AND "
             } else {
                 res.Append(searchCondition);
             }
+
+            res.Append(")");
+        }
+        private static string GetStringFromPropertyConditionValue(PropertyCondition prop) {
+            if (Equals(prop.Property, AutomationElement.ControlTypeProperty) && prop.Value is int id) {
+                var controlType = ControlType.LookupById(id);
+                if (controlType != null) {
+                    return controlType.ProgrammaticName;
+                }
+            }
+            return prop.Value as string;
         }
     }
 }

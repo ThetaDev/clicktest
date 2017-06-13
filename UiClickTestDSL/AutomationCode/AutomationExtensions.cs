@@ -109,8 +109,9 @@ namespace UiClickTestDSL.AutomationCode {
                 retries--;
                 Thread.Sleep(500);
             }
-            if (result == null)
-                throw new AutomationElementNotFoundException("Could not find element: ", searchConditions);
+            if (result == null) {
+                throw new AutomationElementNotFoundException("Could not find element: ", new[] { searchCond });
+            }
             return result;
         }
 
