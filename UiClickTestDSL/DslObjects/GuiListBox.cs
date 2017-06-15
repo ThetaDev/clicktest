@@ -64,14 +64,21 @@ namespace UiClickTestDSL.DslObjects {
             get { return GetAllListItems()[i]; }
         }
 
-        public void ShouldContainButton(string elementName) {
+        public void ShouldContainButton(string buttonName) {
             IList<GuiListBoxItem> all = GetAllListItems();
             IEnumerable<GuiListBoxItem> items = from i in all
-                                                where i.HasButtonWithText(elementName)
+                                                where i.HasButtonWithText(buttonName)
                                                 select i;
             Assert.AreEqual(1, items.Count());
         }
 
+        public void ShouldContainLabelWithText(string labelText) {
+            IList<GuiListBoxItem> all = GetAllListItems();
+            IEnumerable<GuiListBoxItem> items = from i in all
+                                                where i.HasLabelWithText(text: labelText)
+                                                select i;
+            Assert.AreEqual(1, items.Count());
+        }
 
         public void CountShouldBe(int expectedCount) {
             Assert.AreEqual(expectedCount, GetAllListItems().Count);
@@ -115,7 +122,7 @@ namespace UiClickTestDSL.DslObjects {
             Log.Debug("Found elements: " + all.Count);
             completeSet.AddRange(all);
             IEnumerable<GuiListBoxItem> items = from i in all
-                                                where i.HasLabelWithText(null, value)
+                                                where i.HasLabelWithText(text: value)
                                                 select i;
             GuiListBoxItem item = items.FirstOrDefault();
             if (item == null) {
@@ -132,7 +139,7 @@ namespace UiClickTestDSL.DslObjects {
                 Log.Debug("Found elements: " + all.Count);
                 completeSet.AddRange(all);
                 items = from i in all
-                        where i.HasLabelWithText(null, value)
+                        where i.HasLabelWithText(text: value)
                         select i;
                 item = items.FirstOrDefault();
             }

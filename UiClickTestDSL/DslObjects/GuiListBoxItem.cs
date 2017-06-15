@@ -42,21 +42,21 @@ namespace UiClickTestDSL.DslObjects {
             Assert.AreNotEqual(0, contains.Count(), "Expected text: " + text + "  ; # elements found; " + i + " ; Texts actually found: " + string.Join(Environment.NewLine, labels.Select(l => l.Text)));
         }
 
-        public void VerifyHasLabelWithText(string text) {
-            Assert.IsTrue(HasLabelWithText(null, text), "No label found with text: " + text);
+        public void VerifyHasLabelWithText(string labelAutomationId = null, string text = "value to search for") {
+            Assert.IsTrue(HasLabelWithText(labelAutomationId, text), "No label found with text: " + text);
         }
 
-        public bool HasLabelWithText(string labelName, string text) {
-            return GuiLabels.GetAll(Window).VisibleContains(text);
+        public bool HasLabelWithText(string labelAutomationId = null, string text = "value to search for") {
+            return GuiLabels.GetAll(Window, labelAutomationId).VisibleContains(text);
         }
         public bool HasButtonWithText(string buttonName) {
             var all = GuiButton.GetAll(Window);
             return all.Any(btn => btn.Current.Name.Equals(buttonName));
         }
 
-        public bool HasLabelStartingWithText(string match){
+        public bool HasLabelStartingWithText(string buttonName) {
             var all = GuiLabel.GetAll(Window);
-            return all.Any(i => i.Current.Name.StartsWith(match));
+            return all.Any(i => i.Current.Name.StartsWith(buttonName));
         }
     }
 }
