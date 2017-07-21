@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Common;
 using log4net;
 using log4net.Config;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,6 +21,7 @@ namespace UiClickTestDSL {
         private readonly List<string> _filenamesThatStopTheTestRun;
         public string _settingsFilePath;
         public string _sectionedResultFilePath;
+        public string BundleFilename;
 
         private string DebugLogPath { get { return new FileInfo(_settingsFilePath).DirectoryName + @"\___" + Environment.MachineName.ToUpper() + ".log"; } }
 
@@ -37,6 +39,22 @@ namespace UiClickTestDSL {
             if (TestNameFilterHook != null)
                 return TestNameFilterHook(completeTestname);
             return false;
+        }
+
+        private int _start = -1, _stop = -1;
+        private bool _stopAfterSection = false;
+        private List<string> _initialTests = new List<string>();
+        private List<string> _skipOnThisComputer = new List<string>();
+
+        private void Init() {
+            if (_settingsFilePath != null && File.Exists(_settingsFilePath)) {
+                var ini = new EasyIni(_settingsFilePath); //"manual" ini-file handling to avoid extra dependencies
+                _start = ini.Val("start", _start);
+                _stop = ini.Val("stop", _stop);
+                _stopAfterSection = ini.Val("stopAfterSection", _stopAfterSection);
+                _initialTests = ini.ReadFilteredLinesFromFile("InitialTestsFile");
+                _skipOnThisComputer = ini.ReadFilteredLinesFromFile("SkipOnThisComputerFile");
+            }
         }
 
         private List<TestDef> GetAllTests(Assembly testAssembly, List<string> skipOnThisComputer) {
@@ -70,62 +88,41 @@ namespace UiClickTestDSL {
         }
 
         public void Run(Assembly testAssembly, string filter) {
-            int start = -1, stop = -1;
-            bool stopAfterSection = false;
-            var initialTests = new List<string>();
-            var skipOnThisComputer = new List<string>();
-            if (_settingsFilePath != null && File.Exists(_settingsFilePath)) {
-                var settings = File.ReadAllLines(_settingsFilePath); //"manual" ini-file handling to avoid extra dependencies
-                var set = settings.FirstOrDefault(s => s.StartsWith("start="));
-                if (set != null)
-                    start = int.Parse(set.Split('=')[1]);
-                set = settings.FirstOrDefault(s => s.StartsWith("stop="));
-                if (set != null)
-                    stop = int.Parse(set.Split('=')[1]);
-                set = settings.FirstOrDefault(s => s.StartsWith("stopAfterSection="));
-                if (set != null)
-                    stopAfterSection = bool.Parse(set.Split('=')[1]);
-                set = settings.FirstOrDefault(s => s.StartsWith("InitialTestsFile="));
-                if (set != null)
-                    initialTests = File.ReadAllLines(set.Split('=')[1]).Where(t => !(string.IsNullOrWhiteSpace(t) || t.StartsWith("--"))).ToList();
-                set = settings.FirstOrDefault(s => s.StartsWith("SkipOnThisComputerFile="));
-                if (set != null)
-                    skipOnThisComputer = File.ReadAllLines(set.Split('=')[1]).Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
-            }
+            Init();
             var startTime = DateTime.Now;
             var info = new List<string>();
             info.Add(Environment.MachineName.ToUpper());
             info.Add("Start time: " + startTime);
             try {
-                info.Add(string.Format("Total marked to be skipped: {0}", skipOnThisComputer.Count));
-                List<TestDef> tests = GetAllTests(testAssembly, skipOnThisComputer);
-                int noToBeRun = initialTests.Count;
-                if (stopAfterSection)
-                    noToBeRun += tests.Count(t => t.i >= start && (stop == -1 || t.i <= stop));
+                info.Add(string.Format("Total marked to be skipped: {0}", _skipOnThisComputer.Count));
+                List<TestDef> tests = GetAllTests(testAssembly, _skipOnThisComputer);
+                int noToBeRun = _initialTests.Count;
+                if (_stopAfterSection)
+                    noToBeRun += tests.Count(t => t.i >= _start && (_stop == -1 || t.i <= _stop));
                 else
                     noToBeRun = tests.Count;
                 int lastTestRun = 0;
-                if (initialTests.Any()) {
-                    var initial = tests.Where(t => initialTests.Contains(t.CompleteTestName)).ToList();
-                    info.Add(string.Format("Starting run of initial tests. # {0} ({1})", initial.Count, initialTests.Count));
+                if (_initialTests.Any()) {
+                    var initial = tests.Where(t => _initialTests.Contains(t.CompleteTestName)).ToList();
+                    info.Add(string.Format("Starting run of initial tests. # {0} ({1})", initial.Count, _initialTests.Count));
                     lastTestRun = RunTests(initial, filter, noToBeRun);
                     info.Add("Elapsed: " + (DateTime.Now - startTime) + " last test run: " + lastTestRun);
                     WriteSectionedResultFiles(info);
                     tests = tests.Except(initial).ToList();
                 }
-                if (start != -1 || stop != -1) {
-                    var sect = tests.Where(t => t.i >= start && (stop == -1 || t.i <= stop)).ToList();
+                if (_start != -1 || _stop != -1) {
+                    var sect = tests.Where(t => t.i >= _start && (_stop == -1 || t.i <= _stop)).ToList();
                     lastTestRun = RunTests(sect, filter, noToBeRun);
-                    info.Add(string.Format("Sectioned test run: {0} - {1}; total # run: {2}", start, lastTestRun, sect.Count));
+                    info.Add(string.Format("Sectioned test run: {0} - {1}; total # run: {2}", _start, lastTestRun, sect.Count));
                     info.Add("Elapsed: " + (DateTime.Now - startTime));
                     WriteSectionedResultFiles(info);
-                    if (stopAfterSection)
+                    if (_stopAfterSection)
                         tests = new List<TestDef>();
                     else
                         tests = tests.Except(sect).ToList();
                 }
                 lastTestRun = RunTests(tests, filter, noToBeRun);
-                if (!stopAfterSection)
+                if (!_stopAfterSection)
                     info.Add(string.Format("First and last test run after section: {0} - {1}; total # run: {2}", tests.OrderBy(t => t.i).First().i, lastTestRun, tests.Count));
                 info.Add("The sectioned tests was not re-run.");
                 info.Add("Total elapsed: " + (DateTime.Now - startTime));
