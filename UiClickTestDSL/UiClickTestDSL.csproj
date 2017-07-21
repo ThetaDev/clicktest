@@ -89,6 +89,7 @@
     <Compile Include="DslObjects\GuiToggleButton.cs" />
     <Compile Include="DslObjects\GuiUserControl.cs" />
     <Compile Include="DslObjects\ListUiItem.cs" />
+    <Compile Include="EasyIni.cs" />
     <Compile Include="FileLocator.cs" />
     <Compile Include="HelperPrograms\Explorer.cs" />
     <Compile Include="HelperPrograms\HelperProgramSuper.cs" />
