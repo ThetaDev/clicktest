@@ -10,10 +10,10 @@ namespace UiClickTestDSL.DslObjects {
         private static ApplicationLauncher _currentProgram = null;
         private static AutomationElement _currentParentWindow = null;
 
-        public static GuiDialog GetDialog(ApplicationLauncher program, AutomationElement parentWindow, string caption) {
+        public static GuiDialog GetDialog(ApplicationLauncher program, AutomationElement parentWindow, string caption, bool quickCheck = false) {
             //kan kanskje få til noge med: window.GetMessageBox() i hoved dsl-klassen
             if (_cachedDialog == null || _cachedDialog.Caption != caption) {
-                var dialog = program.GetDialog(caption);
+                var dialog = program.GetDialog(caption, quickCheck);
                 _cachedDialog = new GuiDialog(dialog, caption);
                 _currentProgram = program;
                 _currentParentWindow = parentWindow;

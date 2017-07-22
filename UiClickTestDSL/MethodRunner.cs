@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -194,9 +195,10 @@ namespace UiClickTestDSL {
                 Log.Debug("Found file defined to stop test-run");
                 return;
             }
+            var testTimer = Stopwatch.StartNew();
             MethodInfo testmethod = test.Test;
             TestsRun++;
-            Log.DebugFormat(Environment.NewLine + "{0}/{1} - {2} - E:{3}    {4} - {2}", TestsRun, totalNoTestsToRun, test.i, ErrorCount, test.CompleteTestName);
+            Log.DebugFormat(Environment.NewLine + $"E:{ErrorCount} - {TestsRun}/{totalNoTestsToRun} - {test.i} - {test.CompleteTestName}");
             if ((filter != "" && !testmethod.Name.ToLower().StartsWith(filter.ToLower())) || FilterByUserHook(test.CompleteTestName))
                 return;
             if (ResetTestEnvironment != null)
@@ -240,7 +242,8 @@ namespace UiClickTestDSL {
                     ErrorHook(test.CompleteTestName);
             }
             CloseProgram(closer, classObj, emptyParams);
-            Log.Debug("-- Test # " + test.i + " done, current error count: " + ErrorCount + " \n\n");
+            testTimer.Stop();
+            Log.Debug($"-- Test # {test.i} done: {testTimer.Elapsed} \nE: {ErrorCount} \n\n");
             //Need to allow the program time to exit, to avoid the next test finding an open program while starting.
             Thread.Sleep(3000);
         }

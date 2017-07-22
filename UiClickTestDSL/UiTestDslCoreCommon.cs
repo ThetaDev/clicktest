@@ -46,7 +46,7 @@ namespace UiClickTestDSL {
         public static void WaitWhileBusy() {
             Sleep(1);
             Program.WaitForInputIdle();
-            Sleep(1);
+            Sleep(400);
         }
 
         public static void RepeatTryingFor(TimeSpan time, Action todo, int sleepInterval = 1000) {
@@ -94,7 +94,7 @@ namespace UiClickTestDSL {
         }
 
         public static void Sleep(int seconds) {
-            if (seconds >= 300)
+            if (seconds >= 251) //to be able to wait up to a quarter of a second, 250ms.
                 seconds /= 1000;
             seconds = Math.Max(1, seconds);
             Thread.Sleep(seconds * 1000);
@@ -249,7 +249,7 @@ namespace UiClickTestDSL {
         public virtual GuiExpander Expander(ByAutomationId automationId) { return GuiExpander.GetExpanderByAutomationId(Window, automationId.Value); }
         public virtual GuiExpander Expander(string caption) { return GuiExpander.GetExpander(Window, caption); }
 
-        protected virtual GuiDialog Dialog(string caption) { return GuiDialog.GetDialog(Program, Window, caption); }
+        protected virtual GuiDialog Dialog(string caption, bool quickCheck = false) { return GuiDialog.GetDialog(Program, Window, caption, quickCheck); }
         protected virtual GuiFileDialog OpenFileDialog(string caption) { return GuiFileDialog.Find(Window, caption); }
 
         public virtual void PrintTextBoxes() { PrintControls(GuiTextBox.GetAll(Window)); }

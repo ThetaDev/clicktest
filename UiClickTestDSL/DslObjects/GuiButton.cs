@@ -66,7 +66,7 @@ namespace UiClickTestDSL.DslObjects {
                 new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button),
                 new PropertyCondition(AutomationElement.IsContentElementProperty, false)
             };
-            var el = AutomationExtensions.RunActualSearch(window, searchConditions);
+            var el = AutomationExtensions.RunActualSearch(window, false, searchConditions);
             return new GuiButton(el, "AppCloseButton");
         }
 
@@ -75,7 +75,7 @@ namespace UiClickTestDSL.DslObjects {
                 new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button),
                 new PropertyCondition(AutomationElement.IsContentElementProperty, false)
             };
-            var el = AutomationExtensions.RunSearchWithName(window, name, searchConditions);
+            var el = AutomationExtensions.RunSearchWithName(window, name, false, searchConditions);
             return new GuiButton(el, "AppButton." + name);
         }
 

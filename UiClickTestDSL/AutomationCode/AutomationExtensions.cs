@@ -54,36 +54,36 @@ namespace UiClickTestDSL.AutomationCode {
         }
 
         public static AutomationElement FindChildByControlTypeAndAutomationId(this AutomationElement element, ControlType controlType, string automationId) {
-            return RunActualSearch(element, AutomationId(automationId), ControlType(controlType));
+            return RunActualSearch(element, false, AutomationId(automationId), ControlType(controlType));
         }
 
         public static AutomationElement FindChildByControlTypeAndAutomationIdOrName(this AutomationElement element, ControlType controlType, string automationOrName) {
             List<Condition> nameConds = BuildNameOptionList(automationOrName);
             nameConds.Add(new PropertyCondition(AutomationElement.AutomationIdProperty, automationOrName));
-            return RunActualSearch(element, Or(nameConds), ControlType(controlType));
+            return RunActualSearch(element, false, Or(nameConds), ControlType(controlType));
         }
 
         public static AutomationElement FindChildByControlTypeAndAutomationIdAndName(this AutomationElement element, ControlType controlType, string automationId, string name) {
-            return RunSearchWithName(element, name, AutomationId(automationId), ControlType(controlType));
+            return RunSearchWithName(element, name, false, AutomationId(automationId), ControlType(controlType));
         }
 
         public static AutomationElement FindChildByControlTypeAndName(this AutomationElement element, ControlType controlType, string name) {
-            return RunSearchWithName(element, name, ControlType(controlType));
+            return RunSearchWithName(element, name, false, ControlType(controlType));
         }
 
         public static AutomationElement FindChildByClass(this AutomationElement element, string className) {
-            return RunSearchWithName(element, "", ClassName(className));
+            return RunSearchWithName(element, "", false, ClassName(className));
         }
 
         public static AutomationElement FindChildByClassAndName(this AutomationElement element, string className, string name) {
-            return RunSearchWithName(element, name, ClassName(className));
+            return RunSearchWithName(element, name, false, ClassName(className));
         }
 
-        public static AutomationElement RunSearchWithName(AutomationElement element, string name, params Condition[] otherSearchConditions) {
+        public static AutomationElement RunSearchWithName(AutomationElement element, string name, bool quickCheck, params Condition[] otherSearchConditions) {
             List<Condition> nameConds = BuildNameOptionList(name);
             var temp = new List<Condition>(otherSearchConditions);
             temp.Add(nameConds.Count > 1 ? Or(nameConds) : nameConds[0]);
-            return RunActualSearch(element, temp.ToArray());
+            return RunActualSearch(element, quickCheck, temp.ToArray());
         }
 
         private static List<Condition> BuildNameOptionList(string name) {
@@ -98,16 +98,18 @@ namespace UiClickTestDSL.AutomationCode {
             return nameConds;
         }
 
-        internal static AutomationElement RunActualSearch(AutomationElement element, params Condition[] searchConditions) {
+        internal static AutomationElement RunActualSearch(AutomationElement element, bool quickCheck, params Condition[] searchConditions) {
             var searchCond = new AndCondition(searchConditions);
             AutomationElement result = null;
-            int retries = 20; //= 10sekund ventetid, som typisk kan komme når applikasjonen åpnes
+            int retries = 40;
+            if (quickCheck)
+                retries = 8; //total of 2seconds sleep + searching = about 10 seconds search-time.
             while (retries > 0) {
                 result = element.FindFirst(TreeScope.Descendants, searchCond);
                 if (result != null)
                     break;
                 retries--;
-                Thread.Sleep(500);
+                Thread.Sleep(250);
             }
             if (result == null) {
                 throw new AutomationElementNotFoundException("Could not find element: ", new[] { searchCond });
@@ -115,12 +117,12 @@ namespace UiClickTestDSL.AutomationCode {
             return result;
         }
 
-        public static AutomationElement FindChildByLocalizedControlTypeAndName(this AutomationElement element, string caption, params string[] controlTypes) {
-            return RunSearchWithName(element, caption, Or(controlTypes.Select(LocalizedControlType)));
+        public static AutomationElement FindChildByLocalizedControlTypeAndName(this AutomationElement element, string caption, bool quickCheck, params string[] controlTypes) {
+            return RunSearchWithName(element, caption, quickCheck, Or(controlTypes.Select(LocalizedControlType)));
         }
 
         public static AutomationElement FindChildByClassAndAutomationId(this AutomationElement element, string classname, string automationId) {
-            return RunActualSearch(element, AutomationId(automationId), ClassName(classname));
+            return RunActualSearch(element, false, AutomationId(automationId), ClassName(classname));
         }
 
         public static AutomationElementCollection FindAllChildrenByAutomationId(this AutomationElement element, string automationId) {
@@ -197,13 +199,13 @@ namespace UiClickTestDSL.AutomationCode {
 
         internal static bool RunActualHasSearch(AutomationElement element, params Condition[] searchConditions) {
             var searchCond = new AndCondition(searchConditions);
-            int retries = 20; //= 10 seconds wait, typically when an application starts
+            int retries = 40;
             while (retries > 0) {
                 var result = element.FindFirst(TreeScope.Descendants, searchCond);
                 if (result != null)
                     return true;
                 retries--;
-                Thread.Sleep(500);
+                Thread.Sleep(250);
             }
             return false;
         }

@@ -235,13 +235,20 @@ namespace UiClickTestDSL {
 
         public AutomationElement GetMainWindow() {
             Process.WaitForInputIdle();
+            //if (_timer != null) Log.Info("GetMainWindow.WaitForInputIdle: "+_timer.ElapsedMilliseconds);
             var res = AutomationElement.RootElement.FindChildByProcessId(Process.Id);
+            //if (_timer != null) Log.Info("GetMainWindow -> ActualSearch: " + _timer.ElapsedMilliseconds);
             return res;
         }
 
-        public AutomationElement GetDialog(string caption) {
+        //private Stopwatch _timer;
+
+        public AutomationElement GetDialog(string caption, bool quickCheck) {
+            //_timer = Stopwatch.StartNew();
             var mainWindow = GetMainWindow();
-            AutomationElement res = mainWindow.FindChildByLocalizedControlTypeAndName(caption, AutomationExtensions.DialogLocalizedControlNameOptions);
+            AutomationElement res = mainWindow.FindChildByLocalizedControlTypeAndName(caption, quickCheck, AutomationExtensions.DialogLocalizedControlNameOptions);
+            //_timer.Stop();
+            //Log.Info("GetDialog -> ActualSearch: " + _timer.ElapsedMilliseconds);
             return res;
         }
 
