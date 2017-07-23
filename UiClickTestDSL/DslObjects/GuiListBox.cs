@@ -24,6 +24,8 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public void TrySetFocus() {
+            if (!InternalElement.Current.IsKeyboardFocusable || InternalElement.Current.HasKeyboardFocus)
+                return; //Check decompiled for SetFocus, it only tries to set KeyBoardFocus
             try {
                 UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromSeconds(20), () => {
                     InternalElement.SetFocus();
@@ -78,6 +80,17 @@ namespace UiClickTestDSL.DslObjects {
                                                 where i.HasLabelWithText(text: labelText)
                                                 select i;
             Assert.AreEqual(1, items.Count());
+        }
+
+        public void ShouldContainTheseLabels(params string[] txtValues) {
+            IList<GuiListBoxItem> all = GetAllListItems();
+            var missing = "";
+            foreach (var txt in txtValues) {
+                var el = all.FirstOrDefault(i => i.HasLabelWithText(text: txt));
+                if (el == null)
+                    missing += txt + ",";
+            }
+            Assert.IsTrue(string.IsNullOrWhiteSpace(missing), missing);
         }
 
         public void CountShouldBe(int expectedCount) {

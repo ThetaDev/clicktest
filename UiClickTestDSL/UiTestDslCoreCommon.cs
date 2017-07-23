@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -50,10 +51,10 @@ namespace UiClickTestDSL {
         }
 
         public static void RepeatTryingFor(TimeSpan time, Action todo, int sleepInterval = 1000) {
-            int timespent = 0;
+            var sw = Stopwatch.StartNew();
             bool waiting = true;
             Exception lastException = null;
-            while (waiting && timespent < time.TotalMilliseconds) {
+            while (waiting && sw.ElapsedMilliseconds < time.TotalMilliseconds) {
                 try {
                     todo();
                     lastException = null;
@@ -62,8 +63,8 @@ namespace UiClickTestDSL {
                     lastException = ex;
                 }
                 Thread.Sleep(sleepInterval);
-                timespent += sleepInterval;
             }
+            sw.Stop();
             if (lastException != null)
                 throw lastException;
         }
