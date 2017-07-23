@@ -272,6 +272,7 @@ namespace UiClickTestDSL {
 
         public virtual GuiRadioButton RadioButton(string caption) { return GuiRadioButton.GetRadioButton(Window, caption); }
         public virtual void PrintCheckBoxes() { PrintControls(GuiCheckBox.GetAll(Window)); }
+        public virtual IEnumerable<GuiCheckBox> CheckBoxes() { return GuiCheckBox.GetAllCheckBoxes(Window); }
         public virtual GuiCheckBox CheckBox(string caption) { return GuiCheckBox.Find(Window, caption); }
         public virtual GuiCheckBox CheckBox(ByAutomationId automationId) { return GuiCheckBox.Find(Window, automationId); }
 
