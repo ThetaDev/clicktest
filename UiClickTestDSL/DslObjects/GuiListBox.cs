@@ -129,7 +129,7 @@ namespace UiClickTestDSL.DslObjects {
             }
         }
 
-        public GuiListBoxItem SelectElementWithLabel(string value) {
+        public GuiListBoxItem SelectElementWithLabel(string value, bool debug = false) {
             List<GuiListBoxItem> completeSet = new List<GuiListBoxItem>();
             List<GuiListBoxItem> all = GetAllListItems();
             Log.Debug("Found elements: " + all.Count);
@@ -139,8 +139,10 @@ namespace UiClickTestDSL.DslObjects {
                                                 select i;
             GuiListBoxItem item = items.FirstOrDefault();
             if (item == null) {
-                var screenshotNo = ScreenShooter.SaveToFile();
-                Log.Debug("Saved screenshot of view of listbox before scrolling: " + screenshotNo);
+                if (debug) {
+                    var screenshotNo = ScreenShooter.SaveToFile();
+                    Log.Debug("Saved screenshot of view of listbox before scrolling: " + screenshotNo);
+                }
                 //try to scroll to the bottom, to see if we can find it there.
                 try {
                     var scroll = InternalElement.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
