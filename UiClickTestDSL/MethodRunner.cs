@@ -220,8 +220,10 @@ namespace UiClickTestDSL {
                 CloseProgram(closer, classObj, emptyParams);
                 return;
             }
+            Log.Debug("Startup time: "+testTimer.Elapsed);
             try {
                 testmethod.Invoke(classObj, emptyParams);
+                Log.Debug("Test run time: " + testTimer.Elapsed);
             } catch (Exception ex) {
                 ErrorCount++;
                 string filename = "";
