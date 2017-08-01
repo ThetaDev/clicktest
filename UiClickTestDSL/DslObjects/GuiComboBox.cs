@@ -62,10 +62,13 @@ namespace UiClickTestDSL.DslObjects {
 
         public void SelectItem(string caption) {
             List<GuiComboBoxItem> all = GetAllItems();
-            IEnumerable<GuiComboBoxItem> item = from i in all
-                                                where RegexMatch(i.Text.Trim(), caption)
-                                                select i;
-            item.First().Select();
+            IEnumerable<GuiComboBoxItem> items = from i in all
+                                                 where RegexMatch(i.Text.Trim(), caption)
+                                                 select i;
+            var item = items.FirstOrDefault();
+            if (item == null)
+                Assert.Fail("Unable to find ComboBoxItem with caption: " + caption);
+            item.Select();
         }
 
         public void SelectItemContaining(string caption) {
