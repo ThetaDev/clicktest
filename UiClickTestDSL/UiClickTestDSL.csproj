@@ -103,9 +103,6 @@
     <Compile Include="UiTestDslCoreCommon.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\hadocs\src\klikktest\DelfiCertUiTestDSL\TestFiles\D52-A928-S32550-XX_Import_Test-2-R_6-Class_1_double_welded---W.pipe.json">
-      <Link>D52-A928-S32550-XX_Import_Test-2-R_6-Class_1_double_welded---W.pipe.json</Link>
-    </None>
     <None Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
