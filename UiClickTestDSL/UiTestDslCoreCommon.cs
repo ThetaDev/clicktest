@@ -294,6 +294,7 @@ namespace UiClickTestDSL {
         public virtual GuiImage Image(ByAutomationId automationId) { return GuiImage.Find(Window, automationId.Value); }
 
         public virtual GuiMenuItem Menu(string name) { return GuiMenuItem.GetMenuItem(Window, name); }
+        public virtual GuiMenuItem Menu(ByAutomationId automationId) { return GuiMenuItem.GetMenuItemByAutomationId(Window, automationId.Value); }
         public virtual GuiMenuItem FirstMenuItem() { return GuiMenuItem.GetFirstMenuItem(Window); }
 
         public virtual GuiUserControl UserControl(string name) { return GuiUserControl.GetUserControl(Window, name); }

@@ -11,6 +11,11 @@ namespace UiClickTestDSL.DslObjects {
             return tbs;
         }
 
+        public static GuiMenuItem GetMenuItemByAutomationId(AutomationElement window, string automationId) {
+            var res = window.FindChildByControlTypeAndAutomationId(ControlType.MenuItem,  automationId);
+            return new GuiMenuItem(res);
+        }
+
         public static GuiMenuItem GetMenuItem(AutomationElement window, string name) {
             AutomationElement res;
             if (name == "Close")
