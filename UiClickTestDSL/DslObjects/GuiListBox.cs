@@ -129,6 +129,15 @@ namespace UiClickTestDSL.DslObjects {
             }
         }
 
+        public void ScrollToBottom() {
+            try {
+                var scroll = InternalElement.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
+                scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 100);
+            } catch (InvalidOperationException) {
+                //This means there was no scrollbar because the list in the TreeView is to short to be scrollable   
+            }
+        }
+
         public GuiListBoxItem SelectElementWithLabel(string value, bool debug = false) {
             List<GuiListBoxItem> completeSet = new List<GuiListBoxItem>();
             List<GuiListBoxItem> all = GetAllListItems();
@@ -144,12 +153,7 @@ namespace UiClickTestDSL.DslObjects {
                     Log.Debug("Saved screenshot of view of listbox before scrolling: " + screenshotNo);
                 }
                 //try to scroll to the bottom, to see if we can find it there.
-                try {
-                    var scroll = InternalElement.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
-                    scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 100);
-                } catch (InvalidOperationException) {
-                    //This means there was no scrollbar because the list in the TreeView is to short to be scrollable   
-                }
+                ScrollToBottom();
                 all = GetAllListItems();
                 Log.Debug("Found elements: " + all.Count);
                 completeSet.AddRange(all);
@@ -159,7 +163,7 @@ namespace UiClickTestDSL.DslObjects {
                 item = items.FirstOrDefault();
             }
             if (item == null) {
-                var allLabels = completeSet.Select(l => string.Join("\t", l.GetLabels(null)));
+                var allLabels = completeSet.Distinct().Select(l => string.Join("\t", l.GetLabels(null)));
                 var labelsStr = string.Join(Environment.NewLine, allLabels);
                 var msg = $"Unable to find element with label, even after scrolling to the bottom. Searching for \"{value}\". Found: {Environment.NewLine}{labelsStr}";
                 UiTestDslCoreCommon.PrintLine(msg);
