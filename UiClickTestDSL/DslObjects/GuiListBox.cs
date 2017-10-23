@@ -138,6 +138,24 @@ namespace UiClickTestDSL.DslObjects {
             }
         }
 
+        public void ScrollAllItemsIntoView(int intermediateSteps = 8) {
+            if (intermediateSteps < 0 || intermediateSteps > 99)
+                Assert.Fail("Parameter intermediateSteps has to be between 0 and 98");
+            var stepLength = (int)(100 / (intermediateSteps + 1));
+            try {
+                var scroll = InternalElement.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
+                scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 0);
+                int scrollPercent = 0;
+                for (int i = 0; i < intermediateSteps; i++) {
+                    scrollPercent += stepLength;
+                    scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: scrollPercent);
+                }
+                scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 100);
+            } catch (InvalidOperationException) {
+                //This means there was no scrollbar because the list in the TreeView is to short to be scrollable   
+            }
+        }
+
         public GuiListBoxItem SelectElementWithLabel(string value, bool debug = false) {
             List<GuiListBoxItem> completeSet = new List<GuiListBoxItem>();
             List<GuiListBoxItem> all = GetAllListItems();
