@@ -48,5 +48,13 @@ namespace UiClickTestDSL.DslObjects {
         public override string ToString() {
             return LabelElement.Current.AutomationId + " (" + Text + ")";
         }
+
+        public void ShouldBeVisible() {
+            Assert.IsTrue(Visible);
+        }
+
+        public void ShouldNotBeVisible() {
+            Assert.IsFalse(Visible);
+        }
     }
 }
