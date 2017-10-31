@@ -50,7 +50,7 @@ namespace UiClickTestDSL.HelperPrograms {
             };
             Process.Start();
             Started = true;
-            Thread.Sleep(500);
+            SleepMilliseconds(500);
             RepeatTryingFor(TimeSpan.FromMinutes(5), () => {
                 if (!Process.HasExited)
                     Process.WaitForInputIdle(10000);
@@ -77,7 +77,7 @@ namespace UiClickTestDSL.HelperPrograms {
                         throw;
                 }
                 if (Window == null)
-                    Sleep(500);
+                    Sleep(1);
                 maxRetries--;
             }
             WaitWhileBusy();

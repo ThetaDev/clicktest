@@ -57,7 +57,7 @@ namespace UiClickTestDSL.HelperPrograms {
             if (ApplicationLauncher.VerifyExplorerUsesCheckBoxes()) {
                 f.AddToSelection();
             } else if (ApplicationLauncher.VerifyOnSingleClickMachine()) {
-                Thread.Sleep(4000);
+                Sleep(4);
             } else {
                 Mouse.Click(MouseButton.Left);
             }
@@ -73,11 +73,11 @@ namespace UiClickTestDSL.HelperPrograms {
             fileInExplorer.SetFocus();
             Mouse.MoveTo(fileInExplorer.ClickablePoint);
             Mouse.Down(MouseButton.Left);
-            Thread.Sleep(500);
+            SleepMilliseconds(500);
             Mouse.MoveTo(new Point(100, 100)); //ensure start of mouse drag
-            Thread.Sleep(500);
+            SleepMilliseconds(500);
             Mouse.MoveTo(new Point(750, 500)); //trying to always move the cursor to an approximated center on a 1080p display, which is still within a 1366x768 display
-            Thread.Sleep(500);
+            SleepMilliseconds(500);
             Minimize();
             var centerElement = el.GetClickablePoint().Convert();
             Log.DebugFormat("Point to drag to x/y: {0}, {1}", centerElement.X, centerElement.Y);
@@ -102,11 +102,11 @@ namespace UiClickTestDSL.HelperPrograms {
             Mouse.MoveTo(fileInExplorer.ClickablePoint);
             Mouse.Down(MouseButton.Left);
             Keyboard.Release(Key.Ctrl);
-            Thread.Sleep(500);
+            SleepMilliseconds(500);
             Mouse.MoveTo(new Point(100, 100)); //ensure start of mouse drag
-            Thread.Sleep(500);
+            SleepMilliseconds(500);
             Mouse.MoveTo(new Point(750, 500)); //trying to always move the cursor to an approximated center on a 1080p display, which is still within a 1366x768 display
-            Thread.Sleep(500);
+            SleepMilliseconds(500);
             Minimize();
             var centerElement = el.GetClickablePoint().Convert();
             Log.DebugFormat("Point to drag to x/y: {0}, {1}", centerElement.X, centerElement.Y);

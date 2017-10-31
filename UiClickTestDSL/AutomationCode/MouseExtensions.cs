@@ -30,7 +30,7 @@ namespace UiClickTestDSL.AutomationCode {
             int centerY = (int)(bounds.Y + bounds.Height / 2) + offSetHeightFromCenter;
             if (centerX == 0 && centerY == 0) {
                 //this is most likely because we are waiting for the image to start showing.
-                Thread.Sleep(5000);
+                UiTestDslCoreCommon.Sleep(5);
                 centerX = leftEdge ? (int)bounds.X : (int)(bounds.X + bounds.Width / 2);
                 centerY = (int)(bounds.Y + bounds.Height / 2) + offSetHeightFromCenter;
             }
@@ -63,7 +63,7 @@ namespace UiClickTestDSL.AutomationCode {
             try {
                 explorer.DragDropFileTo(file, el);
             } finally {
-                Thread.Sleep(1000);
+                UiTestDslCoreCommon.Sleep(1);
                 explorer.Dispose();
             }
         }
@@ -75,7 +75,7 @@ namespace UiClickTestDSL.AutomationCode {
             try {
                 explorer.DragDropMultipleFilesTo(files, folder, el);
             } finally {
-                Thread.Sleep(1000);
+                UiTestDslCoreCommon.Sleep(1);
                 explorer.Dispose();
             }
         }

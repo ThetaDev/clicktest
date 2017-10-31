@@ -25,7 +25,7 @@ namespace UiClickTestDSL.DslObjects {
                 if (dlg == null && maxRetries % 10 == 0) {
                     Log.DebugFormat("File dialog not found: {0}   Caption: {1}", maxRetries, caption);
                 }
-                Thread.Sleep(500);
+                UiTestDslCoreCommon.SleepMilliseconds(500);
                 maxRetries--;
             }
             //*/
@@ -62,12 +62,11 @@ namespace UiClickTestDSL.DslObjects {
             UiTestDslCoreCommon.WaitWhileBusy();
             SendKeys.SendWait(filePathAndName);
             SendKeys.SendWait("{Enter}");
-            Thread.Sleep(500);
-            if (ApplicationLauncher.VerifyOnTestMachine())
-                Thread.Sleep(1500);
+            //TODO: Is all this sleep required?
+            UiTestDslCoreCommon.SleepMilliseconds(500);
+            UiTestDslCoreCommon.SleepIfOnTestMachine(1);
             UiTestDslCoreCommon.WaitWhileBusy();
-            if (ApplicationLauncher.VerifyOnTestMachine())
-                Thread.Sleep(5000);
+            UiTestDslCoreCommon.SleepIfOnTestMachine(5);
         }
 
         public void Cancel() {
@@ -76,10 +75,10 @@ namespace UiClickTestDSL.DslObjects {
             UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromMinutes(5), () => GuiTextBox.GetTextBoxByName(_dialog, "File name:"));
             UiTestDslCoreCommon.WaitWhileBusy();
             SendKeys.SendWait("{Esc}");
-            Thread.Sleep(2000);
+            //TODO: Is all this sleep required?
+            UiTestDslCoreCommon.Sleep(2);
             UiTestDslCoreCommon.WaitWhileBusy();
-            if (ApplicationLauncher.VerifyOnTestMachine())
-                Thread.Sleep(5000);
+            UiTestDslCoreCommon.SleepIfOnTestMachine(5);
         }
     }
 }

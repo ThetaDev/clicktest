@@ -17,7 +17,7 @@ namespace UiClickTestDSL.AutomationCode {
                     else
                         throw;
                 }
-                Thread.Sleep(500);
+                UiTestDslCoreCommon.SleepMilliseconds(500);
                 maxRetries--;
             }
         }
@@ -34,7 +34,7 @@ namespace UiClickTestDSL.AutomationCode {
                     else
                         throw;
                 }
-                Thread.Sleep(500);
+                UiTestDslCoreCommon.SleepMilliseconds(500);
                 maxRetries--;
             }
             return default(T);

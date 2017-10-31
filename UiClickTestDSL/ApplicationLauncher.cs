@@ -92,7 +92,7 @@ namespace UiClickTestDSL {
             if (!string.IsNullOrWhiteSpace(Arguments))
                 Process.StartInfo.Arguments = Arguments;
             Process.Start();
-            Thread.Sleep(500);
+            UiTestDslCoreCommon.SleepMilliseconds(500);
         }
 
         public void LaunchApplication() {
@@ -138,7 +138,7 @@ namespace UiClickTestDSL {
                     int problemDialogCounter = 0;
                     if (dialogs != null) {
                         foreach (var d in dialogs) {
-                            Thread.Sleep(1000);
+                            UiTestDslCoreCommon.Sleep(1);
                             WaitForInputIdle();
                             var errorDialogHeading = d.Current.Name;
                             if (string.IsNullOrEmpty(errorDialogHeading)) {
@@ -221,10 +221,10 @@ namespace UiClickTestDSL {
                     Process = null;
                 }
             }
-            Thread.Sleep(2000);
+            UiTestDslCoreCommon.Sleep(2);
             KillAllOptionalProcesses();
             //Need to wait a bit to ensure the next test does not find this process just before it manages to exit
-            Thread.Sleep(3000);
+            UiTestDslCoreCommon.Sleep(3);
         }
 
         public void WaitForInputIdle() {

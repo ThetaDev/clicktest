@@ -47,7 +47,7 @@ namespace UiClickTestDSL {
         public static void WaitWhileBusy() {
             Sleep(1);
             Program.WaitForInputIdle();
-            Sleep(400);
+            Sleep(1);
         }
 
         public static void RepeatTryingFor(TimeSpan time, Action todo, int sleepInterval = 1000) {
@@ -88,17 +88,22 @@ namespace UiClickTestDSL {
                         throw;
                 }
                 if (Window == null)
-                    Sleep(500);
+                    Sleep(1);
                 maxRetries--;
             }
             WaitWhileBusy();
         }
 
-        public static void Sleep(int seconds) {
-            if (seconds >= 251) //to be able to wait up to a quarter of a second, 250ms.
-                seconds /= 1000;
+        public static void Sleep(int seconds, bool actuallyMoreThanOneMinuteSleep = false) {
+            if (seconds >= 60 && !actuallyMoreThanOneMinuteSleep) {
+                Assert.Fail($"Was told to wait more than one minute ({seconds}s), but no extra confirmation given.");
+            }
             seconds = Math.Max(1, seconds);
             Thread.Sleep(seconds * 1000);
+        }
+
+        public static void SleepMilliseconds(int milliSeconds) {
+            Thread.Sleep(milliSeconds);
         }
 
         public static void SleepIfOnTestMachine(int seconds) {
@@ -238,7 +243,7 @@ namespace UiClickTestDSL {
                     i--;
                     if (i == 0)
                         throw new Exception("Dialog with caption: \"" + caption + "\" never found");
-                    Sleep(500);
+                    Sleep(1);
                 }
             }
             WaitWhileBusy();

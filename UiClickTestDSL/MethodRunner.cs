@@ -216,7 +216,7 @@ namespace UiClickTestDSL {
                 ErrorCount++;
                 Log.Error("Error starting program: " + ex.Message, ex);
                 //On error wait a bit extra in case the program is hanging
-                Thread.Sleep(5000);
+                UiTestDslCoreCommon.Sleep(5);
                 CloseProgram(closer, classObj, emptyParams);
                 return;
             }
@@ -247,7 +247,7 @@ namespace UiClickTestDSL {
             testTimer.Stop();
             Log.Debug($"-- Test # {test.i} done: {testTimer.Elapsed} \nE: {ErrorCount} \n\n");
             //Need to allow the program time to exit, to avoid the next test finding an open program while starting.
-            Thread.Sleep(3000);
+            UiTestDslCoreCommon.Sleep(3);
         }
 
         private void CloseProgram(MethodInfo closer, object classObj, object[] emptyParams) {

@@ -109,7 +109,7 @@ namespace UiClickTestDSL.AutomationCode {
                 if (result != null)
                     break;
                 retries--;
-                Thread.Sleep(250);
+                UiTestDslCoreCommon.SleepMilliseconds(250);
             }
             if (result == null) {
                 throw new AutomationElementNotFoundException("Could not find element: ", new[] { searchCond });
@@ -205,7 +205,7 @@ namespace UiClickTestDSL.AutomationCode {
                 if (result != null)
                     return true;
                 retries--;
-                Thread.Sleep(250);
+                UiTestDslCoreCommon.SleepMilliseconds(250);
             }
             return false;
         }

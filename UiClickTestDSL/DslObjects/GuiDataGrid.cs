@@ -59,7 +59,7 @@ namespace UiClickTestDSL.DslObjects {
                 }
                 if (HeaderNamesToIndex.Count > 0)
                     return;
-                Thread.Sleep(100);
+                UiTestDslCoreCommon.SleepMilliseconds(100);
             }
         }
 
@@ -89,7 +89,7 @@ namespace UiClickTestDSL.DslObjects {
 
         public void SelectRow(int rowIndex) {
             SelectRowNoWait(rowIndex);
-            Thread.Sleep(300);
+            UiTestDslCoreCommon.SleepMilliseconds(300);
         }
 
         public void SelectRowNoWait(int rowIndex) {
@@ -101,7 +101,7 @@ namespace UiClickTestDSL.DslObjects {
             SelectionItemPattern selPatt = GetRowSelectionPattern(rowIndex);
             ClearSelection();
             selPatt.AddToSelection();
-            Thread.Sleep(300);
+            UiTestDslCoreCommon.SleepMilliseconds(300);
         }
 
         public int FindRowByCellContent(string columnName, string content) {
