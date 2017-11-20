@@ -99,6 +99,12 @@ namespace UiClickTestDSL.DslObjects {
         public void ShouldNotRead(string expected) {
             Assert.AreNotEqual(expected, Text);
         }
+        public void ShouldStartWith(string startText) {
+            Assert.IsTrue(Text.StartsWith(startText, StringComparison.CurrentCultureIgnoreCase), $"Expected TextBox to start with <{startText}>. Actual: <{Text}>.");
+        }
+        public void ShouldNotStartWith(string startText) {
+            Assert.IsFalse(Text.StartsWith(startText, StringComparison.CurrentCultureIgnoreCase), $"Expected TextBox to not start with <{startText}>. Actual: <{Text}>.");
+        }
 
         public void ShouldReadLines(params string[] expectedLines) {
             var expected = new StringBuilder();
