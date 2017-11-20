@@ -149,6 +149,7 @@ namespace UiClickTestDSL.DslObjects {
                 for (int i = 0; i < intermediateSteps; i++) {
                     scrollPercent += stepLength;
                     scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: scrollPercent);
+                    UiTestDslCoreCommon.SleepMilliseconds(50);
                 }
                 scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 100);
             } catch (InvalidOperationException) {
@@ -171,7 +172,7 @@ namespace UiClickTestDSL.DslObjects {
                     Log.Debug("Saved screenshot of view of listbox before scrolling: " + screenshotNo);
                 }
                 //try to scroll to the bottom, to see if we can find it there.
-                ScrollToBottom();
+                ScrollAllItemsIntoView();
                 all = GetAllListItems();
                 Log.Debug("Found elements: " + all.Count);
                 completeSet.AddRange(all);
@@ -181,9 +182,9 @@ namespace UiClickTestDSL.DslObjects {
                 item = items.FirstOrDefault();
             }
             if (item == null) {
-                var allLabels = completeSet.Distinct().Select(l => string.Join("\t", l.GetLabels(null)));
+                var allLabels = completeSet.Distinct().Select(l => "[" + string.Join("\t", l.GetLabels(null)) + "]").ToList();
                 var labelsStr = string.Join(Environment.NewLine, allLabels);
-                var msg = $"Unable to find element with label, even after scrolling to the bottom. Searching for \"{value}\". Found: {Environment.NewLine}{labelsStr}";
+                var msg = $"Unable to find element with label, even after scrolling all items into view. Searching for \"{value}\". Found ({allLabels.Count} items): {Environment.NewLine}{labelsStr}";
                 UiTestDslCoreCommon.PrintLine(msg);
             }
             item.Select();
