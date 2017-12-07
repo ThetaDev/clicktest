@@ -80,5 +80,16 @@ namespace UiClickTestDSL.DslObjects {
             Assert.IsFalse(_expander.Current.IsOffscreen, "Expander: " + _name + " should have been visible");
         }
 
+        public void ShouldBeCollapsed() {
+            var pattern = _expander.GetPattern<ExpandCollapsePattern>(ExpandCollapsePattern.Pattern);
+            var state = pattern.Current.ExpandCollapseState;
+            Assert.AreEqual(ExpandCollapseState.Collapsed, pattern.Current.ExpandCollapseState, $"Expander: {_name} should have been collapsed, but was {pattern.Current.ExpandCollapseState.ToString()}");
+        }
+
+        public void ShouldBeExpanded() {
+            var pattern = _expander.GetPattern<ExpandCollapsePattern>(ExpandCollapsePattern.Pattern);
+            Assert.AreEqual(ExpandCollapseState.Expanded, pattern.Current.ExpandCollapseState, $"Expander: {_name} should have been expanded, but was {pattern.Current.ExpandCollapseState.ToString()}");
+        }
+
     }
 }
