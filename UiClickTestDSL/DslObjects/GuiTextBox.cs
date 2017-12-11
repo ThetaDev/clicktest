@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
+using UiClickTestDSL.HelperPrograms;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiTextBox {
@@ -115,12 +116,26 @@ namespace UiClickTestDSL.DslObjects {
             ShouldRead(expected.ToString());
         }
 
+        public void ShouldContain(params string[] expectedTexts) {
+            foreach (var expectedText in expectedTexts) {
+                Assert.IsTrue(Text.ContainsIgnoreCase(expectedText), $"TextBox did not contain <{expectedText}>. Actual: <{Text}>.");
+            }
+        }
+
         public void AssertIsEditable() {
             Assert.IsTrue(IsEditable);
         }
 
         public void AssertIsNotEditable() {
             Assert.IsFalse(IsEditable);
+        }
+
+        public void ShouldNotBeVisible() {
+            Assert.IsTrue(tbAutoEl.Current.IsOffscreen, $"TextBox: {Name} ({AutomationId}) should have been offscreen");
+        }
+
+        public void ShouldBeVisible() {
+            Assert.IsFalse(tbAutoEl.Current.IsOffscreen, $"TextBox: {Name} ({AutomationId}) should have been visible");
         }
     }
 }
