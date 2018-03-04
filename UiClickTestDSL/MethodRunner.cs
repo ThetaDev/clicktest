@@ -24,17 +24,20 @@ namespace UiClickTestDSL {
         public string _sectionedResultFilePath;
         public string BundleFilename;
 
+        private List<TestDef> _remainingTests;
+        private List<string> _execInfo;
+
         private string DebugLogPath { get { return new FileInfo(_settingsFilePath).DirectoryName + @"\___" + Environment.MachineName.ToUpper() + ".log"; } }
 
         public MethodRunner(params string[] filenamesThatStopTheTestRun) {
-            emptyParams = new object[] { };
             _filenamesThatStopTheTestRun = new List<string>(filenamesThatStopTheTestRun);
         }
 
         public Func<string, bool> TestNameFilterHook = null;
         public Action<string> ErrorHook = null;
         public Action ResetTestEnvironment = null;
-        private object[] emptyParams;
+        private readonly object[] _emptyParams = { };
+        private int _lastTestRun;
 
         private bool FilterByUserHook(string completeTestname) {
             if (TestNameFilterHook != null)
@@ -58,6 +61,12 @@ namespace UiClickTestDSL {
             }
         }
 
+        public Func<TestDef, int> GetExternalId;
+        public Func<string, Func<string, bool>, int> FilterTests;
+        public Action<TestDef> LogTestRun;
+        public Func<TestDef> GetNextSynchronizedTest;
+        public Func<List<TestDef>> GetRemainingTests;
+
         private List<TestDef> GetAllTests(Assembly testAssembly, List<string> skipOnThisComputer) {
             Type[] classes = testAssembly.GetTypes();
             List<TestDef> tests = new List<TestDef>();
@@ -71,7 +80,7 @@ namespace UiClickTestDSL {
                         var t = new TestDef { TestClass = testclass, Test = testmethod, };
                         if (skipOnThisComputer.Contains(t.CompleteTestName))
                             continue;
-                        t.i = i++;
+                        t.Id = GetExternalId?.Invoke(t) ?? i++;
                         tests.Add(t);
                     }
                 }
@@ -91,44 +100,20 @@ namespace UiClickTestDSL {
         public void Run(Assembly testAssembly, string filter) {
             Init();
             var startTime = DateTime.Now;
-            var info = new List<string>();
-            info.Add(Environment.MachineName.ToUpper());
-            info.Add("Start time: " + startTime);
+            _execInfo = new List<string>();
+            _execInfo.Add(Environment.MachineName.ToUpper());
+            _execInfo.Add("Start time: " + startTime);
             try {
-                info.Add(string.Format("Total marked to be skipped: {0}", _skipOnThisComputer.Count));
-                List<TestDef> tests = GetAllTests(testAssembly, _skipOnThisComputer);
-                int noToBeRun = _initialTests.Count;
-                if (_stopAfterSection)
-                    noToBeRun += tests.Count(t => t.i >= _start && (_stop == -1 || t.i <= _stop));
+                _execInfo.Add("Total marked to be skipped: " + _skipOnThisComputer.Count);
+                _remainingTests = GetAllTests(testAssembly, _skipOnThisComputer);
+                if (GetNextSynchronizedTest != null)
+                    RunSynchronizedTests(filter,startTime);
                 else
-                    noToBeRun = tests.Count;
-                int lastTestRun = 0;
-                if (_initialTests.Any()) {
-                    var initial = tests.Where(t => _initialTests.Contains(t.CompleteTestName)).ToList();
-                    info.Add(string.Format("Starting run of initial tests. # {0} ({1})", initial.Count, _initialTests.Count));
-                    lastTestRun = RunTests(initial, filter, noToBeRun);
-                    info.Add("Elapsed: " + (DateTime.Now - startTime) + " last test run: " + lastTestRun);
-                    WriteSectionedResultFiles(info);
-                    tests = tests.Except(initial).ToList();
-                }
-                if (_start != -1 || _stop != -1) {
-                    var sect = tests.Where(t => t.i >= _start && (_stop == -1 || t.i <= _stop)).ToList();
-                    lastTestRun = RunTests(sect, filter, noToBeRun);
-                    info.Add(string.Format("Sectioned test run: {0} - {1}; total # run: {2}", _start, lastTestRun, sect.Count));
-                    info.Add("Elapsed: " + (DateTime.Now - startTime));
-                    WriteSectionedResultFiles(info);
-                    if (_stopAfterSection)
-                        tests = new List<TestDef>();
-                    else
-                        tests = tests.Except(sect).ToList();
-                }
-                lastTestRun = RunTests(tests, filter, noToBeRun);
-                if (!_stopAfterSection)
-                    info.Add(string.Format("First and last test run after section: {0} - {1}; total # run: {2}", tests.OrderBy(t => t.i).First().i, lastTestRun, tests.Count));
-                info.Add("The sectioned tests was not re-run.");
-                info.Add("Total elapsed: " + (DateTime.Now - startTime));
+                    RegularTestRun(filter, startTime);
+                var endTime = DateTime.Now;
+                _execInfo.Add("Total elapsed: " + (endTime - startTime));
             } finally {
-                File.WriteAllLines(DebugLogPath, info);
+                File.WriteAllLines(DebugLogPath, _execInfo);
                 var procs = ApplicationLauncher.FindProcess();
                 foreach (var p in procs) {
                     Log.Debug("Found running application: " + p.ProcessName);
@@ -141,6 +126,55 @@ namespace UiClickTestDSL {
             }
         }
 
+        private void RunSynchronizedTests(string filter, DateTime startTime) {
+            _totalNoTestsToRun = FilterTests(filter, FilterByUserHook);
+            if (_stopAfterSection)
+                _totalNoTestsToRun = -1;
+            _execInfo.Add("Starting run of synchronized tests.");
+            TestDef t = GetNextSynchronizedTest();
+            while (t != null) {
+                InitRunTestAndCleanup(t);
+                t = GetNextSynchronizedTest();
+            }
+            _execInfo.Add("Synchronized tests finished. Run time: "+(DateTime.Now - startTime));
+            WriteSectionedResultFiles(_execInfo);
+            if (_stopAfterSection)
+                return;
+            _remainingTests = GetRemainingTests();
+            RunTests(_remainingTests, null);
+        }
+
+        private void RegularTestRun(string filter, DateTime startTime) {
+            _totalNoTestsToRun = _initialTests.Count;
+            if (_stopAfterSection)
+                _totalNoTestsToRun += _remainingTests.Count(t => t.Id >= _start && (_stop == -1 || t.Id <= _stop));
+            else
+                _totalNoTestsToRun = _remainingTests.Count;
+            if (_initialTests.Any()) {
+                var initial = _remainingTests.Where(t => _initialTests.Contains(t.CompleteTestName)).ToList();
+                _execInfo.Add($"Starting run of initial tests. # {initial.Count} ({_initialTests.Count})");
+                _lastTestRun = RunTests(initial, filter);
+                _execInfo.Add("Elapsed: " + (DateTime.Now - startTime) + " last test run: " + _lastTestRun);
+                WriteSectionedResultFiles(_execInfo);
+                _remainingTests = _remainingTests.Except(initial).ToList();
+            }
+            if (_start != -1 || _stop != -1) {
+                var sect = _remainingTests.Where(t => t.Id >= _start && (_stop == -1 || t.Id <= _stop)).ToList();
+                _lastTestRun = RunTests(sect, filter);
+                _execInfo.Add($"Sectioned test run: {_start} - {_lastTestRun}; total # run: {sect.Count}");
+                _execInfo.Add("Elapsed: " + (DateTime.Now - startTime));
+                WriteSectionedResultFiles(_execInfo);
+                if (_stopAfterSection)
+                    _remainingTests = new List<TestDef>();
+                else
+                    _remainingTests = _remainingTests.Except(sect).ToList();
+            }
+            _lastTestRun = RunTests(_remainingTests, filter);
+            if (!_stopAfterSection)
+                _execInfo.Add($"First and last test run after section: {_remainingTests.OrderBy(t => t.Id).First().Id} - {_lastTestRun}; total # run: {_remainingTests.Count}");
+            _execInfo.Add("The sectioned tests was not re-run.");
+        }
+
         private void WriteSectionedResultFiles(List<string> info) {
             info.Add("Error count: " + ErrorCount);
             if (ErrorCount > 0) {
@@ -151,81 +185,57 @@ namespace UiClickTestDSL {
             File.WriteAllLines(DebugLogPath, info);
         }
 
-        private int RunTests(List<TestDef> tests, string filter, int totalNoToBeRun) {
-            Type lastClass = null;
-            MethodInfo starter = null, setup = null, closer = null, classCleanup = null;
-            ConstructorInfo constructor = null;
-            int lastTestRun = 0;
-            foreach (var t in tests) {
-                Type testclass = t.TestClass;
-                //Log.Debug(testclass.FullName);
-                if (lastClass != testclass) {
-                    MethodInfo[] methods = testclass.GetMethods();
-                    starter = (from m in methods
-                               where m.Name == "StartApplicationAndLogin"
-                               select m).FirstOrDefault();
-                    if (starter == null || testclass.IsAbstract)
-                        continue;
-                    setup = (from m in methods
-                             where m.Name == "SetupEnvironment"
-                             select m).FirstOrDefault();
-                    closer = (from m in methods
-                              where m.Name == "CloseApplication"
-                              select m).FirstOrDefault();
+        private Type _lastClass = null;
+        private MethodInfo _starter = null, _setup = null, _closer = null, _classCleanup = null;
+        private ConstructorInfo _constructor = null;
+        private int _totalNoTestsToRun = -1;
 
-                    constructor = testclass.GetConstructor(Type.EmptyTypes);
-                    if (constructor == null) {
-                        LogNoConstructorError(testclass.Name);
-                        continue;
-                    }
-                    classCleanup = methods.SingleOrDefault(m => m.IsDefined(typeof(ClassCleanupAttribute), true));
-                    lastClass = testclass;
-                }
-                var classObj = constructor.Invoke(emptyParams);
-                RunTestMethod(t, classObj, starter, setup, closer, filter, totalNoToBeRun);
-                lastTestRun = t.i;
-                if (classCleanup != null)
-                    classCleanup.Invoke(classObj, emptyParams);
+        private int RunTests(List<TestDef> tests, string filter) {
+            foreach (var t in tests) {
+                if ((filter != "" && !t.Test.Name.ToLower().StartsWith(filter.ToLower())) || FilterByUserHook(t.CompleteTestName))
+                    continue;
+                InitRunTestAndCleanup(t);
             }
-            return lastTestRun;
+            return _lastTestRun;
         }
 
-        private void RunTestMethod(TestDef test, object classObj, MethodInfo starter, MethodInfo setup, MethodInfo closer, string filter, int totalNoTestsToRun) {
-            if (_filenamesThatStopTheTestRun.Any(File.Exists)) {
-                Log.Debug("Found file defined to stop test-run");
-                return;
+        private void InitRunTestAndCleanup(TestDef t) {
+            Type testclass = t.TestClass;
+            //Log.Debug(testclass.FullName);
+            if (_lastClass != testclass) {
+                MethodInfo[] methods = testclass.GetMethods();
+                _starter = (from m in methods
+                            where m.Name == "StartApplicationAndLogin"
+                            select m).FirstOrDefault();
+                if (_starter == null || testclass.IsAbstract)
+                    return;
+                _setup = (from m in methods
+                          where m.Name == "SetupEnvironment"
+                          select m).FirstOrDefault();
+                _closer = (from m in methods
+                           where m.Name == "CloseApplication"
+                           select m).FirstOrDefault();
+
+                _constructor = testclass.GetConstructor(Type.EmptyTypes);
+                if (_constructor == null) {
+                    LogNoConstructorError(testclass.Name);
+                    return;
+                }
+                _classCleanup = methods.SingleOrDefault(m => m.IsDefined(typeof(ClassCleanupAttribute), true));
+                _lastClass = testclass;
             }
-            var testTimer = Stopwatch.StartNew();
-            MethodInfo testmethod = test.Test;
-            TestsRun++;
-            Log.DebugFormat(Environment.NewLine + $"E:{ErrorCount} - {TestsRun}/{totalNoTestsToRun} - {test.i} - {test.CompleteTestName}");
-            if ((filter != "" && !testmethod.Name.ToLower().StartsWith(filter.ToLower())) || FilterByUserHook(test.CompleteTestName))
-                return;
-            if (ResetTestEnvironment != null)
-                ResetTestEnvironment();
-            try {
-                setup.Invoke(classObj, emptyParams);
-            } catch (Exception ex) {
-                ErrorCount++;
-                Log.Error("Error setting up environment: " + ex.Message, ex);
-                return;
-            }
-            try {
-                starter.Invoke(classObj, emptyParams);
-            } catch (Exception ex) {
-                ErrorCount++;
-                Log.Error("Error starting program: " + ex.Message, ex);
-                //On error wait a bit extra in case the program is hanging
-                UiTestDslCoreCommon.Sleep(5);
-                CloseProgram(closer, classObj, emptyParams);
-                return;
-            }
-            Log.Debug("Startup time: "+testTimer.Elapsed);
-            try {
-                testmethod.Invoke(classObj, emptyParams);
-                Log.Debug("Test run time: " + testTimer.Elapsed);
-            } catch (Exception ex) {
-                ErrorCount++;
+            var classObj = _constructor.Invoke(_emptyParams);
+            RunTestMethod(t, classObj);
+            _lastTestRun = t.Id;
+            if (_classCleanup != null)
+                _classCleanup.Invoke(classObj, _emptyParams);
+            LogTestRun?.Invoke(t);
+        }
+
+        private void LogTestRunError(TestDef test, string msg, Exception ex, object classObj = null, bool screenshot = false, bool close = false) {
+            ErrorCount++;
+            var logMsg = msg;
+            if (screenshot) {
                 string filename = "";
                 try {
                     filename = ScreenShooter.SaveToFile();
@@ -233,26 +243,75 @@ namespace UiClickTestDSL {
                     ErrorCount++;
                     Log.Error("Exception while trying to save screenshot: " + innerEx.Message, innerEx);
                 }
-                Log.Error(ex.Message + " screenshot: " + filename, ex);
-                if (ex.InnerException != null) {
-                    Log.Error(ex.InnerException.Message, ex.InnerException);
-                }
-                try {
-                    Log.Error("Latest unique identifiers: " + UiTestDslCoreCommon.UniqueIdentifier + " / " + UiTestDslCoreCommon.shortUnique);
-                } catch (Exception) { }
-                if (ErrorHook != null)
-                    ErrorHook(test.CompleteTestName);
+                logMsg += " screenshot: " + filename;
             }
-            CloseProgram(closer, classObj, emptyParams);
-            testTimer.Stop();
-            Log.Debug($"-- Test # {test.i} done: {testTimer.Elapsed} \nE: {ErrorCount} \n\n");
-            //Need to allow the program time to exit, to avoid the next test finding an open program while starting.
-            UiTestDslCoreCommon.Sleep(3);
+
+            logMsg += " " + ex.Message;
+            Log.Error(logMsg, ex);
+            test.ExceptionMsg = logMsg;
+            test.Succeded = false;
+            if (ex.InnerException != null) {
+                Log.Error(ex.InnerException.Message, ex.InnerException);
+            }
+            try {
+                Log.Error("Latest unique identifiers: " + UiTestDslCoreCommon.UniqueIdentifier + " / " + UiTestDslCoreCommon.shortUnique);
+            } catch (Exception) { }
+
+            if (close) {
+                //On error wait a bit extra in case the program is hanging
+                UiTestDslCoreCommon.Sleep(5);
+                CloseProgram(classObj, _emptyParams);
+            }
         }
 
-        private void CloseProgram(MethodInfo closer, object classObj, object[] emptyParams) {
+        private void RunTestMethod(TestDef test, object classObj) {
+            if (_filenamesThatStopTheTestRun.Any(File.Exists)) {
+                Log.Debug("Found file defined to stop test-run");
+                return;
+            }
+            test.StartTime = DateTime.Now;
+            var testTimer = Stopwatch.StartNew();
+            MethodInfo testmethod = test.Test;
+            TestsRun++;
+            Log.DebugFormat(Environment.NewLine + $"E:{ErrorCount} - {TestsRun}/{_totalNoTestsToRun} - {test.Id} - {test.CompleteTestName}");
+            ResetTestEnvironment?.Invoke();
             try {
-                closer.Invoke(classObj, emptyParams);
+                _setup.Invoke(classObj, _emptyParams);
+            } catch (Exception ex) {
+                LogTestRunError(test, "Error setting up environment:", ex);
+                return;
+            }
+            try {
+                _starter.Invoke(classObj, _emptyParams);
+            } catch (Exception ex) {
+                LogTestRunError(test, "Error starting program:", ex, classObj, close: true);
+                return;
+            }
+            test.Startup = testTimer.Elapsed;
+            Log.Debug("Startup time: " + test.Startup);
+            var runTimer = Stopwatch.StartNew();
+            try {
+                testmethod.Invoke(classObj, _emptyParams);
+                runTimer.Stop();
+                Log.Debug("Test run time: " + runTimer.Elapsed);
+                test.TestTime = runTimer.Elapsed;
+            } catch (Exception ex) {
+                LogTestRunError(test, "Test run error:", ex, screenshot: true);
+                ErrorHook?.Invoke(test.CompleteTestName);
+            }
+            CloseProgram(classObj, _emptyParams);
+            testTimer.Stop();
+            Log.Debug($"-- Test # {test.Id} done: {testTimer.Elapsed} \nE: {ErrorCount} \n\n");
+            test.TotalTime = testTimer.Elapsed;
+            //Need to allow the program time to exit, to avoid the next test finding an open program while starting.
+            UiTestDslCoreCommon.Sleep(3);
+            test.HasBeenRun = true;
+            test.EndTime = DateTime.Now;
+        }
+
+        private void CloseProgram(object classObj, object[] emptyParams) {
+            try {
+                _closer.Invoke(classObj, emptyParams);
             } catch (Exception ex) {
                 ErrorCount++;
                 Log.Error("Error closing program: " + ex.Message, ex);
