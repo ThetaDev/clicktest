@@ -62,7 +62,7 @@ namespace UiClickTestDSL {
         }
 
         public Func<TestDef, int> GetExternalId;
-        public Func<string, Func<string, bool>, int> FilterTests;
+        public Func<string, Func<string, bool>, List<TestDef>, int> FilterTests;
         public Action<TestDef> LogTestRun;
         public Func<TestDef> GetNextSynchronizedTest;
         public Func<List<TestDef>> GetRemainingTests;
@@ -127,7 +127,7 @@ namespace UiClickTestDSL {
         }
 
         private void RunSynchronizedTests(string filter, DateTime startTime) {
-            _totalNoTestsToRun = FilterTests(filter, FilterByUserHook);
+            _totalNoTestsToRun = FilterTests(filter, FilterByUserHook, _remainingTests);
             if (_stopAfterSection)
                 _totalNoTestsToRun = -1; // We don't know how many tests we will run.
             _execInfo.Add("Starting run of synchronized tests.");
