@@ -107,7 +107,7 @@ namespace UiClickTestDSL {
                 _execInfo.Add("Total marked to be skipped: " + _skipOnThisComputer.Count);
                 _remainingTests = GetAllTests(testAssembly, _skipOnThisComputer);
                 if (GetNextSynchronizedTest != null)
-                    RunSynchronizedTests(filter,startTime);
+                    RunSynchronizedTests(filter, startTime);
                 else
                     RegularTestRun(filter, startTime);
                 var endTime = DateTime.Now;
@@ -129,15 +129,15 @@ namespace UiClickTestDSL {
         private void RunSynchronizedTests(string filter, DateTime startTime) {
             _totalNoTestsToRun = FilterTests(filter, FilterByUserHook);
             if (_stopAfterSection)
-                _totalNoTestsToRun = -1;
+                _totalNoTestsToRun = -1; // We don't know how many tests we will run.
             _execInfo.Add("Starting run of synchronized tests.");
             TestDef t = GetNextSynchronizedTest();
             while (t != null) {
                 InitRunTestAndCleanup(t);
                 t = GetNextSynchronizedTest();
             }
-            _execInfo.Add("Synchronized tests finished. Run time: "+(DateTime.Now - startTime));
-            WriteSectionedResultFiles(_execInfo);
+            _execInfo.Add("Synchronized tests finished. Run time: " + (DateTime.Now - startTime));
+            WriteSectionedResultFiles();
             if (_stopAfterSection)
                 return;
             _remainingTests = GetRemainingTests();
@@ -155,7 +155,7 @@ namespace UiClickTestDSL {
                 _execInfo.Add($"Starting run of initial tests. # {initial.Count} ({_initialTests.Count})");
                 _lastTestRun = RunTests(initial, filter);
                 _execInfo.Add("Elapsed: " + (DateTime.Now - startTime) + " last test run: " + _lastTestRun);
-                WriteSectionedResultFiles(_execInfo);
+                WriteSectionedResultFiles();
                 _remainingTests = _remainingTests.Except(initial).ToList();
             }
             if (_start != -1 || _stop != -1) {
@@ -163,7 +163,7 @@ namespace UiClickTestDSL {
                 _lastTestRun = RunTests(sect, filter);
                 _execInfo.Add($"Sectioned test run: {_start} - {_lastTestRun}; total # run: {sect.Count}");
                 _execInfo.Add("Elapsed: " + (DateTime.Now - startTime));
-                WriteSectionedResultFiles(_execInfo);
+                WriteSectionedResultFiles();
                 if (_stopAfterSection)
                     _remainingTests = new List<TestDef>();
                 else
@@ -175,14 +175,14 @@ namespace UiClickTestDSL {
             _execInfo.Add("The sectioned tests was not re-run.");
         }
 
-        private void WriteSectionedResultFiles(List<string> info) {
-            info.Add("Error count: " + ErrorCount);
+        private void WriteSectionedResultFiles() {
+            _execInfo.Add("Error count: " + ErrorCount);
             if (ErrorCount > 0) {
-                File.WriteAllLines(_sectionedResultFilePath, info);
+                File.WriteAllLines(_sectionedResultFilePath, _execInfo);
                 Thread.Sleep(TimeSpan.FromMinutes(5)); //time to allow outside executor handle any files
             }
             //writing a log-file with the machinename as filename to be able to compare run times when trying to balance which computers should run which tests
-            File.WriteAllLines(DebugLogPath, info);
+            File.WriteAllLines(DebugLogPath, _execInfo);
         }
 
         private Type _lastClass = null;
@@ -192,7 +192,7 @@ namespace UiClickTestDSL {
 
         private int RunTests(List<TestDef> tests, string filter) {
             foreach (var t in tests) {
-                if ((filter != "" && !t.Test.Name.ToLower().StartsWith(filter.ToLower())) || FilterByUserHook(t.CompleteTestName))
+                if ((!string.IsNullOrEmpty(filter) && !t.Test.Name.ToLower().StartsWith(filter.ToLower())) || FilterByUserHook(t.CompleteTestName))
                     continue;
                 InitRunTestAndCleanup(t);
             }
