@@ -65,7 +65,7 @@ namespace UiClickTestDSL {
         public Func<string, Func<string, bool>, List<TestDef>, int> FilterTests;
         public Action<TestDef> LogTestRun;
         public Func<TestDef> GetNextSynchronizedTest;
-        public Func<List<TestDef>> GetRemainingTests;
+        public Func<TestDef> GetNextTest;
 
         private List<TestDef> GetAllTests(Assembly testAssembly, List<string> skipOnThisComputer) {
             Type[] classes = testAssembly.GetTypes();
@@ -140,8 +140,11 @@ namespace UiClickTestDSL {
             WriteSectionedResultFiles();
             if (_stopAfterSection)
                 return;
-            _remainingTests = GetRemainingTests();
-            RunTests(_remainingTests, null);
+            t = GetNextTest();
+            while (t != null) {
+                InitRunTestAndCleanup(t);
+                t = GetNextTest();
+            }
         }
 
         private void RegularTestRun(string filter, DateTime startTime) {
@@ -295,6 +298,7 @@ namespace UiClickTestDSL {
                 runTimer.Stop();
                 Log.Debug("Test run time: " + runTimer.Elapsed);
                 test.TestTime = runTimer.Elapsed;
+                test.Succeded = true;
             } catch (Exception ex) {
                 LogTestRunError(test, "Test run error:", ex, screenshot: true);
                 ErrorHook?.Invoke(test.CompleteTestName);
