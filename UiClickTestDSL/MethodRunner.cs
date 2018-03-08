@@ -133,6 +133,10 @@ namespace UiClickTestDSL {
             _execInfo.Add("Starting run of synchronized tests.");
             TestDef t = GetNextSynchronizedTest();
             while (t != null) {
+                if (_filenamesThatStopTheTestRun.Any(File.Exists)) {
+                    Log.Debug("Found file defined to stop test-run");
+                    return;
+                }
                 InitRunTestAndCleanup(t);
                 t = GetNextSynchronizedTest();
             }
@@ -142,6 +146,10 @@ namespace UiClickTestDSL {
                 return;
             t = GetNextTest();
             while (t != null) {
+                if (_filenamesThatStopTheTestRun.Any(File.Exists)) {
+                    Log.Debug("Found file defined to stop test-run");
+                    return;
+                }
                 InitRunTestAndCleanup(t);
                 t = GetNextTest();
             }
@@ -195,6 +203,10 @@ namespace UiClickTestDSL {
 
         private int RunTests(List<TestDef> tests, string filter) {
             foreach (var t in tests) {
+                if (_filenamesThatStopTheTestRun.Any(File.Exists)) {
+                    Log.Debug("Found file defined to stop test-run");
+                    return _lastTestRun;
+                }
                 if ((!string.IsNullOrEmpty(filter) && !t.Test.Name.ToLower().StartsWith(filter.ToLower())) || FilterByUserHook(t.CompleteTestName))
                     continue;
                 InitRunTestAndCleanup(t);

@@ -19,6 +19,8 @@ namespace UiClickTestDSL {
         public bool Succeded;
         public bool HasBeenRun;
         public string ExceptionMsg;
+        public bool RequiresScanner;
+        public bool NotOnSlowComputers;
 
         public string ClassName {
             get => _testClassName ?? TestClass.FullName;
