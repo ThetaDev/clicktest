@@ -33,7 +33,7 @@ namespace UiClickTestDSL {
         }
 
         public string CompleteTestName {
-            get => TestClass.FullName + " " + Test.Name;
+            get => ClassName + " " + Name;
         }
     }
 }
