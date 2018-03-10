@@ -106,6 +106,7 @@ namespace UiClickTestDSL {
             try {
                 _execInfo.Add("Total marked to be skipped: " + _skipOnThisComputer.Count);
                 _remainingTests = GetAllTests(testAssembly, _skipOnThisComputer);
+                _execInfo.Add("Total number of tests in Assembly: "+_remainingTests.Count);
                 if (GetNextSynchronizedTest != null)
                     RunSynchronizedTests(filter, startTime);
                 else
@@ -131,7 +132,7 @@ namespace UiClickTestDSL {
             _totalNoTestsToRun = _remainingTests.Count;
             if (_stopAfterSection)
                 _totalNoTestsToRun = -1; // We don't know how many tests we will run.
-            _execInfo.Add("Starting run of synchronized tests.");
+            _execInfo.Add("Starting run of synchronized tests: " + _totalNoTestsToRun + " / " + _remainingTests.Count);
             TestDef t = GetNextSynchronizedTest();
             while (t != null) {
                 if (_filenamesThatStopTheTestRun.Any(File.Exists)) {

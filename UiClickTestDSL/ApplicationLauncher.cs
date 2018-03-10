@@ -230,11 +230,12 @@ namespace UiClickTestDSL {
         public void WaitForInputIdle() {
             if (Process == null || Process.HasExited)
                 return;
-            Process.WaitForInputIdle();
+            if (!Process.WaitForInputIdle(5000))
+                Process.WaitForInputIdle(5000);
         }
 
         public AutomationElement GetMainWindow() {
-            Process.WaitForInputIdle();
+            Process.WaitForInputIdle(5000);
             //if (_timer != null) Log.Info("GetMainWindow.WaitForInputIdle: "+_timer.ElapsedMilliseconds);
             var res = AutomationElement.RootElement.FindChildByProcessId(Process.Id);
             //if (_timer != null) Log.Info("GetMainWindow -> ActualSearch: " + _timer.ElapsedMilliseconds);

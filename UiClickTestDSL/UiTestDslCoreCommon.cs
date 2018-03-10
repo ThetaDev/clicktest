@@ -78,10 +78,12 @@ namespace UiClickTestDSL {
         public virtual void GetThisWindow() {
             int maxRetries = MaxConnectionRetries;
             Window = null;
+            HashSet<string> exceptions = new HashSet<string>();
             while (Window == null && maxRetries > 0) {
                 try {
                     Window = Program.GetMainWindow();
-                } catch (Exception) {
+                } catch (Exception ex) {
+                    exceptions.Add(ex.Message);
                     if (maxRetries > 0)
                         maxRetries--;
                     else
@@ -90,6 +92,10 @@ namespace UiClickTestDSL {
                 if (Window == null)
                     Sleep(1);
                 maxRetries--;
+            }
+            Log.Debug($"Found window after {MaxConnectionRetries-maxRetries} retries. The following exceptions were encountered:");
+            foreach (var msg in exceptions) {
+                Log.Debug(msg);
             }
             WaitWhileBusy();
         }
