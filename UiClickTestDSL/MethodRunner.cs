@@ -216,6 +216,7 @@ namespace UiClickTestDSL {
         }
 
         private void InitRunTestAndCleanup(TestDef t) {
+            t.HasBeenRun = true; //Needs to be set as early as possible to avoid a test that fails at setup to be run continually
             Type testclass = t.TestClass;
             //Log.Debug(testclass.FullName);
             if (_lastClass != testclass) {
@@ -322,7 +323,6 @@ namespace UiClickTestDSL {
             test.TotalTime = testTimer.Elapsed;
             //Need to allow the program time to exit, to avoid the next test finding an open program while starting.
             UiTestDslCoreCommon.Sleep(3);
-            test.HasBeenRun = true;
             test.EndTime = DateTime.Now;
         }
 
