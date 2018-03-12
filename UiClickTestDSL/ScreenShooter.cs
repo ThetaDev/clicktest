@@ -4,9 +4,11 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using log4net;
 
 namespace UiClickTestDSL {
     public static class ScreenShooter {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(ScreenShooter));
         public static string ScreenShotFolder = @"C:\Temp\";
 
         private static string GetNextScreenShotFilename() {
@@ -36,13 +38,23 @@ namespace UiClickTestDSL {
 
         public static string SaveToFile() {
             string filename = GetNextScreenShotFilename();
-            var screenShotBmp = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, PixelFormat.Format32bppArgb);
-            var screenGraphics = Graphics.FromImage(screenShotBmp);
-            screenGraphics.CopyFromScreen(Screen.PrimaryScreen.Bounds.X, Screen.PrimaryScreen.Bounds.Y, 0, 0, Screen.PrimaryScreen.Bounds.Size, CopyPixelOperation.SourceCopy);
+            Bitmap screenShotBmp = null;
+            Graphics screenGraphics = null;
+            try {
+                screenShotBmp = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, PixelFormat.Format32bppArgb);
+                screenGraphics = Graphics.FromImage(screenShotBmp);
+                screenGraphics.CopyFromScreen(Screen.PrimaryScreen.Bounds.X, Screen.PrimaryScreen.Bounds.Y, 0, 0, Screen.PrimaryScreen.Bounds.Size, CopyPixelOperation.SourceCopy);
+                screenShotBmp.Save(filename, ImageFormat.Jpeg);
+            } catch (Exception ex) {
+                var width = Screen.PrimaryScreen != null ? Screen.PrimaryScreen.Bounds.Width.ToString() : "<null>";
+                var height = Screen.PrimaryScreen != null ? Screen.PrimaryScreen.Bounds.Height.ToString() : "<null>";
+                Log.Error($"Failed to take screenshot. Width:\"{width}\", Height:\"{height}\".", ex);
+                throw;
+            } finally {
+                screenGraphics?.Dispose();
+                screenShotBmp?.Dispose();
+            }
 
-            screenShotBmp.Save(filename, ImageFormat.Jpeg);
-            screenGraphics.Dispose();
-            screenShotBmp.Dispose();
             return filename;
         }
     }
