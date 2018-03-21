@@ -188,7 +188,7 @@ namespace UiClickTestDSL {
             foreach (var directory in DirectoriesToDelete) {
                 if (Directory.Exists(directory)) {
                     try {
-                        Directory.Delete(directory, true);
+                        DirectoryHelper.DeleteDirectory(directory);
                     } catch (Exception ex) {
                         Log.Error(string.Format("Failed to delete directory during cleanup. Directory: {0}", directory), ex);
                     }

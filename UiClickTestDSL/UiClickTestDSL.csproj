@@ -89,6 +89,7 @@
     <Compile Include="DslObjects\ListUiItem.cs" />
     <Compile Include="EasyIni.cs" />
     <Compile Include="FileLocator.cs" />
+    <Compile Include="HelperPrograms\DirectoryHelper.cs" />
     <Compile Include="HelperPrograms\Explorer.cs" />
     <Compile Include="HelperPrograms\HelperProgramSuper.cs" />
     <Compile Include="HelperPrograms\StringHelpers.cs" />
