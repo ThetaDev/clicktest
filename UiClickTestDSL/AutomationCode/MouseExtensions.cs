@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Automation;
 using Microsoft.Test.Input;
@@ -33,6 +32,10 @@ namespace UiClickTestDSL.AutomationCode {
                 UiTestDslCoreCommon.Sleep(5);
                 centerX = leftEdge ? (int)bounds.X : (int)(bounds.X + bounds.Width / 2);
                 centerY = (int)(bounds.Y + bounds.Height / 2) + offSetHeightFromCenter;
+            }
+
+            if (centerX == 0 && centerY == 0) {
+                throw new Exception("Could not find center of AutomationElement.");
             }
             //Console.WriteLine("X: " + centerX + " Y: " + centerY);
             Mouse.MoveTo(new Point(centerX, centerY));
