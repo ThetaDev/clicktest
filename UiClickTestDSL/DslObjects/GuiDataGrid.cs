@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Windows.Automation;
 using System.Windows.Forms;
 using Microsoft.Test.Input;
@@ -189,6 +188,14 @@ namespace UiClickTestDSL.DslObjects {
             var newRowCell = newRowPlaceholder.FindAllChildrenByClassName("DataGridCell").First();
             newRowCell.MoveMouseToCenter();
             Mouse.DoubleClick(MouseButton.Left);
+        }
+
+        public void InvokeFirstCellInNewRowMarker() {
+            //This method has basically the same functionality as the DoubleClickFirstCellInNewRowMarker, except it uses the InvokePattern instead of the mouse to activate the first cell.
+            //Activating the placeholder-cell activates the ValuePattern for the Cell.
+            AutomationElement newRowPlaceholder = GetNewRowPlaceholder();
+            var newRowCell = newRowPlaceholder.FindAllChildrenByClassName("DataGridCell").First();
+            newRowCell.GetInvokePattern().Invoke();
         }
 
         private AutomationElement GetFirstColumnHeader() {
