@@ -168,8 +168,11 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         private AutomationElement GetNewRowPlaceholder() {
-            if (dgAutoEl.TryGetCurrentPattern(ScrollPattern.Pattern, out var patt) && patt is ScrollPattern scrollPatt) {
-                scrollPatt.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 100);
+            try {
+                var scroll = dgAutoEl.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
+                scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 100);
+            } catch (InvalidOperationException) {
+                //This means there was no scrollbar because the DataGrid is to short to be scrollable   
             }
             return dgAutoEl.FindChildByClassAndName("DataGridRow", "{NewItemPlaceholder}");
         }
