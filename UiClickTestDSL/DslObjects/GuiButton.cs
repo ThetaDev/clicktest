@@ -45,19 +45,23 @@ namespace UiClickTestDSL.DslObjects {
 
         public void ClickNoWait() {
             var invoker = _btn.GetPattern<InvokePattern>(InvokePattern.Pattern);
-            if (_name != "Close" && !_btn.Current.IsEnabled)
+            if (_name != "Close" && !Enabled)
                 throw new Exception("Trying to click a button that is disabled: " + _name);
             if (_name != "Close" && _btn.Current.IsOffscreen)
                 throw new Exception("Trying to click a button that is not visible: " + _name);
             invoker.Invoke();
         }
 
+        public bool Enabled {
+            get { return _btn.Current.IsEnabled; }
+        }
+
         public void ShouldBeDisabled() {
-            Assert.IsFalse(_btn.Current.IsEnabled, _btn.Current.Name + " was not disabled.");
+            Assert.IsFalse(Enabled, _btn.Current.Name + " was not disabled.");
         }
 
         public void ShouldBeEnabled() {
-            Assert.IsTrue(_btn.Current.IsEnabled, _btn.Current.Name + " was disabled.");
+            Assert.IsTrue(Enabled, _btn.Current.Name + " was disabled.");
         }
 
         public static GuiButton GetAppCloseButton(AutomationElement window) {
