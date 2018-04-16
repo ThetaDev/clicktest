@@ -60,5 +60,11 @@ namespace UiClickTestDSL.DslObjects {
         public void CountShouldBe(int expectedCount) {
             Assert.AreEqual(expectedCount, Count);
         }
+
+        public void SetValues(string[] selectValues) {
+            for (int i = 0; i < selectValues.Count(); i++) {
+                this[i].SetText(selectValues[i]);
+            }
+        }
     }
 }
