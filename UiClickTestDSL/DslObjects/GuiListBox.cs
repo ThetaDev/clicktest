@@ -36,9 +36,21 @@ namespace UiClickTestDSL.DslObjects {
             }
         }
 
+        /// <summary>
+        /// Note: This method returns all descendants of type ListItem, and might not work as expected for nested listboxes.
+        /// </summary>
         public List<GuiListBoxItem> GetAllListItems() {
             TrySetFocus();
             IEnumerable<AutomationElement> all = InternalElement.FindAllChildrenByControlType(ControlType.ListItem);
+            return all.Select(listItem => new GuiListBoxItem(listItem)).ToList();
+        }
+
+        /// <summary>
+        /// Note: This method returns only direct children of type ListItem.
+        /// </summary>
+        public List<GuiListBoxItem> GetChildListItems() {
+            TrySetFocus();
+            IEnumerable<AutomationElement> all = InternalElement.FindChildrenByControlType(ControlType.ListItem);
             return all.Select(listItem => new GuiListBoxItem(listItem)).ToList();
         }
 
@@ -59,15 +71,15 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public GuiListBoxItem GetFirstElement() {
-            return GetAllListItems()[0];
+            return GetChildListItems()[0];
         }
 
         public GuiListBoxItem this[int i] {
-            get { return GetAllListItems()[i]; }
+            get { return GetChildListItems()[i]; }
         }
 
         public void ShouldContainButton(string buttonName) {
-            IList<GuiListBoxItem> all = GetAllListItems();
+            IList<GuiListBoxItem> all = GetChildListItems();
             IEnumerable<GuiListBoxItem> items = from i in all
                                                 where i.HasButtonWithText(buttonName)
                                                 select i;
@@ -75,7 +87,7 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public void ShouldContainLabelWithText(string labelText) {
-            IList<GuiListBoxItem> all = GetAllListItems();
+            IList<GuiListBoxItem> all = GetChildListItems();
             IEnumerable<GuiListBoxItem> items = from i in all
                                                 where i.HasLabelWithText(text: labelText)
                                                 select i;
@@ -83,7 +95,7 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public void ShouldContainTheseLabels(params string[] txtValues) {
-            IList<GuiListBoxItem> all = GetAllListItems();
+            IList<GuiListBoxItem> all = GetChildListItems();
             var missing = "";
             foreach (var txt in txtValues) {
                 var el = all.FirstOrDefault(i => i.HasLabelWithText(text: txt));
@@ -94,11 +106,11 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public void CountShouldBe(int expectedCount) {
-            Assert.AreEqual(expectedCount, GetAllListItems().Count);
+            Assert.AreEqual(expectedCount, GetChildListItems().Count);
         }
 
         public GuiListBoxItem SelectLastItem() {
-            var all = GetAllListItems();
+            var all = GetChildListItems();
             var item = all[all.Count - 1];
             item.Select();
             UiTestDslCoreCommon.WaitWhileBusy();
@@ -106,7 +118,7 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public GuiListBoxItem SelectFirstItem() {
-            var all = GetAllListItems();
+            var all = GetChildListItems();
             var item = all[0];
             item.Select();
             UiTestDslCoreCommon.WaitWhileBusy();
@@ -159,7 +171,7 @@ namespace UiClickTestDSL.DslObjects {
 
         public GuiListBoxItem SelectElementWithLabel(string value, bool debug = false) {
             List<GuiListBoxItem> completeSet = new List<GuiListBoxItem>();
-            List<GuiListBoxItem> all = GetAllListItems();
+            List<GuiListBoxItem> all = GetChildListItems();
             Log.Debug("Found elements: " + all.Count);
             completeSet.AddRange(all);
             IEnumerable<GuiListBoxItem> items = from i in all
@@ -173,7 +185,7 @@ namespace UiClickTestDSL.DslObjects {
                 }
                 //try to scroll to the bottom, to see if we can find it there.
                 ScrollAllItemsIntoView();
-                all = GetAllListItems();
+                all = GetChildListItems();
                 Log.Debug("Found elements: " + all.Count);
                 completeSet.AddRange(all);
                 items = from i in all
@@ -193,7 +205,7 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public void ElementNotInList(string elementName, string value) {
-            IList<GuiListBoxItem> all = GetAllListItems();
+            IList<GuiListBoxItem> all = GetChildListItems();
             IEnumerable<GuiListBoxItem> items = from i in all
                                                 where i.HasLabelWithText(elementName, value)
                                                 select i;
@@ -204,7 +216,7 @@ namespace UiClickTestDSL.DslObjects {
         /// Does not appear to work properly with only .Net 4.0 installed, but works fine with .Net 4.5 installed.
         /// </summary>
         private GuiListBoxItem SelectFirstMatch(string match) {
-            var all = GetAllListItems();
+            var all = GetChildListItems();
             var guiListBoxItem = all.FirstOrDefault(i => i.HasLabelStartingWithText(match));
             if (guiListBoxItem == null)
                 throw new Exception("Can't find any ListBoxItem starting with: " + match);
