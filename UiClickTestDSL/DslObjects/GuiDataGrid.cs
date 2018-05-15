@@ -128,6 +128,23 @@ namespace UiClickTestDSL.DslObjects {
             SelectRow(foundRow);
         }
 
+        public void VerifyRowByCellContent(string columnName1, string content1, string columnName2, string content2) {
+            int foundRow = -1;
+            int colIndex1 = HeaderNamesToIndex[columnName1];
+            int colIndex2 = HeaderNamesToIndex[columnName2];
+            for (int i = 0; i < RowCount; i++) {
+                var cell1 = Cell(i, colIndex1);
+                var cell2 = Cell(i, colIndex2);   //Add more if needed
+                if (cell1.Text == content1)
+                    if (cell2.Text == content2) {
+                        foundRow = i;
+                        break;
+                    }
+            }
+            if (foundRow == -1)
+                throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content1, columnName1));
+        }
+
         private SelectionItemPattern GetRowSelectionPattern(int rowIndex) {
             var rows = dgAutoEl.FindAllChildrenByClassName("DataGridRow");
             UiTestDslCoreCommon.PrintLine("found rows: " + rows.Count() + ";  index to select: " + rowIndex);
