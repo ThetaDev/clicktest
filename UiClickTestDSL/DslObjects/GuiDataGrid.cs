@@ -129,20 +129,17 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public void VerifyRowByCellContent(string columnName1, string content1, string columnName2, string content2) {
-            int foundRow = -1;
-            int colIndex1 = HeaderNamesToIndex[columnName1];
-            int colIndex2 = HeaderNamesToIndex[columnName2];
-            for (int i = 0; i < RowCount; i++) {
-                var cell1 = Cell(i, colIndex1);
-                var cell2 = Cell(i, colIndex2);   //Add more if needed
-                if (cell1.Text == content1)
-                    if (cell2.Text == content2) {
-                        foundRow = i;
-                        break;
-                    }
+            var foundRow = -1;
+            for (var i = 0; i < RowCount; i++) {
+                var cell1 = Cell(i, columnName1);
+                var cell2 = Cell(i, columnName2);
+                if (cell1.Text == content1 && cell2.Text == content2) {
+                    foundRow = i;
+                    break;
+                }
             }
             if (foundRow == -1)
-                throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content1, columnName1));
+                throw new Exception($"Error: No row with \"{content1}\" in column \"{columnName1}\" and \"{content2}\" in column \"{columnName2}\" found!");
         }
 
         private SelectionItemPattern GetRowSelectionPattern(int rowIndex) {
@@ -228,7 +225,7 @@ namespace UiClickTestDSL.DslObjects {
         public void RightClickColumnHeader() {
             AutomationElement header = GetFirstColumnHeader();
             var clickablePoint = header.GetClickablePoint();
-            Mouse.MoveTo(new Point((int) clickablePoint.X, (int) clickablePoint.Y));
+            Mouse.MoveTo(new Point((int)clickablePoint.X, (int)clickablePoint.Y));
             Mouse.Click(MouseButton.Right);
         }
 
