@@ -233,6 +233,10 @@ namespace UiClickTestDSL.DslObjects {
             Assert.AreEqual(count, RowCount);
         }
 
+        public void ColumnCountShouldBe(int count) {
+            Assert.AreEqual(count, ColumnCount);
+        }
+
         public void ClearSelection() {
             for (int i = 0; i < RowCount; i++) {
                 GetRowSelectionPattern(i).RemoveFromSelection();
