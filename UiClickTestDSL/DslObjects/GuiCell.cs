@@ -6,14 +6,14 @@ using UiClickTestDSL.AutomationCode;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiCell {
-        private readonly AutomationElement cell;
+        public readonly AutomationElement Cell;
         private readonly string _owningColumnName;
         private readonly ValuePattern _value;
 
         public GuiCell(AutomationElement autoEl, string columnName) {
-            cell = autoEl;
+            Cell = autoEl;
             _owningColumnName = columnName;
-            _value = cell.GetPattern<ValuePattern>(ValuePattern.Pattern);
+            _value = Cell.GetPattern<ValuePattern>(ValuePattern.Pattern);
         }
 
         public string Text {
@@ -33,12 +33,12 @@ namespace UiClickTestDSL.DslObjects {
          * */
 
         public void SetText(string text) {
-            cell.SetFocus();
+            Cell.SetFocus();
             _value.SetValue(text);
         }
 
         public void SetFocus() {
-            cell.SetFocus();
+            Cell.SetFocus();
         }
 
         public void Type(string text) {
@@ -48,8 +48,8 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public void DoubleClick() {
-            var p = cell.GetClickablePoint();
-            Mouse.MoveTo(new Point((int) p.X, (int) p.Y));
+            var p = Cell.GetClickablePoint();
+            Mouse.MoveTo(new Point((int)p.X, (int)p.Y));
             Mouse.DoubleClick(MouseButton.Left);
         }
 
@@ -62,19 +62,19 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public void RightClick() {
-            cell.ClickPointInCenter(MouseButton.Right);
+            Cell.ClickPointInCenter(MouseButton.Right);
         }
 
         public void LeftClick() {
-            cell.ClickPointInCenter(MouseButton.Left);
+            Cell.ClickPointInCenter(MouseButton.Left);
         }
 
-        public GuiButton Button(ByAutomationId automationId) { return GuiButton.GetButtonByAutomationId(cell, automationId.Value); }
-        public GuiButton Button(string caption) { return GuiButton.GetButton(cell, caption); }
-        public GuiRadioButton RadioButton(string caption) { return GuiRadioButton.GetRadioButton(cell, caption); }
-        public GuiCheckBox CheckBox(string caption) { return GuiCheckBox.Find(cell, caption); }
-        public GuiCheckBox CheckBox(ByAutomationId automationId) { return GuiCheckBox.Find(cell, automationId); }
-        public GuiComboBox ComboBox(string automationId) { return GuiComboBox.Find(cell, automationId); }
-        public GuiComboBox ComboBox(ByAutomationId automationId) { return GuiComboBox.Find(cell, automationId.Value); }
+        public GuiButton Button(ByAutomationId automationId) { return GuiButton.GetButtonByAutomationId(Cell, automationId.Value); }
+        public GuiButton Button(string caption) { return GuiButton.GetButton(Cell, caption); }
+        public GuiRadioButton RadioButton(string caption) { return GuiRadioButton.GetRadioButton(Cell, caption); }
+        public GuiCheckBox CheckBox(string caption) { return GuiCheckBox.Find(Cell, caption); }
+        public GuiCheckBox CheckBox(ByAutomationId automationId) { return GuiCheckBox.Find(Cell, automationId); }
+        public GuiComboBox ComboBox(string automationId) { return GuiComboBox.Find(Cell, automationId); }
+        public GuiComboBox ComboBox(ByAutomationId automationId) { return GuiComboBox.Find(Cell, automationId.Value); }
     }
 }
