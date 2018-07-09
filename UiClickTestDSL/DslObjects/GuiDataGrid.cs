@@ -105,6 +105,11 @@ namespace UiClickTestDSL.DslObjects {
 
         public int FindRowByCellContent(string columnName, string content) {
             int colIndex = HeaderNamesToIndex[columnName];
+            return FindRowByCellContent(colIndex, content, columnName);
+        }
+
+        public int FindRowByCellContent(int colIndex, string content, string columnName = null) {
+            if (columnName == null) columnName = HeaderIndexToNames[colIndex];
             for (int i = 0; i < RowCount; i++) {
                 var cell = Cell(i, colIndex);
                 if (cell.Text == content)
