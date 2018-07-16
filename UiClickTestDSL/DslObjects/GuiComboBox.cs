@@ -19,7 +19,6 @@ namespace UiClickTestDSL.DslObjects {
             return new GuiComboBox(res);
         }
 
-
         private readonly AutomationElement _cmb;
         private readonly ExpandCollapsePattern _expandCollapse;
 
@@ -58,6 +57,14 @@ namespace UiClickTestDSL.DslObjects {
             var all = GetAllItems();
             Assert.IsTrue(all.Count > i, "Not enough items to select #" + i);
             all[i].Select();
+        }
+
+        public void ShouldBeDisabled() {
+            Assert.IsFalse(_cmb.Current.IsEnabled, _cmb.Current.Name + " was not disabled.");
+        }
+
+        public void ShouldBeEnabled() {
+            Assert.IsTrue(_cmb.Current.IsEnabled, _cmb.Current.Name + " was disabled.");
         }
 
         public void SelectItem(string caption) {
