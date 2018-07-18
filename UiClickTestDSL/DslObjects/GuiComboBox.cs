@@ -53,6 +53,10 @@ namespace UiClickTestDSL.DslObjects {
             }
         }
 
+        public void CountShouldBe(int expectedCount) {
+            Assert.AreEqual(expectedCount, GetAllItems().Count);
+        }
+
         public void SelectItem(int i) {
             var all = GetAllItems();
             Assert.IsTrue(all.Count > i, "Not enough items to select #" + i);
