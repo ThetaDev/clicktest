@@ -33,15 +33,17 @@ namespace UiClickTestDSL {
             _filenamesThatStopTheTestRun = new List<string>(filenamesThatStopTheTestRun);
         }
 
-        public Func<string, bool> TestNameFilterHook = null;
+        public Func<TestDef, bool> TestDefFilterHook = null;
         public Action<string> ErrorHook = null;
         public Action ResetTestEnvironment = null;
         private readonly object[] _emptyParams = { };
         private int _lastTestRun;
 
-        private bool FilterByUserHook(string completeTestname) {
-            if (TestNameFilterHook != null)
-                return TestNameFilterHook(completeTestname);
+        private bool FilterByUserHook(TestDef test) {
+            //true == skip test
+            if (TestDefFilterHook != null) {
+                return TestDefFilterHook(test);
+            }
             return false;
         }
 
@@ -62,7 +64,7 @@ namespace UiClickTestDSL {
         }
 
         public Func<TestDef, int> GetExternalId;
-        public Func<string, Func<string, bool>, List<TestDef>, List<TestDef>> FilterTests;
+        public Func<string, Func<TestDef, bool>, List<TestDef>, List<TestDef>> FilterTests;
         public Action<TestDef> LogTestRun;
         public Func<TestDef> GetNextSynchronizedTest;
         public Func<TestDef> GetNextTest;
@@ -106,7 +108,7 @@ namespace UiClickTestDSL {
             try {
                 _execInfo.Add("Total marked to be skipped: " + _skipOnThisComputer.Count);
                 _remainingTests = GetAllTests(testAssembly, _skipOnThisComputer);
-                _execInfo.Add("Total number of tests in Assembly: "+_remainingTests.Count);
+                _execInfo.Add("Total number of tests in Assembly: " + _remainingTests.Count);
                 if (GetNextSynchronizedTest != null)
                     RunSynchronizedTests(filter, startTime);
                 else
@@ -209,7 +211,7 @@ namespace UiClickTestDSL {
                     Log.Debug("Found file defined to stop test-run");
                     return _lastTestRun;
                 }
-                if ((!string.IsNullOrEmpty(filter) && !t.Test.Name.ToLower().StartsWith(filter.ToLower())) || FilterByUserHook(t.CompleteTestName))
+                if ((!string.IsNullOrEmpty(filter) && !t.Test.Name.ToLower().StartsWith(filter.ToLower())) || FilterByUserHook(t))
                     continue;
                 InitRunTestAndCleanup(t);
             }
