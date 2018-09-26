@@ -6,10 +6,12 @@ using log4net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
 
+
+
 namespace UiClickTestDSL.DslObjects {
     public class GuiListBox {
         private static ILog Log = LogManager.GetLogger(typeof(GuiListBox));
-
+        public AutomationElement Window;
         public AutomationElement InternalElement { get; private set; }
         private readonly string _automationId;
 
@@ -232,6 +234,27 @@ namespace UiClickTestDSL.DslObjects {
             guiListBoxItem.Select();
             UiTestDslCoreCommon.WaitWhileBusy();
             return guiListBoxItem;
+        }
+
+        public void ItemShouldRead(int listIndex, string value) {
+            var all = GetChildListItems();
+            var item = all[listIndex];
+            var guiListBoxItem = all.FirstOrDefault(i => i.HasLabelStartingWithText(value));
+                   if (guiListBoxItem == null)
+                   throw new Exception("Can't find any ListBoxItem starting with: " + value);
+            item.HasLabelStartingWithText(value);
+
+            }
+
+        public void ListShouldContainTheseItems(params string[] txtValues) {
+            var all = GetChildListItems();
+            var missing = "";
+            foreach (var txt in txtValues) {
+                var el = all.FirstOrDefault(i => i.HasLabelWithText(text: txt));
+                if (el == null)
+                    missing += txt + ",";
+            }
+            Assert.IsTrue(string.IsNullOrWhiteSpace(missing), missing);
         }
     }
 }
