@@ -8,6 +8,7 @@ using Microsoft.Test.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
 
+
 namespace UiClickTestDSL.DslObjects {
     public class GuiDataGrid {
         public static IEnumerable<AutomationElement> GetAll(AutomationElement window) {
@@ -15,6 +16,8 @@ namespace UiClickTestDSL.DslObjects {
             return res;
         }
 
+        public AutomationElement Window;
+        public virtual GuiCheckBox CheckBox(string caption) { return GuiCheckBox.Find(Window, caption); }
         private static GuiDataGrid _cachedDatagrid = null;
         public static GuiDataGrid GetDataGrid(AutomationElement window, string automationId) {
             if (_cachedDatagrid == null || _cachedDatagrid.AutomationId != automationId) {
@@ -275,6 +278,6 @@ namespace UiClickTestDSL.DslObjects {
 
         public void ShouldBeEnabled() {
             Assert.IsTrue(dgAutoEl.Current.IsEnabled, AutomationId + " was disabled.");
-        }
+        }       
     }
 }
