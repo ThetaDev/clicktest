@@ -5,7 +5,7 @@ using System.Windows.Automation;
 using log4net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
-
+using Microsoft.Test.Input;
 
 
 namespace UiClickTestDSL.DslObjects {
@@ -243,8 +243,17 @@ namespace UiClickTestDSL.DslObjects {
                    if (guiListBoxItem == null)
                    throw new Exception("Can't find any ListBoxItem starting with: " + value);
             item.HasLabelStartingWithText(value);
-
             }
+
+        public void RightClickMouse(int listIndex, string value) {
+            var all = GetChildListItems();
+            var item = all[listIndex];
+            var guiListBoxItem = all.FirstOrDefault(i => i.HasLabelStartingWithText(value));
+            if (guiListBoxItem == null)
+                throw new Exception("Can't find any ListBoxItem starting with: " + value);
+            item.MoveMouseHere();
+            Mouse.Click(MouseButton.Right); ;
+        }
 
         public void ListShouldContainTheseItems(params string[] txtValues) {
             var all = GetChildListItems();
