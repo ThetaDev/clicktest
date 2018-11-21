@@ -57,6 +57,12 @@ namespace UiClickTestDSL.DslObjects {
             Assert.AreEqual(expectedText.ToLower(), Text.ToLower(), "Cell was in column " + _owningColumnName);
         }
 
+        public void ShouldContain(params string[] expectedTexts) {
+            foreach (var expectedText in expectedTexts) {
+                Assert.IsTrue(Text.Contains(expectedText), $"TextBox did not contain <{expectedText}>. Actual: <{Text}>.");
+            }
+        }
+
         public void ShouldNotRead(string expectedText) {
             Assert.AreNotEqual(expectedText.ToLower(), Text.ToLower(), "Cell was in column " + _owningColumnName);
         }
