@@ -3,6 +3,7 @@ using System.Windows.Automation;
 using Microsoft.Test.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
+using UiClickTestDSL.HelperPrograms;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiCell {
@@ -59,7 +60,7 @@ namespace UiClickTestDSL.DslObjects {
 
         public void ShouldContain(params string[] expectedTexts) {
             foreach (var expectedText in expectedTexts) {
-                Assert.IsTrue(Text.Contains(expectedText), $"TextBox did not contain <{expectedText}>. Actual: <{Text}>.");
+                Assert.IsTrue(Text.ContainsIgnoreCase(expectedText), $"TextBox did not contain <{expectedText}>. Actual: <{Text}>.");
             }
         }
 
