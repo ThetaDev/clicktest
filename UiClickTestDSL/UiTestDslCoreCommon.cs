@@ -66,7 +66,7 @@ namespace UiClickTestDSL {
             }
             sw.Stop();
             if (lastException != null)
-                throw lastException;
+                throw new Exception($"Failed to do task, even when repeating for {time}.", lastException);
         }
 
         [TestCleanup]
