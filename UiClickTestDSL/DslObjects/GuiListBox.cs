@@ -223,6 +223,88 @@ namespace UiClickTestDSL.DslObjects {
             Assert.AreEqual(0, items.Count());
         }
 
+        public void VerifyCountOfElementsWithValueInList(string elementName, string value, int countno) {
+            IList<GuiListBoxItem> all = GetChildListItems();
+            IEnumerable<GuiListBoxItem> items = from i in all
+                                                where i.HasLabelWithText(elementName, value)
+                                                select i;
+            Assert.AreEqual(countno, items.Count());
+        }
+
+        public GuiListBoxItem SelectByTwoElementValuesInList(string elementname1, string value1, string elementname2, string value2, bool debug = false) {
+            IList<GuiListBoxItem> all = GetChildListItems();
+            List<GuiListBoxItem> completeSet = new List<GuiListBoxItem>();
+            Log.Debug("Found elements: " + all.Count);
+            completeSet.AddRange(all);
+            IEnumerable<GuiListBoxItem> items = from i in all
+                                                where i.HasLabelWithText(elementname1, value1)
+                                                where i.HasLabelWithText(elementname2, value2)
+                                                select i;
+            GuiListBoxItem item = items.FirstOrDefault();
+
+            if (item == null) {
+                if (debug) {
+                    var screenshotNo = ScreenShooter.SaveToFile();
+                    Log.Debug("Saved screenshot of view of listbox before scrolling: " + screenshotNo);
+                }
+                //try to scroll to the bottom, to see if we can find it there.
+                ScrollAllItemsIntoView();
+                all = GetChildListItems();
+                Log.Debug("Found elements: " + all.Count);
+                completeSet.AddRange(all);
+                items = from i in all
+                        where i.HasLabelWithText(elementname1, value1)
+                        where i.HasLabelWithText(elementname2, value2)
+                        select i;
+                item = items.FirstOrDefault();
+            }
+            if (item == null) {
+                var allLabels = completeSet.Distinct().Select(l => "[" + string.Join("\t", l.GetLabels(null)) + "]").ToList();
+                var labelsStr = string.Join(Environment.NewLine, allLabels);
+                var msg = $"Unable to find item with \"{elementname1}\" \"{value1}\" and \"{elementname2}\" \"{value2}\" , even after scrolling all items into view. Searching for \"{elementname1}\" \"{value1}\" and \"{elementname2}\" \"{value2}\". Found ({allLabels.Count} items): {Environment.NewLine}{labelsStr}";
+                UiTestDslCoreCommon.PrintLine(msg);
+            }
+
+            item.Select();
+            UiTestDslCoreCommon.WaitWhileBusy();
+            return item;
+            }
+
+            public GuiListBoxItem SelectByOneElementValueInList(string elementName, string value, bool debug = false) {
+            List<GuiListBoxItem> completeSet = new List<GuiListBoxItem>();
+            List<GuiListBoxItem> all = GetChildListItems();
+            Log.Debug("Found elements: " + all.Count);
+            completeSet.AddRange(all);
+            IEnumerable<GuiListBoxItem> items = from i in all
+                                                where i.HasLabelWithText(elementName, value)
+                                                select i;
+            GuiListBoxItem item = items.FirstOrDefault();
+            if (item == null) {
+                if (debug) {
+                    var screenshotNo = ScreenShooter.SaveToFile();
+                    Log.Debug("Saved screenshot of view of listbox before scrolling: " + screenshotNo);
+                }
+                //try to scroll to the bottom, to see if we can find it there.
+                ScrollAllItemsIntoView();
+                all = GetChildListItems();
+                Log.Debug("Found elements: " + all.Count);
+                completeSet.AddRange(all);
+                items = from i in all
+                        where i.HasLabelWithText(elementName, value)
+                        select i;
+                item = items.FirstOrDefault();
+            }
+            if (item == null) {
+                var allLabels = completeSet.Distinct().Select(l => "[" + string.Join("\t", l.GetLabels(null)) + "]").ToList();
+                var labelsStr = string.Join(Environment.NewLine, allLabels);
+                var msg = $"Unable to find element with label, even after scrolling all items into view. Searching for \"{value}\". Found ({allLabels.Count} items): {Environment.NewLine}{labelsStr}";
+                UiTestDslCoreCommon.PrintLine(msg);
+            }
+            item.Select();
+            UiTestDslCoreCommon.WaitWhileBusy();
+            return item;
+        }
+        
         /// <summary>
         /// Does not appear to work properly with only .Net 4.0 installed, but works fine with .Net 4.5 installed.
         /// </summary>
