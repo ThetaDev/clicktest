@@ -63,12 +63,14 @@ namespace UiClickTestDSL.DslObjects {
             all[i].Select();
         }
 
+        public bool IsEnabled { get { return _cmb.Current.IsEnabled; } }
+
         public void ShouldBeDisabled() {
-            Assert.IsFalse(_cmb.Current.IsEnabled, _cmb.Current.Name + " was not disabled.");
+            Assert.IsFalse(IsEnabled, _cmb.Current.Name + " was not disabled.");
         }
 
         public void ShouldBeEnabled() {
-            Assert.IsTrue(_cmb.Current.IsEnabled, _cmb.Current.Name + " was disabled.");
+            Assert.IsTrue(IsEnabled, _cmb.Current.Name + " was disabled.");
         }
 
         public void SelectItem(string caption) {
