@@ -45,9 +45,9 @@ namespace UiClickTestDSL {
         }
 
         public static void WaitWhileBusy() {
-            Sleep(1);
+            SleepMilliseconds(500);
             Program.WaitForInputIdle();
-            Sleep(1);
+            SleepMilliseconds(10);
         }
 
         public static void RepeatTryingFor(TimeSpan time, Action todo, int sleepInterval = 1000) {
