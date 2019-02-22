@@ -79,11 +79,14 @@ namespace UiClickTestDSL.HelperPrograms {
             Mouse.MoveTo(new Point(750, 500)); //trying to always move the cursor to an approximated center on a 1080p display, which is still within a 1366x768 display
             SleepMilliseconds(500);
             Minimize();
+            SleepMilliseconds(500);
             var centerElement = el.GetClickablePoint().Convert();
             Log.DebugFormat("Point to drag to x/y: {0}, {1}", centerElement.X, centerElement.Y);
             if (!(centerElement.X < 10 && centerElement.Y < 10)) //failsafe, for our tests it's better to keep the position of 750,500 than end up with 0,0
                 Mouse.MoveTo(centerElement);
+            SleepMilliseconds(500);
             Mouse.Up(MouseButton.Left);
+            SleepMilliseconds(500);
         }
 
         internal void DragDropMultipleFilesTo(string[] filenames, string folder, AutomationElement el) {
@@ -108,11 +111,14 @@ namespace UiClickTestDSL.HelperPrograms {
             Mouse.MoveTo(new Point(750, 500)); //trying to always move the cursor to an approximated center on a 1080p display, which is still within a 1366x768 display
             SleepMilliseconds(500);
             Minimize();
+            SleepMilliseconds(500);
             var centerElement = el.GetClickablePoint().Convert();
             Log.DebugFormat("Point to drag to x/y: {0}, {1}", centerElement.X, centerElement.Y);
             if (!(centerElement.X == 0 && centerElement.Y == 0)) //failsafe, for our tests it's better to keep the position of 750,500 than end up with 0,0
                 Mouse.MoveTo(centerElement);
+            SleepMilliseconds(500);
             Mouse.Up(MouseButton.Left);
+            SleepMilliseconds(500);
         }
     }
 }
