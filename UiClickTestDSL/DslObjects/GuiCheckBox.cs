@@ -21,7 +21,7 @@ namespace UiClickTestDSL.DslObjects {
             return new GuiCheckBox(res);
         }
 
-        internal static GuiCheckBox Find(AutomationElement window, ByAutomationId automationId) {
+        public static GuiCheckBox Find(AutomationElement window, ByAutomationId automationId) {
             var res = window.FindChildByControlTypeAndAutomationId(ControlType.CheckBox, automationId.Value);
             return new GuiCheckBox(res);
         }
