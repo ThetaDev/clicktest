@@ -53,6 +53,10 @@ namespace UiClickTestDSL.AutomationCode {
             return new PropertyCondition(AutomationElement.NameProperty, name, PropertyConditionFlags.IgnoreCase);
         }
 
+        public static AutomationElement FindChildByControlTypeAndClass(this AutomationElement element, ControlType controlType, string classname) {
+            return RunActualSearch(element, false, ClassName(classname), ControlType(controlType));
+        }
+
         public static AutomationElement FindChildByControlTypeAndAutomationId(this AutomationElement element, ControlType controlType, string automationId) {
             return RunActualSearch(element, false, AutomationId(automationId), ControlType(controlType));
         }
