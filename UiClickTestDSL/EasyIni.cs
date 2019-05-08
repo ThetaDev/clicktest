@@ -1,20 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Common {
     //"manual" ini-file handling to avoid extra dependencies
     public class EasyIni {
-        private string[] _settings;
+        private readonly bool _acceptNonExistingFile;
+        private string[] _settings = null;
 
-        public EasyIni(string filename) {
-            _settings = File.ReadAllLines(filename);
+        public EasyIni(string filename, bool acceptNonExistingFile = false) {
+            _acceptNonExistingFile = acceptNonExistingFile;
+            if (File.Exists(filename))
+                _settings = File.ReadAllLines(filename);
         }
 
         public string Val(string key, string defaultVal = null) {
+            if (_acceptNonExistingFile && _settings == null)
+                return defaultVal;
+
             var set = _settings.FirstOrDefault(s => s.StartsWith(key + "=", true, CultureInfo.CurrentCulture));
             if (string.IsNullOrWhiteSpace(set))
                 return defaultVal;
@@ -23,6 +27,9 @@ namespace Common {
         }
 
         public bool Val(string key, bool defaultVal) {
+            if (_acceptNonExistingFile && _settings == null)
+                return defaultVal;
+
             var set = _settings.FirstOrDefault(s => s.StartsWith(key + "=", true, CultureInfo.CurrentCulture));
             if (string.IsNullOrWhiteSpace(set))
                 return defaultVal;
@@ -30,6 +37,9 @@ namespace Common {
         }
 
         public int Val(string key, int defaultVal) {
+            if (_acceptNonExistingFile && _settings == null)
+                return defaultVal;
+
             var set = _settings.FirstOrDefault(s => s.StartsWith(key + "=", true, CultureInfo.CurrentCulture));
             if (string.IsNullOrWhiteSpace(set))
                 return defaultVal;
