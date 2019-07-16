@@ -211,6 +211,12 @@ namespace UiClickTestDSL.DslObjects {
             Mouse.Click(MouseButton.Right);
         }
 
+        public void RightClickRow() {
+            AutomationElement newRowPlaceholder = GetNewRowPlaceholder();
+            newRowPlaceholder.MoveMouseToCenter();
+            Mouse.Click(MouseButton.Right);
+        }
+
         public void DoubleClickFirstCellInNewRowMarker() {
             AutomationElement newRowPlaceholder = GetNewRowPlaceholder();
             var newRowCell = newRowPlaceholder.FindAllChildrenByClassName("DataGridCell").First();
