@@ -6,6 +6,9 @@ using log4net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
 using Microsoft.Test.Input;
+using System.Text;
+using UiClickTestDSL.DslObjects;
+
 
 
 namespace UiClickTestDSL.DslObjects {
@@ -55,6 +58,13 @@ namespace UiClickTestDSL.DslObjects {
             IEnumerable<AutomationElement> all = InternalElement.FindChildrenByControlType(ControlType.ListItem);
             return all.Select(listItem => new GuiListBoxItem(listItem)).ToList();
         }
+
+        public List<GuiListBoxItem> GetChildCheckBoxItems() {
+            TrySetFocus();
+            IEnumerable<AutomationElement> all = InternalElement.FindChildrenByControlType(ControlType.CheckBox);
+            return all.Select(GuiCheckBox => new GuiListBoxItem(GuiCheckBox)).ToList();
+        }
+
 
         public List<AutomationElement> GetChildItems() {
             TrySetFocus();
