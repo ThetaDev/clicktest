@@ -106,6 +106,17 @@ namespace UiClickTestDSL.DslObjects {
             UiTestDslCoreCommon.SleepMilliseconds(300);
         }
 
+        public void VerifyCountOfColumnsByName(string name, int nocolumns) {
+            var res = dgAutoEl.FindAll(TreeScope.Descendants, Name(name)).Count;
+            res = res - 1;
+            Assert.AreEqual(res, nocolumns); 
+            return ;
+        }
+
+        private static PropertyCondition Name(string name) {
+            return new PropertyCondition(AutomationElement.NameProperty, name, PropertyConditionFlags.IgnoreCase);
+        }
+
         public int FindRowByCellContent(string columnName, string content) {
             int colIndex = HeaderNamesToIndex[columnName];
             return FindRowByCellContent(colIndex, content, columnName);
