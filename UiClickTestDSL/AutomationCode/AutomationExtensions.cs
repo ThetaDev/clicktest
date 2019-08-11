@@ -2,6 +2,19 @@
 using System.Linq;
 using System.Threading;
 using System.Windows.Automation;
+using Microsoft.Test.Input;
+using UiClickTestDSL.AutomationCode;
+using System.Drawing;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using UiClickTestDSL.DslObjects;
+using System.ComponentModel;
+using System.Data;
+using System.Text;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using System.Windows;
+using System.Windows.Media;
 
 namespace UiClickTestDSL.AutomationCode {
     public static class AutomationExtensions {
@@ -134,10 +147,16 @@ namespace UiClickTestDSL.AutomationCode {
             return res;
         }
 
+        public static AutomationElementCollection FindAllElementChildrenByName(this AutomationElement element, string name) {
+            var res = element.FindAll(TreeScope.Descendants, Name(name));
+            return res;
+        }
+
         public static IEnumerable<AutomationElement> FindAllChildrenByClassName(this AutomationElement element, string classname) {
             var res = element.FindAll(TreeScope.Descendants, ClassName(classname));
             return res.Cast<AutomationElement>();
         }
+
         public static IEnumerable<AutomationElement> FindAllChildrenByName(this AutomationElement element, string name) {
             var res = element.FindAll(TreeScope.Descendants, Name(name));
             return res.Cast<AutomationElement>();
