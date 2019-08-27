@@ -219,6 +219,12 @@ namespace UiClickTestDSL {
         }
 
         private void InitRunTestAndCleanup(TestDef t) {
+            InnerInitRunTestAndCleanup(t);
+            if (t.Succeded == false)
+                InnerInitRunTestAndCleanup(t); //try to run the test again, to avoid occasional flukes, especially those failing on a date-string when starting before and ending after midnight
+        }
+
+        private void InnerInitRunTestAndCleanup(TestDef t) {
             t.HasBeenRun = true; //Needs to be set as early as possible to avoid a test that fails at setup to be run continually
             Type testclass = t.TestClass;
             //Log.Debug(testclass.FullName);
