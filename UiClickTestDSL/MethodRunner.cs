@@ -220,8 +220,11 @@ namespace UiClickTestDSL {
 
         private void InitRunTestAndCleanup(TestDef t) {
             InnerInitRunTestAndCleanup(t);
-            if (t.Succeded == false)
+            if (t.Succeded == false) {
+                Log.Debug("Retrying running the test");
                 InnerInitRunTestAndCleanup(t); //try to run the test again, to avoid occasional flukes, especially those failing on a date-string when starting before and ending after midnight
+            }
+            LogTestRun?.Invoke(t);
         }
 
         private void InnerInitRunTestAndCleanup(TestDef t) {
@@ -255,7 +258,6 @@ namespace UiClickTestDSL {
             _lastTestRun = t.Id;
             if (_classCleanup != null)
                 _classCleanup.Invoke(classObj, _emptyParams);
-            LogTestRun?.Invoke(t);
         }
 
         private void LogTestRunError(TestDef test, string msg, Exception ex, object classObj = null, bool screenshot = false, bool close = false) {
