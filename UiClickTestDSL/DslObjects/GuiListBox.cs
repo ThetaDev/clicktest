@@ -106,6 +106,14 @@ namespace UiClickTestDSL.DslObjects {
             Assert.AreEqual(1, items.Count());
         }
 
+        public void ShouldContainNoOfButtonsByAutomationId(string buttonNameId, int noofbuttons) {
+            IList<GuiListBoxItem> all = GetChildListItems();
+            IEnumerable<GuiListBoxItem> items = from i in all
+                                                where i.HasButtonWithId(buttonNameId)
+                                                select i;
+            Assert.AreEqual(noofbuttons, items.Count());
+        }
+
 
         public void ShouldContainLabelWithText(string labelText) {
             IList<GuiListBoxItem> all = GetChildListItems();
