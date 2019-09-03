@@ -127,7 +127,7 @@ namespace UiClickTestDSL {
                         var mainWindow = GetMainWindow();
                         dialogs = mainWindow.FindAllChildrenByByLocalizedControlType(AutomationExtensions.DialogLocalizedControlNameOptions).ToList();
                     } catch (AutomationElementNotFoundException) {
-                        //I expect not to find these dialogs.
+                        //I expect to not find these dialogs.
                     } catch {
                         try {
                             Log.Error("Error finding Main window and its dialogs, screenshot: " + ScreenShooter.SaveToFile());
@@ -135,6 +135,7 @@ namespace UiClickTestDSL {
                             Log.Error("Exception while trying to save screenshot: " + ex.Message, ex);
                         }
                     }
+
                     int problemDialogCounter = 0;
                     if (dialogs != null) {
                         foreach (var d in dialogs) {
@@ -144,6 +145,7 @@ namespace UiClickTestDSL {
                             if (string.IsNullOrEmpty(errorDialogHeading)) {
                                 continue; //Some controls like ContextMenus show up as dialogs, even though they do not support the WindowPattern
                             }
+
                             problemDialogCounter++;
 
                             string screenShotFilename = string.Empty;
@@ -160,11 +162,15 @@ namespace UiClickTestDSL {
                                 Log.Error(string.Format("Attempted to close dialog labeled \"{0}\", but an exception occurred.", errorDialogHeading), ex);
                             }
                         }
+
                         if (!ConnectedInsteadOfStarted)
                             KillProcess();
                         Assert.AreEqual(0, problemDialogCounter, "Error dialogs found when trying to close program.");
                     }
                 }
+            } catch {
+                Log.Error("Error handling open dialogs when closing program. Screenshot: "+ ScreenShooter.SaveToFile());
+                throw;
             } finally {
                 if (!ConnectedInsteadOfStarted) {
                     KillProcess();

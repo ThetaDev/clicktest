@@ -71,6 +71,7 @@ namespace UiClickTestDSL {
 
         [TestCleanup]
         public virtual void CloseApplication() {
+            InvalidateCachedObjects(); //Ensure no cached elements are found when checking for errors while closing the program
             Program.Close();
             InvalidateCachedObjects();
         }

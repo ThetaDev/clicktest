@@ -224,6 +224,9 @@ namespace UiClickTestDSL {
                 Log.Debug("Retrying running the test");
                 InnerInitRunTestAndCleanup(t); //try to run the test again, to avoid occasional flukes, especially those failing on a date-string when starting before and ending after midnight
             }
+            if (t.Succeded == false) {
+                ErrorCount++; //only increase error count if the test fail was not a fluke.
+            }
             LogTestRun?.Invoke(t);
         }
 
@@ -261,7 +264,6 @@ namespace UiClickTestDSL {
         }
 
         private void LogTestRunError(TestDef test, string msg, Exception ex, object classObj = null, bool screenshot = false, bool close = false) {
-            ErrorCount++;
             var logMsg = msg;
             if (screenshot) {
                 string filename = "";
@@ -301,7 +303,7 @@ namespace UiClickTestDSL {
             var testTimer = Stopwatch.StartNew();
             MethodInfo testmethod = test.Test;
             TestsRun++;
-            Log.DebugFormat(Environment.NewLine + $"E:{ErrorCount} - {TestsRun}/{_totalNoTestsToRun} - {test.Id} - {test.CompleteTestName}");
+            Log.DebugFormat(Environment.NewLine + $"E: {ErrorCount} - {TestsRun}/{_totalNoTestsToRun} - {test.Id} - {test.CompleteTestName}");
             ResetTestEnvironment?.Invoke();
             try {
                 _setup.Invoke(classObj, _emptyParams);
