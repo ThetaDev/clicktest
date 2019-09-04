@@ -131,6 +131,31 @@ namespace UiClickTestDSL.DslObjects {
             }
             throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
         }
+        /*
+        public int CountRowByCellContent(int shouldcount, string columnName, string content) {
+            int colIndex = HeaderNamesToIndex[columnName];
+            return CountRowByCellContent(shouldcount , colIndex, content, columnName);
+        }
+
+        public int CountRowByCellContent(string datagrid, int count, int colIndex, string content, string columnName = null) { //"DeliveryLinesGrid"
+
+            //DataGrid(datgrid). //GetChildListItems().Count;
+            datagrid("")
+
+            var isrowcount = 0;
+            
+            if (columnName == null) columnName = HeaderIndexToNames[colIndex];
+            int i = RowCount;  
+            foreach i in  { //(int i = 0; i < RowCount; i++)
+                var cell = Cell(i, colIndex);
+                if (cell.Text == content)
+                isrowcount = i + 1;
+            }
+            Assert.AreEqual(isrowcount, count);
+
+            throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
+        }
+        */
 
         public void SelectRowByCellContent(string columnName, string content) {
             int foundRow = -1;
