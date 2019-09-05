@@ -127,7 +127,7 @@ namespace UiClickTestDSL {
             Mouse.Click(button);
         }
 
-        public virtual void DoubleClick(MouseButton button) {
+        public virtual void DoubleClick(MouseButton button = MouseButton.Left) {
             MoveMouseHere();
             Mouse.DoubleClick(button);
         }

@@ -36,6 +36,7 @@ namespace UiClickTestDSL {
         public Func<TestDef, bool> TestDefFilterHook = null;
         public Action<string> ErrorHook = null;
         public Action ResetTestEnvironment = null;
+        public Action<TestDef> GatherTestRunInfo = null;
         private readonly object[] _emptyParams = { };
         private int _lastTestRun;
 
@@ -219,6 +220,7 @@ namespace UiClickTestDSL {
         }
 
         private void InitRunTestAndCleanup(TestDef t) {
+            TestsRun++;
             InnerInitRunTestAndCleanup(t);
             if (t.Succeded == false) {
                 Log.Debug("Retrying running the test");
@@ -227,6 +229,7 @@ namespace UiClickTestDSL {
             if (t.Succeded == false) {
                 ErrorCount++; //only increase error count if the test fail was not a fluke.
             }
+            Log.Debug($"-- Test # {t.Id} done: {t.TotalTime} \nE: {ErrorCount} \n\n");
             LogTestRun?.Invoke(t);
         }
 
@@ -261,6 +264,7 @@ namespace UiClickTestDSL {
             _lastTestRun = t.Id;
             if (_classCleanup != null)
                 _classCleanup.Invoke(classObj, _emptyParams);
+            GatherTestRunInfo?.Invoke(t);
         }
 
         private void LogTestRunError(TestDef test, string msg, Exception ex, object classObj = null, bool screenshot = false, bool close = false) {
@@ -302,7 +306,6 @@ namespace UiClickTestDSL {
             test.StartTime = DateTime.Now;
             var testTimer = Stopwatch.StartNew();
             MethodInfo testmethod = test.Test;
-            TestsRun++;
             Log.DebugFormat(Environment.NewLine + $"E: {ErrorCount} - {TestsRun}/{_totalNoTestsToRun} - {test.Id} - {test.CompleteTestName}");
             ResetTestEnvironment?.Invoke();
             try {
@@ -332,7 +335,6 @@ namespace UiClickTestDSL {
             }
             CloseProgram(classObj, _emptyParams);
             testTimer.Stop();
-            Log.Debug($"-- Test # {test.Id} done: {testTimer.Elapsed} \nE: {ErrorCount} \n\n");
             test.TotalTime = testTimer.Elapsed;
             //Need to allow the program time to exit, to avoid the next test finding an open program while starting.
             UiTestDslCoreCommon.Sleep(3);

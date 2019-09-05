@@ -45,8 +45,7 @@ namespace UiClickTestDSL.DslObjects {
         /// Note: This method returns all descendants of type ListItem, and might not work as expected for nested listboxes.
         /// </summary>
         public List<GuiListBoxItem> GetAllListItems() {
-            TrySetFocus();
-            IEnumerable<AutomationElement> all = InternalElement.FindAllChildrenByControlType(ControlType.ListItem);
+            List<AutomationElement> all = GetChildItems();
             return all.Select(listItem => new GuiListBoxItem(listItem)).ToList();
         }
 
@@ -54,13 +53,13 @@ namespace UiClickTestDSL.DslObjects {
         /// Note: This method returns only direct children of type ListItem.
         /// </summary>
         public List<GuiListBoxItem> GetChildListItems() {
-            TrySetFocus();
-            IEnumerable<AutomationElement> all = InternalElement.FindChildrenByControlType(ControlType.ListItem);
+            List<AutomationElement> all = GetChildItems();
             return all.Select(listItem => new GuiListBoxItem(listItem)).ToList();
         }
 
         public List<GuiListBoxItem> GetChildCheckBoxItems() {
             TrySetFocus();
+            ScrollAllItemsIntoView();
             IEnumerable<AutomationElement> all = InternalElement.FindChildrenByControlType(ControlType.CheckBox);
             return all.Select(GuiCheckBox => new GuiListBoxItem(GuiCheckBox)).ToList();
         }
@@ -68,12 +67,14 @@ namespace UiClickTestDSL.DslObjects {
 
         public List<AutomationElement> GetChildItems() {
             TrySetFocus();
+            ScrollAllItemsIntoView();
             IEnumerable<AutomationElement> all = InternalElement.FindChildrenByControlType(ControlType.ListItem);
             return all.ToList(); // .Select(listItem => new GuiListBoxItem(listItem))
         }
 
         public List<ListUiItem> GetAllUiItems() {
             TrySetFocus();
+            ScrollAllItemsIntoView();
             IEnumerable<AutomationElement> all = InternalElement.FindAllChildrenByClassName("UIItem");
             return all.Select(listItem => new ListUiItem(listItem)).ToList();
         }
@@ -193,6 +194,7 @@ namespace UiClickTestDSL.DslObjects {
                     UiTestDslCoreCommon.SleepMilliseconds(50);
                 }
                 scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 100);
+                scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 0); //set back to start
             } catch (InvalidOperationException) {
                 //This means there was no scrollbar because the list in the TreeView is to short to be scrollable   
             }
@@ -260,6 +262,7 @@ namespace UiClickTestDSL.DslObjects {
                                                 select i;
             GuiListBoxItem item = items.FirstOrDefault();
 
+            /*
             if (item == null) {
                 if (debug) {
                     var screenshotNo = ScreenShooter.SaveToFile();
@@ -276,6 +279,7 @@ namespace UiClickTestDSL.DslObjects {
                         select i;
                 item = items.FirstOrDefault();
             }
+            */
             if (item == null) {
                 var allLabels = completeSet.Distinct().Select(l => "[" + string.Join("\t", l.GetLabels(null)) + "]").ToList();
                 var labelsStr = string.Join(Environment.NewLine, allLabels);
@@ -286,9 +290,9 @@ namespace UiClickTestDSL.DslObjects {
             item.Select();
             UiTestDslCoreCommon.WaitWhileBusy();
             return item;
-            }
+        }
 
-            public GuiListBoxItem SelectByOneElementValueInList(string elementName, string value, bool debug = false) {
+        public GuiListBoxItem SelectByOneElementValueInList(string elementName, string value, bool debug = false) {
             List<GuiListBoxItem> completeSet = new List<GuiListBoxItem>();
             List<GuiListBoxItem> all = GetChildListItems();
             Log.Debug("Found elements: " + all.Count);
@@ -297,6 +301,7 @@ namespace UiClickTestDSL.DslObjects {
                                                 where i.HasLabelWithText(elementName, value)
                                                 select i;
             GuiListBoxItem item = items.FirstOrDefault();
+            /*
             if (item == null) {
                 if (debug) {
                     var screenshotNo = ScreenShooter.SaveToFile();
@@ -312,6 +317,7 @@ namespace UiClickTestDSL.DslObjects {
                         select i;
                 item = items.FirstOrDefault();
             }
+            */
             if (item == null) {
                 var allLabels = completeSet.Distinct().Select(l => "[" + string.Join("\t", l.GetLabels(null)) + "]").ToList();
                 var labelsStr = string.Join(Environment.NewLine, allLabels);
@@ -322,11 +328,12 @@ namespace UiClickTestDSL.DslObjects {
             UiTestDslCoreCommon.WaitWhileBusy();
             return item;
         }
-        
+
         /// <summary>
         /// Does not appear to work properly with only .Net 4.0 installed, but works fine with .Net 4.5 installed.
         /// </summary>
         private GuiListBoxItem SelectFirstMatch(string match) {
+            ScrollAllItemsIntoView();
             var all = GetChildListItems();
             var guiListBoxItem = all.FirstOrDefault(i => i.HasLabelStartingWithText(match));
             if (guiListBoxItem == null)
@@ -340,10 +347,10 @@ namespace UiClickTestDSL.DslObjects {
             var all = GetChildListItems();
             var item = all[listIndex];
             var guiListBoxItem = all.FirstOrDefault(i => i.HasLabelStartingWithText(value));
-                   if (guiListBoxItem == null)
-                   throw new Exception("Can't find any ListBoxItem starting with: " + value);
+            if (guiListBoxItem == null)
+                throw new Exception("Can't find any ListBoxItem starting with: " + value);
             item.HasLabelStartingWithText(value);
-            }
+        }
 
         public void RightClickMouse(int listIndex, string value) {
             var all = GetChildListItems();

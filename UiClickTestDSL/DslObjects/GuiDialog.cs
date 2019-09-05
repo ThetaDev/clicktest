@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
@@ -13,7 +15,13 @@ namespace UiClickTestDSL.DslObjects {
         public static GuiDialog GetDialog(ApplicationLauncher program, AutomationElement parentWindow, string caption, bool quickCheck = false) {
             //kan kanskje få til noge med: window.GetMessageBox() i hoved dsl-klassen
             if (_cachedDialog == null || _cachedDialog.Caption != caption) {
-                var dialog = program.GetDialog(caption, quickCheck);
+                AutomationElement dialog;
+                try {
+                    dialog = program.GetDialog(caption, quickCheck);
+                } catch {
+                    Thread.Sleep(15*1000); //the main place this fails is opening a File dialog when on a computer with a "slow" network connection. So we're retrying now to avoid flukes from this.
+                    dialog = program.GetDialog(caption, quickCheck);
+                }
                 _cachedDialog = new GuiDialog(dialog, caption);
                 _currentProgram = program;
                 _currentParentWindow = parentWindow;
@@ -24,8 +32,6 @@ namespace UiClickTestDSL.DslObjects {
         public static void InvalidateCache() {
             _cachedDialog = null;
         }
-
-
 
         public string Caption { get; private set; }
 
