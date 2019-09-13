@@ -141,7 +141,10 @@ namespace UiClickTestDSL {
                         foreach (var d in dialogs) {
                             UiTestDslCoreCommon.Sleep(1);
                             WaitForInputIdle();
-                            var errorDialogHeading = d.Current.Name;
+                            string errorDialogHeading = null;
+                            try {
+                                errorDialogHeading = d.Current.Name;
+                            } catch {} //This is likely a dialog which has been closed when we get here and will then throw on not found
                             if (string.IsNullOrEmpty(errorDialogHeading)) {
                                 continue; //Some controls like ContextMenus show up as dialogs, even though they do not support the WindowPattern
                             }

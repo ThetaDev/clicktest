@@ -19,7 +19,9 @@ namespace UiClickTestDSL.DslObjects {
                 try {
                     dialog = program.GetDialog(caption, quickCheck);
                 } catch {
-                    Thread.Sleep(15*1000); //the main place this fails is opening a File dialog when on a computer with a "slow" network connection. So we're retrying now to avoid flukes from this.
+                    if (quickCheck)
+                        throw;
+                    Thread.Sleep(15 * 1000); //the main place this fails is opening a File dialog when on a computer with a "slow" network connection. So we're retrying now to avoid flukes from this.
                     dialog = program.GetDialog(caption, quickCheck);
                 }
                 _cachedDialog = new GuiDialog(dialog, caption);
@@ -69,7 +71,6 @@ namespace UiClickTestDSL.DslObjects {
             foreach (var text in texts) {
                 Assert.IsFalse(visibleText.Contains(text), "Visible text should not, but contained: " + text);
             }
-            
         }
 
         public void VisibleTextBoxesContains(string text) {
