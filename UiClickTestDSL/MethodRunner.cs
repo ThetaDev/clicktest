@@ -259,12 +259,21 @@ namespace UiClickTestDSL {
                 _classCleanup = methods.SingleOrDefault(m => m.IsDefined(typeof(ClassCleanupAttribute), true));
                 _lastClass = testclass;
             }
-            var classObj = _constructor.Invoke(_emptyParams);
-            RunTestMethod(t, classObj);
-            _lastTestRun = t.Id;
-            if (_classCleanup != null)
-                _classCleanup.Invoke(classObj, _emptyParams);
-            GatherTestRunInfo?.Invoke(t);
+
+            try {
+                var classObj = _constructor.Invoke(_emptyParams);
+                RunTestMethod(t, classObj);
+                _lastTestRun = t.Id;
+                if (_classCleanup != null) {
+                    try {
+                        _classCleanup.Invoke(classObj, _emptyParams);
+                    } catch (Exception ex) {
+                        Log.Error("Exception on class cleanup: ", ex);
+                    }
+                }
+            } finally {
+                GatherTestRunInfo?.Invoke(t);
+            }
         }
 
         private void LogTestRunError(TestDef test, string msg, Exception ex, object classObj = null, bool screenshot = false, bool close = false) {
@@ -294,7 +303,7 @@ namespace UiClickTestDSL {
             if (close) {
                 //On error wait a bit extra in case the program is hanging
                 UiTestDslCoreCommon.Sleep(5);
-                CloseProgram(classObj, _emptyParams);
+                CloseProgram(classObj, test, _emptyParams);
             }
         }
 
@@ -333,7 +342,7 @@ namespace UiClickTestDSL {
                 LogTestRunError(test, "Test run error:", ex, screenshot: true);
                 ErrorHook?.Invoke(test.CompleteTestName);
             }
-            CloseProgram(classObj, _emptyParams);
+            CloseProgram(classObj, test, _emptyParams);
             testTimer.Stop();
             test.TotalTime = testTimer.Elapsed;
             //Need to allow the program time to exit, to avoid the next test finding an open program while starting.
@@ -341,10 +350,11 @@ namespace UiClickTestDSL {
             test.EndTime = DateTime.Now;
         }
 
-        private void CloseProgram(object classObj, object[] emptyParams) {
+        private void CloseProgram(object classObj, TestDef test, object[] emptyParams) {
             try {
                 _closer.Invoke(classObj, emptyParams);
             } catch (Exception ex) {
+                test.Succeded = false;
                 ErrorCount++;
                 Log.Error("Error closing program: " + ex.Message, ex);
             }
