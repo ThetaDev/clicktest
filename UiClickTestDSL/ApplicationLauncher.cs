@@ -70,7 +70,7 @@ namespace UiClickTestDSL {
         public static Action CommonApplicationInit;
         public static Action ApplicationClearAfterTestRun;
 
-        public static readonly string[] FilesToDelete = { @"C:\temp\test", @"C:\temp\test.zip" };
+        public static readonly string[] FilesToDelete = { @"C:\temp\test", @"C:\temp\test.zip", @"c:\temp\Template.hadtz" };
         public static readonly string[] DirectoriesToDelete = { @"C:\temp\test" };
 
         private static ILog Log = LogManager.GetLogger(typeof(ApplicationLauncher));
