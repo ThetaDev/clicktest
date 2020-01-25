@@ -29,8 +29,8 @@ namespace UiClickTestDSL.DslObjects {
 
         public bool Visible { get { return !LabelElement.Current.IsOffscreen; } }
 
-        public void ShouldRead(string text) {
-            Assert.AreEqual(text, Text, "Label text is wrong.");
+        public void ShouldRead(string text, string additionalInformation = "") {
+            Assert.AreEqual(text, Text, "Label text is wrong. " + additionalInformation);
         }
 
         public void ShouldNotRead(string text) {
