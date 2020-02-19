@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
+using System;
+using UiClickTestDSL.HelperPrograms;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiLabel {
@@ -33,6 +35,22 @@ namespace UiClickTestDSL.DslObjects {
             Assert.AreEqual(text, Text, "Label text is wrong. " + additionalInformation);
         }
 
+        public string DisplayText {
+            get {
+                var selectionPattern = LabelElement.GetPattern<SelectionPattern>(SelectionPattern.Pattern);
+                var selection = selectionPattern.Current.GetSelection();
+                var first = selection.First();
+                var  Item = new GuiLabel(first);
+                return Item.Text;
+            }
+        }
+
+        public void ShouldReadContaining(string text) {
+            string displayed = DisplayText;
+            Assert.IsTrue(displayed.ContainsIgnoreCase(text), "Wrong value in combobox, should contain: " + text + ", was: " + displayed);
+        }
+
+
         public void ShouldNotRead(string text) {
             Assert.AreNotEqual(text, Text, "Label text should not be: " + text);
         }
@@ -56,5 +74,15 @@ namespace UiClickTestDSL.DslObjects {
         public void ShouldNotBeVisible() {
             Assert.IsFalse(Visible);
         }
+
+        public void ShouldBeSetToDaysFromNowDate(int days) {
+            var valueday = (DateTime.Now + TimeSpan.FromDays(days)).Day.ToString();
+            var valuemonth = (DateTime.Now + TimeSpan.FromDays(days)).Month.ToString();
+            var valueyear = (DateTime.Now + TimeSpan.FromDays(days)).Year.ToString();
+            ShouldReadContaining(valueday + "." + valuemonth + "." + valueyear);
+        }
+
+        public void ShouldBeSetToDaysFromNow(int days) {
+            ShouldRead((DateTime.Now + TimeSpan.FromDays(days)).Date.ToShortDateString());      }
     }
 }
