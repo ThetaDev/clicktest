@@ -16,6 +16,8 @@ namespace UiClickTestDSL.DslObjects {
             return res;
         }
 
+        public AutomationElement InternalElement { get; private set; }
+
         public AutomationElement Window;
         public virtual GuiCheckBox CheckBox(string caption) { return GuiCheckBox.Find(Window, caption); }
         private static GuiDataGrid _cachedDatagrid = null;
@@ -320,6 +322,15 @@ namespace UiClickTestDSL.DslObjects {
 
         public void ShouldBeEnabled() {
             Assert.IsTrue(dgAutoEl.Current.IsEnabled, AutomationId + " was disabled.");
-        }       
+        }
+
+        public void ScrollToBottom() {
+            try {
+                var scroll = InternalElement.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
+                scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 100);
+            } catch (InvalidOperationException) {
+                //This means there was no scrollbar because the list in the TreeView is to short to be scrollable   
+            }
+        }
     }
 }
