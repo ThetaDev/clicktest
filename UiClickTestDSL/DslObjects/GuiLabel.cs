@@ -50,6 +50,11 @@ namespace UiClickTestDSL.DslObjects {
             Assert.IsTrue(displayed.ContainsIgnoreCase(text), "Wrong value in combobox, should contain: " + text + ", was: " + displayed);
         }
 
+        public void ShouldNotReadContaining(string text) {
+            string displayed = DisplayText;
+            Assert.AreNotEqual(text, displayed.ContainsIgnoreCase(text));
+            //Assert.IsFalse(displayed.ContainsIgnoreCase(text), "Wrong value in combobox, should not contain: " + text + ", was: " + displayed);
+        }
 
         public void ShouldNotRead(string text) {
             Assert.AreNotEqual(text, Text, "Label text should not be: " + text);
