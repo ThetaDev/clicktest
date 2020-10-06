@@ -28,6 +28,8 @@ namespace UiClickTestDSL.DslObjects {
             return new GuiListBox(res, automationId);
         }
 
+        public virtual GuiImage Image(string automationId) { return GuiImage.Find(Window, automationId); }
+
         public void TrySetFocus() {
             if (!InternalElement.Current.IsKeyboardFocusable || InternalElement.Current.HasKeyboardFocus)
                 return; //Check decompiled for SetFocus, it only tries to set KeyBoardFocus
@@ -99,6 +101,14 @@ namespace UiClickTestDSL.DslObjects {
             Assert.AreEqual(1, items.Count());
         }
 
+        public void ShouldContainImageByAutomationId(string imageNameId) {
+            IList<GuiListBoxItem> all = GetChildListItems();
+            IEnumerable<GuiListBoxItem> items = from i in all
+                                                where i.HasImgWithId(imageNameId)
+                                                select i;
+            Assert.AreEqual(1, items.Count());
+        }
+
         public void ShouldContainButtonByAutomationId(string buttonNameId) {
             IList<GuiListBoxItem> all = GetChildListItems();
             IEnumerable<GuiListBoxItem> items = from i in all
@@ -106,7 +116,7 @@ namespace UiClickTestDSL.DslObjects {
                                                 select i;
             Assert.AreEqual(1, items.Count());
         }
-
+        
         public void ShouldContainNoOfButtonsByAutomationId(string buttonNameId, int noofbuttons) {
             IList<GuiListBoxItem> all = GetChildListItems();
             IEnumerable<GuiListBoxItem> items = from i in all
@@ -114,7 +124,6 @@ namespace UiClickTestDSL.DslObjects {
                                                 select i;
             Assert.AreEqual(noofbuttons, items.Count());
         }
-
 
         public void ShouldContainLabelWithText(string labelText) {
             IList<GuiListBoxItem> all = GetChildListItems();
@@ -155,6 +164,19 @@ namespace UiClickTestDSL.DslObjects {
             return item;
         }
 
+        public GuiListBoxItem SelectFirstElementWithImageByAutomationId(string imageid) {
+            var all = GetChildListItems();
+            //var item = all[0]; //(AutomationId(imageid));
+            IEnumerable<GuiListBoxItem> items = from i in all
+                                                where i.HasImgWithId(imageid)
+                                                where i.ImageIsNotOffscreen()
+                                                select i;
+            GuiListBoxItem item = items.FirstOrDefault();
+            item.Select();
+            UiTestDslCoreCommon.WaitWhileBusy();
+            return item;
+        }
+        
         public GuiListBoxItem SelectItemByIndex(int index) {
             var item = this[index];
             item.Select();
