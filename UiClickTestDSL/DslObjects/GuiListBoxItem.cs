@@ -59,6 +59,17 @@ namespace UiClickTestDSL.DslObjects {
             return all.Any(btn => btn.Current.AutomationId.Equals(buttonNameId));
         }
 
+        public bool HasImgWithId(string imgNameId) {
+            var all = GuiImage.GetAll(Window);
+            return all.Any(i => i.Current.AutomationId.Equals(imgNameId));
+        }
+
+        public bool ImageIsNotOffscreen() {
+            var all = GuiImage.GetAll(Window);
+            return all.Any(i => i.Current.IsOffscreen.Equals(false));
+        }
+
+
         public bool HasLabelStartingWithText(string buttonName) {
             var all = GuiLabel.GetAll(Window);
             return all.Any(i => i.Current.Name.StartsWith(buttonName));
