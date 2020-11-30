@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows.Automation;
 using UiClickTestDSL.AutomationCode;
 
@@ -111,10 +112,12 @@ namespace UiClickTestDSL.HelperPrograms {
 
         public void Maximize() {
             Process.Maximize();
+            Thread.Sleep(1000);
         }
 
         public void Minimize() {
             Process.Minimize();
+            Thread.Sleep(1000);
         }
     }
 }
