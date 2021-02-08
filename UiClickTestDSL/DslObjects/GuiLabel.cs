@@ -76,9 +76,10 @@ namespace UiClickTestDSL.DslObjects {
             Assert.IsTrue(Visible);
         }
 
+        /*
         public void ShouldNotBeVisible() {
             Assert.IsFalse(Visible);
-        }
+        }*/
 
         public void ShouldBeSetToDaysFromNowDate(int days) {
             var valueday = (DateTime.Now + TimeSpan.FromDays(days)).Day.ToString();

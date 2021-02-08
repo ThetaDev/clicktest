@@ -130,9 +130,10 @@ namespace UiClickTestDSL.DslObjects {
             Assert.IsFalse(IsEditable);
         }
 
+        /*
         public void ShouldNotBeVisible() {
             Assert.IsTrue(tbAutoEl.Current.IsOffscreen, $"TextBox: {Name} ({AutomationId}) should have been offscreen");
-        }
+        }*/
 
         public void ShouldBeVisible() {
             Assert.IsFalse(tbAutoEl.Current.IsOffscreen, $"TextBox: {Name} ({AutomationId}) should have been visible");

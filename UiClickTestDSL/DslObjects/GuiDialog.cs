@@ -12,17 +12,19 @@ namespace UiClickTestDSL.DslObjects {
         private static ApplicationLauncher _currentProgram = null;
         private static AutomationElement _currentParentWindow = null;
 
-        public static GuiDialog GetDialog(ApplicationLauncher program, AutomationElement parentWindow, string caption, bool quickCheck = false) {
+        public static GuiDialog GetDialog(ApplicationLauncher program, AutomationElement parentWindow, string caption, bool quickCheck = false, bool skipNetworkWait = false) {
             //kan kanskje få til noge med: window.GetMessageBox() i hoved dsl-klassen
             if (_cachedDialog == null || _cachedDialog.Caption != caption) {
-                AutomationElement dialog;
+                AutomationElement dialog = null;
                 try {
                     dialog = program.GetDialog(caption, quickCheck);
                 } catch {
                     if (quickCheck)
                         throw;
-                    Thread.Sleep(15 * 1000); //the main place this fails is opening a File dialog when on a computer with a "slow" network connection. So we're retrying now to avoid flukes from this.
-                    dialog = program.GetDialog(caption, quickCheck);
+                    if (!skipNetworkWait) {
+                        Thread.Sleep(15 * 1000); //the main place this fails is opening a File dialog when on a computer with a "slow" network connection. So we're retrying now to avoid flukes from this.
+                        dialog = program.GetDialog(caption, quickCheck);
+                    }
                 }
                 _cachedDialog = new GuiDialog(dialog, caption);
                 _currentProgram = program;

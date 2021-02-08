@@ -18,10 +18,12 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public void Lock() {
+            btn.SetFocus();
             Check();
         }
 
         public void UnLock() {
+            btn.SetFocus();
             UnCheck();
         }
 

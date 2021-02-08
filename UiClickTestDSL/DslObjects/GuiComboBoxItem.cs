@@ -5,10 +5,12 @@ using UiClickTestDSL.AutomationCode;
 namespace UiClickTestDSL.DslObjects {
     public class GuiComboBoxItem {
         private readonly AutomationElement _cmbItem;
+        private readonly GuiComboBox _parent;
         private readonly SelectionItemPattern _selection;
 
-        public GuiComboBoxItem(AutomationElement item) {
+        public GuiComboBoxItem(AutomationElement item, GuiComboBox parent) {
             _cmbItem = item;
+            _parent = parent;
             _selection = _cmbItem.GetPattern<SelectionItemPattern>(SelectionItemPattern.Pattern);
         }
 
@@ -24,6 +26,7 @@ namespace UiClickTestDSL.DslObjects {
 
         public void Select() {
             _selection.Select();
+            _parent.Collapse();
         }
     }
 }

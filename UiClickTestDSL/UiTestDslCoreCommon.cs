@@ -45,9 +45,9 @@ namespace UiClickTestDSL {
         }
 
         public static void WaitWhileBusy() {
-            SleepMilliseconds(500);
+            SleepMilliseconds(400);
             Program.WaitForInputIdle();
-            SleepMilliseconds(10);
+            SleepMilliseconds(400);
         }
 
         public static void RepeatTryingFor(TimeSpan time, Action todo, int sleepInterval = 1000) {
@@ -94,7 +94,7 @@ namespace UiClickTestDSL {
                     Sleep(1);
                 maxRetries--;
             }
-            Log.Debug($"Found window after {MaxConnectionRetries-maxRetries} retries. The following exceptions were encountered:");
+            Log.Debug($"Found window after {MaxConnectionRetries - maxRetries} retries. The following exceptions were encountered:");
             foreach (var msg in exceptions) {
                 Log.Debug(msg);
             }
@@ -147,10 +147,11 @@ namespace UiClickTestDSL {
         }
 
         private static void PrintAutomationElements(AutomationElementCollection elements) {
+            PrintLine(PadToLength("Classname") + " " + PadToLength("AutomationId") + PadToLength("Name") + " ToString");
             foreach (var c in elements) {
                 try {
                     var ae = (c as AutomationElement);
-                    PrintLine(PadToLength(ae.Current.ClassName) + " " + PadToLength(ae.Current.AutomationId) + " " + ae.Current.Name);
+                    PrintLine(PadToLength(PadToLength(ae.Current.ClassName) + " " + PadToLength(ae.Current.AutomationId) + " " + PadToLength(ae.Current.Name) + " " + ae.ToString()));
                 } catch (Exception) { }
             }
         }
@@ -166,8 +167,9 @@ namespace UiClickTestDSL {
         }
 
         internal static void PrintControls(IEnumerable<AutomationElement> controls) {
-            foreach (var control in controls) {
-                PrintLine(PadToLength(control.ToString()) + " | Name: " + PadToLength(control.Current.Name) + " | AutomationId: " + PadToLength(control.Current.AutomationId));
+            PrintLine(PadToLength("Classname") + " " + PadToLength("AutomationId") + PadToLength("Name") + " ToString");
+            foreach (var ae in controls) {
+                PrintLine(PadToLength(PadToLength(ae.Current.ClassName)  + " " + PadToLength(ae.Current.AutomationId) + " " + PadToLength(ae.Current.Name)+ " " +ae.ToString()));
             }
         }
 
@@ -262,7 +264,7 @@ namespace UiClickTestDSL {
         public virtual GuiExpander Expander(ByAutomationId automationId) { return GuiExpander.GetExpanderByAutomationId(Window, automationId.Value); }
         public virtual GuiExpander Expander(string caption) { return GuiExpander.GetExpander(Window, caption); }
 
-        protected virtual GuiDialog Dialog(string caption, bool quickCheck = false) { return GuiDialog.GetDialog(Program, Window, caption, quickCheck); }
+        protected virtual GuiDialog Dialog(string caption, bool quickCheck = false, bool skipNetworkWait = false) { return GuiDialog.GetDialog(Program, Window, caption, quickCheck, skipNetworkWait); }
         protected virtual GuiFileDialog OpenFileDialog(string caption) { return GuiFileDialog.Find(Window, caption); }
 
         public virtual void PrintTextBoxes() { PrintControls(GuiTextBox.GetAll(Window)); }

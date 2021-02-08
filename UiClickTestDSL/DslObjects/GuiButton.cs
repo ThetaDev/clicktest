@@ -83,9 +83,10 @@ namespace UiClickTestDSL.DslObjects {
             return new GuiButton(el, "AppButton." + name);
         }
 
+        /*
         public void ShouldNotBeVisible() {
             Assert.IsTrue(_btn.Current.IsOffscreen, "Button: " + _name + " should have been offscreen");
-        }
+        }*/
 
         public void ShouldBeVisible() {
             Assert.IsFalse(_btn.Current.IsOffscreen, "Button: " + _name + " should have been visible");

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
@@ -19,7 +20,7 @@ namespace UiClickTestDSL.DslObjects {
             return new GuiComboBox(res);
         }
 
-        private readonly AutomationElement _cmb;
+        public readonly AutomationElement _cmb;
         private readonly ExpandCollapsePattern _expandCollapse;
 
         public GuiComboBox(AutomationElement comboBox) {
@@ -30,6 +31,11 @@ namespace UiClickTestDSL.DslObjects {
         private void Activate() {
             _cmb.SetFocus();
             _expandCollapse.Expand();
+            Thread.Sleep(100);
+            //_expandCollapse.Collapse();
+        }
+
+        public void Collapse() {
             _expandCollapse.Collapse();
         }
 
@@ -48,7 +54,7 @@ namespace UiClickTestDSL.DslObjects {
                 var selectionPattern = _cmb.GetPattern<SelectionPattern>(SelectionPattern.Pattern);
                 var selection = selectionPattern.Current.GetSelection();
                 var first = selection.First();
-                var comboBoxItem = new GuiComboBoxItem(first);
+                var comboBoxItem = new GuiComboBoxItem(first, this);
                 return comboBoxItem.Text;
             }
         }
@@ -80,8 +86,9 @@ namespace UiClickTestDSL.DslObjects {
                                                  select i;
             var item = items.FirstOrDefault();
             if (item == null)
-                Assert.Fail("Unable to find ComboBoxItem with caption: " + caption);
+                Assert.Fail("Unable to find ComboBoxItem with caption: " + caption + $" # found: {all.Count}");
             item.Select();
+            Collapse();
         }
 
         public void SelectItemContaining(string caption) {
@@ -99,11 +106,13 @@ namespace UiClickTestDSL.DslObjects {
         public List<GuiComboBoxItem> GetAllItems() {
             Activate();
             IEnumerable<AutomationElement> all = _cmb.FindAllChildrenByControlType(ControlType.ListItem);
-            return all.Select(comboBoxItem => new GuiComboBoxItem(comboBoxItem)).ToList();
+            return all.Select(comboBoxItem => new GuiComboBoxItem(comboBoxItem, this)).ToList();
         }
 
         public void PrintAllItems() {
-            foreach (var item in GetAllItems()) {
+            var all = GetAllItems();
+            UiTestDslCoreCommon.PrintLine($"Found #items: {all.Count}");
+            foreach (var item in all) {
                 UiTestDslCoreCommon.PrintLine(item.Text);
             }
         }

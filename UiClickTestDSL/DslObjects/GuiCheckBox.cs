@@ -62,9 +62,10 @@ namespace UiClickTestDSL.DslObjects {
             }
         }
 
+        /*
         public void ShouldNotBeVisible() {
             Assert.IsTrue(_cb.Current.IsOffscreen, "Checkbox: " + _cb.Current.Name + " should have been offscreen");
-        }
+        }*/
 
         public void ShouldBeVisible() {
             Assert.IsFalse(_cb.Current.IsOffscreen, "Checkbox: " + _cb.Current.Name + " should have been visible");

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Automation;
 using UiClickTestDSL.AutomationCode;
 
@@ -9,6 +10,18 @@ namespace UiClickTestDSL.DslObjects {
             if (_cachedDp == null || _cachedDp.AutomationId != automationId) {
                 //var tb = window.FindChildByControlTypeAndAutomationId(ControlType.Calendar, automationId);
                 var d = window.FindChildByClassAndAutomationId("DatePicker", automationId);
+                _cachedDp = new GuiDatePicker(d);
+            }
+            return _cachedDp;
+        }
+
+        public static GuiDatePicker GetDatePickerExtended(AutomationElement window, string automationId) {
+            if (_cachedDp == null || _cachedDp.AutomationId != automationId) {
+                //var tb = window.FindChildByControlTypeAndAutomationId(ControlType.Calendar, automationId);
+                var children = window.FindAllChildrenByAutomationId(automationId).ToList();
+                PrintControls(children);
+                children = window.FindAllChildrenByAutomationId(automationId).ToList();
+                var d = children.First(c => c.Current.ClassName == "DatePicker");
                 _cachedDp = new GuiDatePicker(d);
             }
             return _cachedDp;

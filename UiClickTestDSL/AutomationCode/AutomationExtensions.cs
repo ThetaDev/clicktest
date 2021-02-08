@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Forms;
 using System.Windows;
 using System.Windows.Media;
@@ -89,7 +90,7 @@ namespace UiClickTestDSL.AutomationCode {
         }
 
         public static AutomationElement FindChildByClass(this AutomationElement element, string className) {
-            return RunSearchWithName(element, "", false, ClassName(className));
+            return RunSearchWithName(element, "", false, ClassName(className)); //must specify at least 2 conditions
         }
 
         public static AutomationElement FindChildByClassAndName(this AutomationElement element, string className, string name) {
@@ -117,12 +118,16 @@ namespace UiClickTestDSL.AutomationCode {
 
         internal static AutomationElement RunActualSearch(AutomationElement element, bool quickCheck, params Condition[] searchConditions) {
             var searchCond = new AndCondition(searchConditions);
+            
             AutomationElement result = null;
             int retries = 40;
             if (quickCheck)
                 retries = 4; //total of 1 seconds sleep + searching = about 6 seconds search-time.
             while (retries > 0) {
                 result = element.FindFirst(TreeScope.Descendants, searchCond);
+                if (result != null)
+                    break;
+                result = element.FindFirst(TreeScope.Subtree, searchCond);
                 if (result != null)
                     break;
                 retries--;
@@ -142,9 +147,9 @@ namespace UiClickTestDSL.AutomationCode {
             return RunActualSearch(element, false, AutomationId(automationId), ClassName(classname));
         }
 
-        public static AutomationElementCollection FindAllChildrenByAutomationId(this AutomationElement element, string automationId) {
+        public static IEnumerable<AutomationElement> FindAllChildrenByAutomationId(this AutomationElement element, string automationId) {
             var res = element.FindAll(TreeScope.Descendants, AutomationId(automationId));
-            return res;
+            return res.Cast<AutomationElement>();
         }
 
         public static AutomationElementCollection FindAllElementChildrenByName(this AutomationElement element, string name) {

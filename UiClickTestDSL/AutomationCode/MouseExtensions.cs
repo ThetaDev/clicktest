@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Windows;
 using System.Windows.Automation;
 using Microsoft.Test.Input;
@@ -20,6 +21,15 @@ namespace UiClickTestDSL.AutomationCode {
         public static void ClickPointFromCenter(this AutomationElement el, MouseButton btn, int offSetHeightFromCenter, bool leftEdge) {
             el.MoveMouseToCenter(leftEdge, offSetHeightFromCenter);
             Mouse.Click(btn);
+        }
+
+        public static Point MoveMouseTo(this AutomationElement el, int widthPercentage, int heightPercentage) {
+            Rect bounds = el.Current.BoundingRectangle;
+            int centerX = (int)(bounds.X * widthPercentage / 100);
+            int centerY = (int)(bounds.Y * heightPercentage / 100);
+            var point = new Point(centerX, centerY);
+            Mouse.MoveTo(point);
+            return point;
         }
 
         public static void MoveMouseToCenter(this AutomationElement el, bool leftEdge = false, int offSetHeightFromCenter = 0) {
