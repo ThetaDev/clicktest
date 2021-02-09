@@ -25,8 +25,8 @@ namespace UiClickTestDSL.AutomationCode {
 
         public static Point MoveMouseTo(this AutomationElement el, int widthPercentage, int heightPercentage) {
             Rect bounds = el.Current.BoundingRectangle;
-            int centerX = (int)(bounds.X * widthPercentage / 100);
-            int centerY = (int)(bounds.Y * heightPercentage / 100);
+            int centerX = (int)(bounds.Width * widthPercentage / 100);
+            int centerY = (int)(bounds.Height * heightPercentage / 100);
             var point = new Point(centerX, centerY);
             Mouse.MoveTo(point);
             return point;

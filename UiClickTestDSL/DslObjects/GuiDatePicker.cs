@@ -20,7 +20,6 @@ namespace UiClickTestDSL.DslObjects {
                 //var tb = window.FindChildByControlTypeAndAutomationId(ControlType.Calendar, automationId);
                 var children = window.FindAllChildrenByAutomationId(automationId).ToList();
                 PrintControls(children);
-                children = window.FindAllChildrenByAutomationId(automationId).ToList();
                 var d = children.First(c => c.Current.ClassName == "DatePicker");
                 _cachedDp = new GuiDatePicker(d);
             }

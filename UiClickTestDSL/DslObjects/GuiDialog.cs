@@ -22,7 +22,7 @@ namespace UiClickTestDSL.DslObjects {
                     if (quickCheck)
                         throw;
                     if (!skipNetworkWait) {
-                        Thread.Sleep(15 * 1000); //the main place this fails is opening a File dialog when on a computer with a "slow" network connection. So we're retrying now to avoid flukes from this.
+                        Thread.Sleep(3 * 1000); //the main place this fails is opening a File dialog when on a computer with a "slow" network connection. So we're retrying now to avoid flukes from this.
                         dialog = program.GetDialog(caption, quickCheck);
                     }
                 }

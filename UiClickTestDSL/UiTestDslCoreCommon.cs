@@ -147,11 +147,11 @@ namespace UiClickTestDSL {
         }
 
         private static void PrintAutomationElements(AutomationElementCollection elements) {
-            PrintLine(PadToLength("Classname") + " " + PadToLength("AutomationId") + PadToLength("Name") + " ToString");
+            PrintLine(PadToLength("Classname") + " " + PadToLength("AutomationId") + PadToLength("Name"));
             foreach (var c in elements) {
                 try {
                     var ae = (c as AutomationElement);
-                    PrintLine(PadToLength(PadToLength(ae.Current.ClassName) + " " + PadToLength(ae.Current.AutomationId) + " " + PadToLength(ae.Current.Name) + " " + ae.ToString()));
+                    PrintLine(PadToLength(PadToLength(ae.Current.ClassName) + " " + PadToLength(ae.Current.AutomationId) + " " + PadToLength(ae.Current.Name)));
                 } catch (Exception) { }
             }
         }
@@ -167,9 +167,9 @@ namespace UiClickTestDSL {
         }
 
         internal static void PrintControls(IEnumerable<AutomationElement> controls) {
-            PrintLine(PadToLength("Classname") + " " + PadToLength("AutomationId") + PadToLength("Name") + " ToString");
+            PrintLine(PadToLength("Classname") + " " + PadToLength("AutomationId") + PadToLength("Name"));
             foreach (var ae in controls) {
-                PrintLine(PadToLength(PadToLength(ae.Current.ClassName)  + " " + PadToLength(ae.Current.AutomationId) + " " + PadToLength(ae.Current.Name)+ " " +ae.ToString()));
+                PrintLine(PadToLength(PadToLength(ae.Current.ClassName)  + " " + PadToLength(ae.Current.AutomationId) + " " + PadToLength(ae.Current.Name)));
             }
         }
 
