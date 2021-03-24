@@ -7,6 +7,14 @@ using System.Windows.Forms;
 using Microsoft.Test.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
+using log4net;
+using System.Text;
+using UiClickTestDSL.DslObjects;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Threading;
+using log4net.Config;
 
 
 namespace UiClickTestDSL.DslObjects {
@@ -133,6 +141,26 @@ namespace UiClickTestDSL.DslObjects {
             }
             throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
         }
+
+        /*
+        public int SetTextOfFirstCellByCellContent(string columnName, string content, string txvalue) {
+            int colIndex = HeaderNamesToIndex[columnName];
+            return SetTextOfFirstCellByCellContentWithColIndex(colIndex, content, txvalue, columnName);
+        }
+        */
+        /*
+        public int SetTextOfFirstCellByCellContentWithColIndex(int colIndex, string content, string txvalue , string columnName = null) {
+            if (columnName == null) columnName = HeaderIndexToNames[colIndex];
+            for (int i = 0; i < RowCount; i++) {
+                var cell = Cell(i, colIndex);
+                if (cell.Text == content)
+                    cell.SetText(txvalue)
+                    content = txvalue;
+            }
+            throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
+        }
+        */
+
         /*
         public int CountRowByCellContent(int shouldcount, string columnName, string content) {
             int colIndex = HeaderNamesToIndex[columnName];
@@ -158,7 +186,7 @@ namespace UiClickTestDSL.DslObjects {
             throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
         }
         */
-
+        
         public void SelectRowByCellContent(string columnName, string content) {
             int foundRow = -1;
             int colIndex = HeaderNamesToIndex[columnName];
@@ -172,6 +200,35 @@ namespace UiClickTestDSL.DslObjects {
             if (foundRow == -1)
                 throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
             SelectRow(foundRow);
+        }
+
+        public void SetTextInCellByContent(string columnName, string content, string txvalue) {
+            int foundRow = -1;
+            int colIndex = HeaderNamesToIndex[columnName];
+            for (int i = 0; i < RowCount; i++) {
+                var cell = Cell(i, colIndex);
+                if (cell.Text == content) {
+                    foundRow = i;
+                    Cell(i, colIndex).SetText(txvalue);
+                    break;
+                }
+            }
+            if (foundRow == -1)
+                throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
+            SelectRow(foundRow);
+        }
+
+        public virtual void DoubleClick(MouseButton button = MouseButton.Left) {
+            MoveMouseHere();
+            Mouse.DoubleClick(button);
+        }
+
+        public virtual void MoveMouseHere() {
+            Mouse.MoveTo(ClickablePoint);
+        }
+
+        public virtual Point ClickablePoint {
+            get { return Window.GetClickablePoint().Convert(); }
         }
 
         public void VerifyRowByCellContent(string columnName1, string content1, string columnName2, string content2) {
