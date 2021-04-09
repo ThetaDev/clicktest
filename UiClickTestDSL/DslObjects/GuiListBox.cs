@@ -133,6 +133,14 @@ namespace UiClickTestDSL.DslObjects {
             Assert.AreEqual(1, items.Count());
         }
 
+        public void ShouldNotContainLabelWithText(string labelText) {
+            IList<GuiListBoxItem> all = GetChildListItems();
+            IEnumerable<GuiListBoxItem> items = from i in all
+                                                where i.HasLabelWithText(text: labelText)
+                                                select i;
+            Assert.AreEqual(0, items.Count());
+        }
+
         public void ShouldContainTheseLabels(params string[] txtValues) {
             IList<GuiListBoxItem> all = GetChildListItems();
             var missing = "";
