@@ -15,6 +15,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using log4net.Config;
+using UiClickTestDSL;
 
 
 namespace UiClickTestDSL.DslObjects {
@@ -128,7 +129,7 @@ namespace UiClickTestDSL.DslObjects {
                     //ClearSelection();
                     selPatt.AddToSelection();
                     UiTestDslCoreCommon.SleepMilliseconds(300);
-                    break;
+                    //break;
                 }
             }
             if (foundRow == -1)
@@ -320,7 +321,7 @@ namespace UiClickTestDSL.DslObjects {
             SelectRow(RowCount - 2);
             return RowCount - 2;
         }
-
+        
         private AutomationElement GetNewRowPlaceholder() {
             try {
                 var scroll = dgAutoEl.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
@@ -329,6 +330,16 @@ namespace UiClickTestDSL.DslObjects {
                 //This means there was no scrollbar because the DataGrid is to short to be scrollable   
             }
             return dgAutoEl.FindChildByClassAndName("DataGridRow", "{NewItemPlaceholder}");
+        }
+
+        private AutomationElement GetRowPlaceholder() {
+            try {
+                var scroll = dgAutoEl.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
+                scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 100);
+            } catch (InvalidOperationException) {
+                //This means there was no scrollbar because the DataGrid is to short to be scrollable   
+            }
+            return dgAutoEl.FindChildByControlTypeAndClass(ControlType.DataItem,"DataGridRow"); 
         }
 
         public void AddNewRowMarkerToSelection() {
@@ -343,11 +354,13 @@ namespace UiClickTestDSL.DslObjects {
             Mouse.Click(MouseButton.Right);
         }
 
-        public void RightClickRow() {
-            AutomationElement newRowPlaceholder = GetNewRowPlaceholder();
-            newRowPlaceholder.MoveMouseToCenter();
+        
+        public void RightClickSelectedRow() {
+            AutomationElement RowPlaceholder = GetRowPlaceholder();
+            RowPlaceholder.MoveMouseToCenter();
             Mouse.Click(MouseButton.Right);
         }
+        
 
         public void DoubleClickFirstCellInNewRowMarker() {
             AutomationElement newRowPlaceholder = GetNewRowPlaceholder();
