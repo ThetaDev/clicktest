@@ -129,7 +129,7 @@ namespace UiClickTestDSL.DslObjects {
                     //ClearSelection();
                     selPatt.AddToSelection();
                     UiTestDslCoreCommon.SleepMilliseconds(300);
-                    //break;
+                    break;
                 }
             }
             if (foundRow == -1)
