@@ -21,6 +21,11 @@ namespace UiClickTestDSL.DslObjects {
             return new GuiLabel(res);
         }
 
+        public static GuiLabel GetLabelByName(AutomationElement window, string name) {
+            var res = window.FindChildByControlTypeAndName(ControlType.Text, name);
+            return new GuiLabel(res);
+        }
+
         internal AutomationElement LabelElement;
 
         public GuiLabel(AutomationElement label) {
