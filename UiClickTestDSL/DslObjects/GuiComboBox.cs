@@ -20,6 +20,12 @@ namespace UiClickTestDSL.DslObjects {
             return new GuiComboBox(res);
         }
 
+        public static GuiComboBox FindByName(AutomationElement window, string name) {
+            var res = window.FindChildByControlTypeAndName(ControlType.ComboBox, name);
+            return new GuiComboBox(res);
+        }
+
+
         public readonly AutomationElement _cmb;
         private readonly ExpandCollapsePattern _expandCollapse;
 
@@ -130,5 +136,16 @@ namespace UiClickTestDSL.DslObjects {
         public void ShouldContainItems() {
             Assert.AreNotEqual(0, GetAllItems().Count);
         }
-    }
+
+        public void VerifyBySelectionItemsContaining(params string[] items) {    //temp //TODO veryfi uten select
+            Assert.AreNotEqual(0, GetAllItems().Count);
+            foreach (var item in items) {
+                List<GuiComboBoxItem> all = GetAllItems();
+                IEnumerable<GuiComboBoxItem> listitem = from i in all
+                                                        where i.Text.Contains(item)
+                                                        select i;
+                listitem.First().Select();
+            }
+        }
+        }
 }
