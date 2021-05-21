@@ -269,12 +269,14 @@ namespace UiClickTestDSL {
 
         public virtual void PrintTextBoxes() { PrintControls(GuiTextBox.GetAll(Window)); }
         public virtual GuiTextBox TextBox(string automationId) { return GuiTextBox.GetTextBox(Window, automationId); }
+        public virtual GuiTextBox TextBoxByName(string name) { return GuiTextBox.GetTextBoxByName(Window, name); }
         public virtual GuiTextBox TextBox(ByAutomationId automationId) { return GuiTextBox.GetTextBox(Window, automationId.Value); }
         public virtual GuiTextBoxes TextBoxes(string prefix = "") { return GuiTextBoxes.GetAll(Window, prefix); }
 
         public virtual void PrintLabels(string prefix = "") { PrintControls(GuiLabel.GetAll(Window, prefix)); }
         public virtual GuiLabel Label(string automationId) { return GuiLabel.GetLabel(Window, automationId); }
         public virtual GuiLabel Label(ByAutomationId automationId) { return GuiLabel.GetLabel(Window, automationId.Value); }
+        public virtual GuiLabel LabelByName(string name) { return GuiLabel.GetLabelByName(Window, name); }
         public virtual GuiLabels GetLabels(string prefix) { return GuiLabels.GetAll(Window, prefix); }
 
         public virtual void PrintButtons() { PrintControls(GuiButton.GetAll(Window)); }
@@ -298,6 +300,7 @@ namespace UiClickTestDSL {
 
         public virtual void PrintComboBoxes() { PrintControls(GuiComboBox.GetAll(Window)); }
         public virtual GuiComboBox ComboBox(string automationId) { return GuiComboBox.Find(Window, automationId); }
+        public virtual GuiComboBox ComboBoxByName(string name) { return GuiComboBox.FindByName(Window, name); }
         public virtual GuiComboBox ComboBox(ByAutomationId automationId) { return GuiComboBox.Find(Window, automationId.Value); }
         public virtual GuiComboBoxes ComboBoxes(string prefix) { return GuiComboBoxes.Find(Window, prefix); }
 
