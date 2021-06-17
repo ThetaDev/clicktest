@@ -133,6 +133,12 @@ namespace UiClickTestDSL.DslObjects {
             Assert.IsTrue(displayed.ContainsIgnoreCase(text), "Wrong value in combobox, should contain: " + text + ", was: " + displayed);
         }
 
+        public void ShouldNotReadContaining(string text) {
+            string displayed = DisplayText;
+            Assert.IsFalse(displayed.ContainsIgnoreCase(text), "Wrong value in combobox, should not contain: " + text + ", was: " + displayed);
+        }
+
+
         public void ShouldContainItems() {
             Assert.AreNotEqual(0, GetAllItems().Count);
         }
