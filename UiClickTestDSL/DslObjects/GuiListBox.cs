@@ -265,6 +265,41 @@ namespace UiClickTestDSL.DslObjects {
             return item;
         }
 
+        public void SelectElementContainingLabelStartingWithText(string value, bool debug = false) {
+            List<GuiListBoxItem> completeSet = new List<GuiListBoxItem>();
+            List<GuiListBoxItem> all = GetChildListItems();
+            Log.Debug("Found elements: " + all.Count);
+            completeSet.AddRange(all);
+            IEnumerable<GuiListBoxItem> items = from i in all
+                                                where i.HasLabelStartingWithText(value)
+                                                select i;
+            GuiListBoxItem item = items.FirstOrDefault();
+            if (item == null) {
+                if (debug) {
+                    var screenshotNo = ScreenShooter.SaveToFile();
+                    Log.Debug("Saved screenshot of view of listbox before scrolling: " + screenshotNo);
+                }
+                //try to scroll to the bottom, to see if we can find it there.
+                ScrollAllItemsIntoView();
+                all = GetChildListItems();
+                Log.Debug("Found elements: " + all.Count);
+                completeSet.AddRange(all);
+                items = from i in all
+                        where i.HasLabelWithText(text: value)
+                        select i;
+                item = items.FirstOrDefault();
+            }
+            if (item == null) {
+                var allLabels = completeSet.Distinct().Select(l => "[" + string.Join("\t", l.GetLabels(null)) + "]").ToList();
+                var labelsStr = string.Join(Environment.NewLine, allLabels);
+                var msg = $"Unable to find element with label, even after scrolling all items into view. Searching for \"{value}\". Found ({allLabels.Count} items): {Environment.NewLine}{labelsStr}";
+                UiTestDslCoreCommon.PrintLine(msg);
+            }
+            item.Select();
+            UiTestDslCoreCommon.WaitWhileBusy();
+        }
+
+
         public void ElementNotInList(string elementName, string value) {
             IList<GuiListBoxItem> all = GetChildListItems();
             IEnumerable<GuiListBoxItem> items = from i in all
