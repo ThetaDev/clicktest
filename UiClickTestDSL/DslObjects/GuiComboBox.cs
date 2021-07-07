@@ -143,6 +143,29 @@ namespace UiClickTestDSL.DslObjects {
             Assert.AreNotEqual(0, GetAllItems().Count);
         }
 
+        public void ShouldContainTheseItems(params string[] items) {
+            Assert.AreNotEqual(0, GetAllItems().Count);
+            foreach (var item in items) {
+                var all = GetAllItems();
+                var itemlist = from i in all
+                               where i.Text.Equals(item)
+                               select i;
+                Assert.AreNotEqual(0, itemlist.ToList().Count);
+            }
+        }
+
+        public void ShouldNotContainTheseItems(params string[] items) {
+            Assert.AreNotEqual(0, GetAllItems().Count);
+
+            foreach (var item in items) {
+                var all = GetAllItems();
+                var itemlist = from i in all
+                               where i.Text.Equals(item)
+                               select i;
+                Assert.AreEqual(0, itemlist.ToList().Count);
+            }
+        }
+
         public void VerifyBySelectionItemsContaining(params string[] items) {    //temp //TODO veryfi uten select
             Assert.AreNotEqual(0, GetAllItems().Count);
             foreach (var item in items) {
