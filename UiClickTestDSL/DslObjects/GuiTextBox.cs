@@ -34,10 +34,10 @@ namespace UiClickTestDSL.DslObjects {
             _cachedtb = null;
         }
 
-        private AutomationElement tbAutoEl;
-        private ValuePattern value;
-        public string AutomationId { get; private set; }
-        public string Name { get; private set; }
+        protected AutomationElement tbAutoEl;
+        protected ValuePattern value;
+        public string AutomationId { get; protected set; }
+        public string Name { get; protected set; }
 
         public GuiTextBox(AutomationElement textbox) {
             tbAutoEl = textbox;
