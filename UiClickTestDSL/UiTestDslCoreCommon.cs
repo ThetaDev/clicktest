@@ -283,6 +283,7 @@ namespace UiClickTestDSL {
         public virtual GuiButton ButtonByAutomationId(string automationId) { return GuiButton.GetButtonByAutomationId(Window, automationId); }
         public virtual GuiButton Button(ByAutomationId automationId) { return GuiButton.GetButtonByAutomationId(Window, automationId.Value); }
         public virtual GuiButton Button(string caption) { return GuiButton.GetButton(Window, caption); }
+        public virtual GuiToggleButton ToggleButtonByName(string name) { return GuiToggleButton.GetButtonByName(Window, name); }
 
         public virtual GuiToggleButton ToggleButton(string automationId) { return GuiToggleButton.GetButtonByAutomationId(Window, automationId); }
         public virtual GuiToggleButton ToggleButton(ByAutomationId automationId) { return GuiToggleButton.GetButtonByAutomationId(Window, automationId.Value); }
