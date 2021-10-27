@@ -8,6 +8,10 @@ namespace UiClickTestDSL.DslObjects {
             var res = parent.FindChildByControlTypeAndAutomationId(ControlType.Button, automationId);
             return new GuiToggleButton(res);
         }
+        public static GuiToggleButton GetButtonByName(AutomationElement parent, string name) {
+            var res = parent.FindChildByControlTypeAndName(ControlType.Button,name);
+            return new GuiToggleButton(res);
+        }
 
         private readonly AutomationElement btn;
         private readonly TogglePattern toggler;
