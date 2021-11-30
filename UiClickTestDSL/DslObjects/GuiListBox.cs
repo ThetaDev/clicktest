@@ -100,7 +100,6 @@ namespace UiClickTestDSL.DslObjects {
 
         public void ShouldContainButton(string buttonName) {
             IList<GuiListBoxItem> all = GetChildListItems();
-            PrintAllControls();
             IEnumerable<GuiListBoxItem> items = from i in all
                                                 where i.HasButtonWithText(buttonName)
                                                 select i;
