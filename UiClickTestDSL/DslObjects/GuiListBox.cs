@@ -71,6 +71,11 @@ namespace UiClickTestDSL.DslObjects {
             return all.Select(GuiCheckBox => new GuiListBoxItem(GuiCheckBox)).ToList();
         }
 
+        public List<GuiListBoxItem> GetChildButtonItems() {
+            IEnumerable<AutomationElement> all = InternalElement.FindChildrenByControlType(ControlType.Button);
+            return all.Select(GuiButton => new GuiListBoxItem(GuiButton)).ToList();
+        }
+
 
         public List<AutomationElement> GetChildItems() {
             TrySetFocus();
@@ -159,6 +164,10 @@ namespace UiClickTestDSL.DslObjects {
 
         public void CountShouldBe(int expectedCount) {
             Assert.AreEqual(expectedCount, GetChildListItems().Count);
+        }
+
+        public void ButtonCountShouldBe(int expectedCount) {                    //GetChildButtonItems
+            Assert.AreEqual(expectedCount, GetChildButtonItems().Count);
         }
 
         public GuiListBoxItem SelectLastItem() {
