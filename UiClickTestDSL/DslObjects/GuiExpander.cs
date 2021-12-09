@@ -5,9 +5,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiExpander {
+
+        public AutomationElement Window;
         public static IEnumerable<AutomationElement> GetAll(AutomationElement window) {
             var tbs = window.FindAllChildrenByControlType(ControlType.Group);
             return tbs;
@@ -91,5 +94,8 @@ namespace UiClickTestDSL.DslObjects {
             Assert.AreEqual(ExpandCollapseState.Expanded, pattern.Current.ExpandCollapseState, $"Expander: {_name} should have been expanded, but was {pattern.Current.ExpandCollapseState.ToString()}");
         }
 
+        public virtual GuiListBox ListBox(string name) { return GuiListBox.Find(Window, name); }
+        public virtual GuiTextBoxes TextBoxes(string prefix = "") { return GuiTextBoxes.GetAll(Window, prefix); }
+        public virtual GuiTextBox TextBox(string automationId) { return GuiTextBox.GetTextBox(Window, automationId); }
     }
 }
