@@ -13,7 +13,7 @@ namespace UiClickTestDSL.DslObjects {
             AutomationElement dlg = null;
             //* Works fine on Windows 8.1, but not on Windows 7 with only .Net 4.0 installed.
             // * We need to retest this after upgrading to .Net 4.6
-            int maxRetries = 300; //try for at least 3 minutes; Our virtual machines are sometimes slow when opening file type dialogs/explorer.
+            int maxRetries = 200; //try for at least 3 minutes; Our virtual machines are sometimes slow when opening file type dialogs/explorer.
             while (dlg == null && maxRetries > 0) {
                 try {
                     //dlg = window.FindChildByLocalizedControlTypeAndName(caption, AutomationExtensions.DialogLocalizedControlNameOptions); //different name options on different language settings
@@ -25,7 +25,7 @@ namespace UiClickTestDSL.DslObjects {
                 if (dlg == null && maxRetries % 10 == 0) {
                     Log.DebugFormat("File dialog not found: {0}   Caption: {1}", maxRetries, caption);
                 }
-                UiTestDslCoreCommon.SleepMilliseconds(500);
+                UiTestDslCoreCommon.SleepMilliseconds(250);
                 maxRetries--;
             }
             //*/
