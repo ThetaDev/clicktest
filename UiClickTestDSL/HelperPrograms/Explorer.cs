@@ -74,9 +74,9 @@ namespace UiClickTestDSL.HelperPrograms {
             Mouse.MoveTo(fileInExplorer.ClickablePoint);
             Mouse.Down(MouseButton.Left);
             SleepMilliseconds(500);
-            Mouse.MoveTo(new Point(100, 100)); //ensure start of mouse drag
+            Mouse.MoveTo(new Point(1150, 600)); //ensure start of mouse drag
             SleepMilliseconds(500);
-            Mouse.MoveTo(new Point(750, 500)); //trying to always move the cursor to an approximated center on a 1080p display, which is still within a 1366x768 display
+            Mouse.MoveTo(new Point(950, 500)); //trying to always move the cursor to the right of an approximated center on a 1080p display, which is still within a 1366x768 display
             SleepMilliseconds(500);
             Minimize();
             SleepMilliseconds(500);
@@ -106,10 +106,11 @@ namespace UiClickTestDSL.HelperPrograms {
             Mouse.Down(MouseButton.Left);
             Keyboard.Release(Key.Ctrl);
             SleepMilliseconds(500);
-            Mouse.MoveTo(new Point(100, 100)); //ensure start of mouse drag
+            Mouse.MoveTo(new Point(1150, 600)); //ensure start of mouse drag
             SleepMilliseconds(500);
-            Mouse.MoveTo(new Point(750, 500)); //trying to always move the cursor to an approximated center on a 1080p display, which is still within a 1366x768 display
+            Mouse.MoveTo(new Point(950, 500)); //trying to always move the cursor to the right of an approximated center on a 1080p display, which is still within a 1366x768 display
             SleepMilliseconds(500);
+            ScreenShooter.SaveToFile(); //todo fjern
             Minimize();
             SleepMilliseconds(500);
             var centerElement = el.GetClickablePoint().Convert();
