@@ -162,6 +162,10 @@ namespace UiClickTestDSL.DslObjects {
             Assert.IsTrue(string.IsNullOrWhiteSpace(missing), missing);
         }
 
+        public int Count() {
+            return GetChildListItems().Count;
+        }
+
         public void CountShouldBe(int expectedCount) {
             Assert.AreEqual(expectedCount, GetChildListItems().Count);
         }
