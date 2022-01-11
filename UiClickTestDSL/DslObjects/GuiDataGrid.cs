@@ -225,7 +225,7 @@ namespace UiClickTestDSL.DslObjects {
         }
         */
 
-        public void SelectRowByCellContent(string columnName, string content) {
+        public int SelectRowByCellContent(string columnName, string content) {
             int foundRow = -1;
             int colIndex = HeaderNamesToIndex[columnName];
             for (int i = 0; i < RowCount; i++) {
@@ -238,6 +238,7 @@ namespace UiClickTestDSL.DslObjects {
             if (foundRow == -1)
                 throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
             SelectRow(foundRow);
+            return foundRow;
         }
 
         public void SetTextInCellByContent(string columnName, string content, string txvalue) {
