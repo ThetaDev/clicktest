@@ -139,7 +139,7 @@ namespace UiClickTestDSL.DslObjects {
         public void VerifyCountOfColumnsByName(string name, int nocolumns) {
             var res = dgAutoEl.FindAll(TreeScope.Descendants, Name(name)).Count;
             res = res - 1;
-            Assert.AreEqual(res, nocolumns); 
+            Assert.AreEqual(nocolumns, res); 
             return ;
         }
 
