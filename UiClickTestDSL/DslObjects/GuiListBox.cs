@@ -27,11 +27,6 @@ namespace UiClickTestDSL.DslObjects {
             AutomationElement res = window.FindChildByControlTypeAndAutomationIdOrName(ControlType.List, automationId);
             return new GuiListBox(res, automationId);
         }
-        public static GuiListBox InvalidateCache() {
-            AutomationElement res = null;
-            return new GuiListBox(res, null);
-        }
-
 
         public virtual GuiImage Image(string automationId) { return GuiImage.Find(Window, automationId); }
 
