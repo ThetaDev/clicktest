@@ -74,5 +74,11 @@ namespace UiClickTestDSL.DslObjects {
             var all = GuiLabel.GetAll(Window);
             return all.Any(i => i.Current.Name.StartsWith(buttonName));
         }
+
+        public bool HasLabelContainingText(string buttonName) {
+            var all = GuiLabel.GetAll(Window);
+            return all.Any(i => i.Current.Name.Contains(buttonName));
+        }
+
     }
 }
