@@ -48,17 +48,18 @@ namespace UiClickTestDSL.DslObjects {
             var windowPattern = Window.GetPattern<WindowPattern>(WindowPattern.Pattern);
             windowPattern.Close();
         }
-
+        
         public override void GetThisWindow() {
             _cachedDialog = GetDialog(_currentProgram, _currentParentWindow, Caption);
         }
 
+        /*
         public void VisibleTextContains(params string[] texts) {
             string visibleText = GetVisibleText();
             foreach (var text in texts) {
                 Assert.IsTrue(visibleText.Contains(text), "Visible text did not contain: " + text);
             }
-        }
+        }*/
 
         private string GetVisibleText() {
             IEnumerable<AutomationElement> labels = GuiLabel.GetAll(Window, "");
@@ -68,12 +69,13 @@ namespace UiClickTestDSL.DslObjects {
             return texts.Aggregate("", (current, t) => current + t);
         }
 
+        /*
         public void VisibleTextDoesNotContain(params string[] texts) {
             string visibleText = GetVisibleText();
             foreach (var text in texts) {
                 Assert.IsFalse(visibleText.Contains(text), "Visible text should not, but contained: " + text);
             }
-        }
+        }*/
 
         public void VisibleTextBoxesContains(string text) {
             string visibleText = GetVisibleTextBoxText();

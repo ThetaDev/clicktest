@@ -13,6 +13,7 @@ using Microsoft.Test.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
 using UiClickTestDSL.DslObjects;
+using System.Linq;
 
 namespace UiClickTestDSL {
     [TestClass]
@@ -256,6 +257,28 @@ namespace UiClickTestDSL {
                 }
             }
             WaitWhileBusy();
+        }
+
+        public void VisibleTextContains(params string[] texts) {
+            string visibleText = GetVisibleText();
+            foreach (var text in texts) {
+                Assert.IsTrue(visibleText.Contains(text), "Visible text did not contain: " + text);
+            }
+        }
+
+        private string GetVisibleText() {
+            IEnumerable<AutomationElement> labels = GuiLabel.GetAll(Window, "");
+            IEnumerable<string> texts = from l in labels
+                                        where !l.Current.IsOffscreen
+                                        select l.Current.Name;
+            return texts.Aggregate("", (current, t) => current + t);
+        }
+
+        public void VisibleTextDoesNotContain(params string[] texts) {
+            string visibleText = GetVisibleText();
+            foreach (var text in texts) {
+                Assert.IsFalse(visibleText.Contains(text), "Visible text should not, but contained: " + text);
+            }
         }
 
         public virtual GuiContextMenu ActiveContextMenu { get { return GuiContextMenu.GetActive(Window); } }
