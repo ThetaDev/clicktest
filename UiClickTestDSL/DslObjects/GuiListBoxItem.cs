@@ -22,6 +22,10 @@ namespace UiClickTestDSL.DslObjects {
             _selection.Select();
         }
 
+        public void NameShouldContain(string text) {
+            Window.Current.Name.Contains(text);
+        }
+
         public void NameShouldBe(string text) {
             Assert.AreEqual(text, Window.Current.Name);
         }
