@@ -97,6 +97,10 @@ namespace UiClickTestDSL.DslObjects {
             dgAutoEl.SetFocus();
         }
 
+        public int CountRows() {
+            return tablePatt.Current.RowCount;
+        }
+
         public int RowCount { get { return tablePatt.Current.RowCount; } }
         public int ColumnCount { get { return tablePatt.Current.ColumnCount; } }
 
