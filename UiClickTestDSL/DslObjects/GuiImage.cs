@@ -54,7 +54,16 @@ namespace UiClickTestDSL.DslObjects {
         public void ShouldBePortrait() {
             if (img.Current.BoundingRectangle.IsEmpty)
                 throw new Exception("Image is not showing.");
-            Assert.IsFalse(img.Current.BoundingRectangle.Width > img.Current.BoundingRectangle.Height);
+            Assert.IsTrue(img.Current.BoundingRectangle.Width < img.Current.BoundingRectangle.Height);
         }
+
+        public void ShouldBeNeitherPortraitNorLandscape() {
+            if (img.Current.BoundingRectangle.IsEmpty)
+                throw new Exception("Image is not showing.");
+            Assert.IsFalse(img.Current.BoundingRectangle.Width > img.Current.BoundingRectangle.Height);
+            Assert.IsFalse(img.Current.BoundingRectangle.Width < img.Current.BoundingRectangle.Height);
+        }
+
+
     }
 }
