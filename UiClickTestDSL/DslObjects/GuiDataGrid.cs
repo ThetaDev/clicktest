@@ -147,6 +147,14 @@ namespace UiClickTestDSL.DslObjects {
             return ;
         }
 
+        public bool VerifyNoOfColumnsByName(string name, int nocolumns) {
+            var res = dgAutoEl.FindAll(TreeScope.Descendants, Name(name)).Count;
+            if (Equals(nocolumns, res)) { 
+            return true;
+            }
+            return false;
+        }
+
         private static PropertyCondition Name(string name) {
             return new PropertyCondition(AutomationElement.NameProperty, name, PropertyConditionFlags.IgnoreCase);
         }
