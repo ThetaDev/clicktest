@@ -64,6 +64,22 @@ namespace UiClickTestDSL.DslObjects {
             }
         }
 
+        public bool ShouldContainValue(params string[] expectedTexts) {
+            foreach (var expectedText in expectedTexts) {
+                Assert.IsTrue(Text.ContainsIgnoreCase(expectedText), $"TextBox did not contain <{expectedText}>. Actual: <{Text}>.");
+            }
+            return true;
+        }
+
+
+        public bool ShouldContainText(params string[] expectedTexts) {
+            foreach (var expectedText in expectedTexts) {
+                Assert.IsTrue(Text.ContainsIgnoreCase(expectedText), $"TextBox did not contain <{expectedText}>. Actual: <{Text}>.");
+            }
+            return true;
+        }
+
+
         public void ShouldNotRead(string expectedText) {
             Assert.AreNotEqual(expectedText.ToLower(), Text.ToLower(), "Cell was in column " + _owningColumnName);
         }
