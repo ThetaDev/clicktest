@@ -174,6 +174,22 @@ namespace UiClickTestDSL.DslObjects {
             throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
         }
 
+        public int FindRowByCellContainingContent(string columnName, string content) {
+            int colIndex = HeaderNamesToIndex[columnName];
+            return FindRowByCellContainingContent(colIndex, content, columnName);
+        }
+
+        public int FindRowByCellContainingContent(int colIndex, string content, string columnName = null) {
+            if (columnName == null) columnName = HeaderIndexToNames[colIndex];
+            for (int i = 0; i < RowCount; i++) {
+                var cell = Cell(i, colIndex);
+                if (cell.ShouldContainValue(content))
+                    return i;
+            }
+            throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
+        }
+
+
         /*
         public int VerifyCellContentByRow(string columnName, string row, string content) {
             int colIndex = HeaderNamesToIndex[columnName];
@@ -274,7 +290,7 @@ namespace UiClickTestDSL.DslObjects {
             int colIndex = HeaderNamesToIndex[columnName];
             for (int i = 0; i < RowCount; i++) {
                 var cell = Cell(i, colIndex);
-                if (cell.Text == rowcontent) {
+                if (cell.ShouldContainText(rowcontent)) {
                     foundRow = i;
                     var ci2 = colIndex + addedcolno;
                     Cell(i, ci2).SetText(txvalue);
