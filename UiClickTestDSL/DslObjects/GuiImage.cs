@@ -65,7 +65,7 @@ namespace UiClickTestDSL.DslObjects {
             int w = (int)rect.Width;
             int h = (int)rect.Height;
             var errorMsg = $"Actual size: {w}({rect.Width}) - {h}({rect.Height})";
-            Assert.IsTrue(w == h, errorMsg);
+            Assert.IsTrue(Math.Abs(w - h) < 5, errorMsg); //using Abs-value to avoid this failing on minor errors due to differences in screen scaling options.
         }
     }
 }
