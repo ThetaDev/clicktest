@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Automation;
+using System.Windows.Forms;
 using Microsoft.Test.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
@@ -57,13 +58,14 @@ namespace UiClickTestDSL.DslObjects {
             Assert.IsTrue(img.Current.BoundingRectangle.Width < img.Current.BoundingRectangle.Height);
         }
 
-        public void ShouldBeNeitherPortraitNorLandscape() {
-            if (img.Current.BoundingRectangle.IsEmpty)
+        public void ShouldBeSquare() {
+            var rect = img.Current.BoundingRectangle;
+            if (rect.IsEmpty)
                 throw new Exception("Image is not showing.");
-            Assert.IsFalse(img.Current.BoundingRectangle.Width > img.Current.BoundingRectangle.Height);
-            Assert.IsFalse(img.Current.BoundingRectangle.Width < img.Current.BoundingRectangle.Height);
+            int w = (int)rect.Width;
+            int h = (int)rect.Height;
+            var errorMsg = $"Actual size: {w}({rect.Width}) - {h}({rect.Height})";
+            Assert.IsTrue(w == h, errorMsg);
         }
-
-
     }
 }
