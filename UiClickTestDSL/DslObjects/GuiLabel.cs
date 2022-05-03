@@ -26,7 +26,7 @@ namespace UiClickTestDSL.DslObjects {
             return new GuiLabel(res);
         }
 
-        internal AutomationElement LabelElement;
+        public AutomationElement LabelElement;
 
         public GuiLabel(AutomationElement label) {
             LabelElement = label;
