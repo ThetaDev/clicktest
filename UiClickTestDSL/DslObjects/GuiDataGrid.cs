@@ -274,6 +274,21 @@ namespace UiClickTestDSL.DslObjects {
             return foundRow;
         }
 
+        public bool VerifyRowSelectedByCellContent(string columnName, string content) {
+            int foundRow = -1;
+            int colIndex = HeaderNamesToIndex[columnName];
+            for (int i = 0; i < RowCount; i++) {
+                var cell = Cell(i, colIndex);
+                if (cell.Text == content) {
+                    foundRow = i;
+                    break;
+                }
+            }
+            if (foundRow == -1)
+                throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
+            return IsRowSelected(foundRow);
+        }
+
         public void SetTextInCellByContent(string columnName, string content, string txvalue) {
             int foundRow = -1;
             int colIndex = HeaderNamesToIndex[columnName];
