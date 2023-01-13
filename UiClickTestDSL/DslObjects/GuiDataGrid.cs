@@ -104,6 +104,11 @@ namespace UiClickTestDSL.DslObjects {
         public int RowCount { get { return tablePatt.Current.RowCount; } }
         public int ColumnCount { get { return tablePatt.Current.ColumnCount; } }
 
+        public bool IsRowSelected(int rowIndex) {
+            SelectionItemPattern selPatt = GetRowSelectionPattern(rowIndex);
+            return selPatt.Current.IsSelected;
+        }
+
         public void SelectRow(int rowIndex) {
             SelectRowNoWait(rowIndex);
             UiTestDslCoreCommon.SleepMilliseconds(300);
