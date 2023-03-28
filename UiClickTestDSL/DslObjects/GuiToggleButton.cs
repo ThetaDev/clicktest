@@ -34,8 +34,12 @@ namespace UiClickTestDSL.DslObjects {
         public bool IsChecked { get { return toggler.Current.ToggleState == ToggleState.On; } }
         public bool IsUnChecked { get { return toggler.Current.ToggleState == ToggleState.Off; } }
         public bool IsIndeterminate { get { return toggler.Current.ToggleState == ToggleState.Indeterminate; } }
+        public bool IsLocked { get { return toggler.Current.ToggleState == ToggleState.On; } }
+        public bool IsUnLocked { get { return toggler.Current.ToggleState == ToggleState.Off; } }
 
         public void ShouldBeChecked() { Assert.IsTrue(IsChecked); }
+        public void ShouldBeLocked() { Assert.IsTrue(IsLocked); }
+        public void ShouldBeUnLocked() { Assert.IsTrue(IsUnLocked); }
         public void ShouldNotBeChecked() { Assert.IsTrue(IsUnChecked); }
         public void ShouldBeDisabled() {
             Assert.IsFalse(btn.Current.IsEnabled, btn.Current.Name + " was not disabled.");
