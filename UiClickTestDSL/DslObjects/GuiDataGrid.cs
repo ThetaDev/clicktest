@@ -428,6 +428,13 @@ namespace UiClickTestDSL.DslObjects {
             Mouse.Click(MouseButton.Right);
         }
 
+        public void DoubleClickSelectedRow() {
+            AutomationElement RowPlaceholder = GetRowPlaceholder();
+            RowPlaceholder.MoveMouseToCenter();
+            Mouse.DoubleClick(MouseButton.Left);
+        }
+
+
         public void LeftClickSelectedRow() {
             AutomationElement RowPlaceholder = GetRowPlaceholder();
             RowPlaceholder.MoveMouseToCenter();
