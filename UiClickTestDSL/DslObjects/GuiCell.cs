@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Automation;
+using System.Xml.Linq;
 using Microsoft.Test.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
@@ -10,11 +11,15 @@ namespace UiClickTestDSL.DslObjects {
         public readonly AutomationElement Cell;
         private readonly string _owningColumnName;
         private readonly ValuePattern _value;
-
+        protected AutomationElement tbAutoEl;
+        protected ValuePattern value;
         public GuiCell(AutomationElement autoEl, string columnName) {
             Cell = autoEl;
             _owningColumnName = columnName;
             _value = Cell.GetPattern<ValuePattern>(ValuePattern.Pattern);
+            tbAutoEl = Cell;
+            value = tbAutoEl.GetPattern<ValuePattern>(ValuePattern.Pattern);
+
         }
 
         public string Text {
@@ -83,6 +88,21 @@ namespace UiClickTestDSL.DslObjects {
         public void ShouldNotRead(string expectedText) {
             Assert.AreNotEqual(expectedText.ToLower(), Text.ToLower(), "Cell was in column " + _owningColumnName);
         }
+
+        public void AssertIsNotEditable() {
+            Assert.IsFalse(IsEditable);
+        }
+
+        public void AssertIsEditable() {
+            Assert.IsTrue(IsEditable);
+        }
+
+        public bool IsEditable {
+            get {
+                return !value.Current.IsReadOnly && tbAutoEl.Current.IsKeyboardFocusable;
+            }
+        }
+
 
         public void RightClick() {
             Cell.ClickPointInCenter(MouseButton.Right);
