@@ -238,6 +238,8 @@ namespace UiClickTestDSL.DslObjects {
             var stepLength = (int)(100 / (intermediateSteps + 1));
             try {
                 var scroll = InternalElement.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
+                if (scroll.Current.VerticalScrollPercent < 0) //if no scrollbar present this is set to -1
+                    return;
                 scroll.SetScrollPercent(horizontalPercent: ScrollPattern.NoScroll, verticalPercent: 0);
                 int scrollPercent = 0;
                 for (int i = 0; i < intermediateSteps; i++) {
