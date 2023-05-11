@@ -468,6 +468,14 @@ namespace UiClickTestDSL.DslObjects {
             Mouse.Click(MouseButton.Right);
         }
 
+        public void LeftClickColumnHeader() {
+            AutomationElement header = GetFirstColumnHeader();
+            var clickablePoint = header.GetClickablePoint();
+            Mouse.MoveTo(new Point((int)clickablePoint.X, (int)clickablePoint.Y));
+            Mouse.Click(MouseButton.Left);
+        }
+
+
         public void RowCountShouldBe(int count) {
             Assert.AreEqual(count, RowCount);
         }
