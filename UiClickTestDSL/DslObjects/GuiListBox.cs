@@ -484,6 +484,14 @@ namespace UiClickTestDSL.DslObjects {
             Mouse.Click(MouseButton.Right); ;
         }
 
+        public void LeftClickMouseCenter() {
+            var all = GetChildListItems();
+            var item = all[0];
+            item.MoveMouseHere();
+            Mouse.Click(MouseButton.Left); ;
+        }
+
+
         public void ListShouldContainTheseItems(params string[] txtValues) {
             var all = GetChildListItems();
             var missing = "";
