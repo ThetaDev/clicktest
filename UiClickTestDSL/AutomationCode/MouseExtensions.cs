@@ -81,10 +81,10 @@ namespace UiClickTestDSL.AutomationCode {
             }
         }
 
-        public static void DragAndDropMultipleFilesFromExplorerToCenter(this AutomationElement el, string folder, Explorer preStartedExplorer, params string[] files) {
+        public static void DragAndDropMultipleFilesFromExplorerToCenter(this AutomationElement el, string folder, string testfolder,  Explorer preStartedExplorer, params string[] files) {
             if (files.Count() < 2)
                 throw new Exception("Must have at least two files");
-            var explorer = preStartedExplorer ?? new Explorer("TestFiles");
+            var explorer = preStartedExplorer ?? new Explorer(testfolder);  // 
             try {
                 explorer.DragDropMultipleFilesTo(files, folder, el);
             } finally {
