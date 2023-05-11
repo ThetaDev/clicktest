@@ -71,7 +71,7 @@ namespace UiClickTestDSL.HelperPrograms {
             List<ListUiItem> files = GetAllFiles();
             ListUiItem fileInExplorer = GetFile(files, file.Name);
             fileInExplorer.SetFocus();
-            Mouse.MoveTo(fileInExplorer.ClickablePoint);
+            Mouse.MoveTo(new Point(fileInExplorer.ClickablePoint.X+50,fileInExplorer.ClickablePoint.Y));
             Mouse.Down(MouseButton.Left);
             SleepMilliseconds(500);
             Mouse.MoveTo(new Point(1150, 600)); //ensure start of mouse drag
@@ -102,7 +102,7 @@ namespace UiClickTestDSL.HelperPrograms {
                 SelectFile(files, filenames[i]);
             }
             var fileInExplorer = GetFile(files, filenames.Last());
-            Mouse.MoveTo(fileInExplorer.ClickablePoint);
+            Mouse.MoveTo(new Point(fileInExplorer.ClickablePoint.X + 50, fileInExplorer.ClickablePoint.Y));
             Mouse.Down(MouseButton.Left);
             Keyboard.Release(Key.Ctrl);
             SleepMilliseconds(500);
