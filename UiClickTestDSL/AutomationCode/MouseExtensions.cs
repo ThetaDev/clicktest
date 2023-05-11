@@ -71,8 +71,8 @@ namespace UiClickTestDSL.AutomationCode {
             Mouse.Click(btn);
         }
 
-        public static void DragAndDropFileFromExplorerToCenter(this AutomationElement el, FileInfo file, Explorer preStartedExplorer = null) {
-            var explorer = preStartedExplorer ?? new Explorer("TestFiles");
+        public static void DragAndDropFileFromExplorerToCenter(this AutomationElement el, FileInfo file, Explorer preStartedExplorer = null,string folder = "TestFiles") {
+			var explorer = preStartedExplorer ?? new Explorer(folder);
             try {
                 explorer.DragDropFileTo(file, el);
             } finally {
