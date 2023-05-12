@@ -101,7 +101,7 @@ namespace UiClickTestDSL.HelperPrograms {
             SelectFile(files, filenames[0]);
             Keyboard.Press(Key.Ctrl);
             ListUiItem fileInExplorer = null;
-            for (int i = 1; i < filenames.Count() - 1; i++) {
+            for (int i = 1; i < filenames.Count(); i++) {
                 fileInExplorer = SelectFile(files, filenames[i]);
             }
             Mouse.MoveTo(new Point(fileInExplorer.ClickablePoint.X + 7, fileInExplorer.ClickablePoint.Y));
