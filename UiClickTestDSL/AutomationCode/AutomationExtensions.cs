@@ -122,7 +122,7 @@ namespace UiClickTestDSL.AutomationCode {
             AutomationElement result = null;
             int retries = 40;
             if (quickCheck)
-                retries = 4; //total of 1 seconds sleep + searching = about 6 seconds search-time.
+                retries = 2; //with 4 retries: total of 1 seconds sleep + searching = about 6 seconds search-time.
             while (retries > 0) {
                 result = element.FindFirst(TreeScope.Descendants, searchCond);
                 if (result != null)

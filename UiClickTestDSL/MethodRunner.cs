@@ -314,23 +314,30 @@ namespace UiClickTestDSL {
             }
             test.StartTime = DateTime.Now;
             var testTimer = Stopwatch.StartNew();
+            var startTimer = Stopwatch.StartNew();
             MethodInfo testmethod = test.Test;
             Log.DebugFormat(Environment.NewLine + $"E: {ErrorCount} - {TestsRun}/{_totalNoTestsToRun} - {test.Id} - {test.CompleteTestName}");
             ResetTestEnvironment?.Invoke();
+            Log.Debug("ResetTestEnvironment time: " + startTimer.ElapsedMilliseconds);
+            startTimer.Restart();
             try {
                 _setup.Invoke(classObj, _emptyParams);
             } catch (Exception ex) {
                 LogTestRunError(test, "Error setting up environment:", ex);
                 return;
             }
+            Log.Debug("Setup time: "+startTimer.ElapsedMilliseconds);
+            startTimer.Restart();
             try {
                 _starter.Invoke(classObj, _emptyParams);
             } catch (Exception ex) {
                 LogTestRunError(test, "Error starting program:", ex, classObj, close: true);
                 return;
             }
+            Log.Debug("Starter time: "+startTimer.ElapsedMilliseconds);
+            startTimer.Stop();
             test.Startup = testTimer.Elapsed;
-            Log.Debug("Startup time: " + test.Startup);
+            Log.Debug("Startup time total: " + test.Startup);
             var runTimer = Stopwatch.StartNew();
             try {
                 testmethod.Invoke(classObj, _emptyParams);
