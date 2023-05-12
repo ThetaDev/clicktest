@@ -40,7 +40,7 @@ namespace UiClickTestDSL.HelperPrograms {
             try {
                 //PrintAllControls(Window);
                 var item = from f in files
-                           where f.Name.ToLower() == filename.ToLower()
+                           where String.Equals(f.Name, filename, StringComparison.CurrentCultureIgnoreCase)
                            select f;
                 return item.First();
             } catch (Exception) {
@@ -61,6 +61,7 @@ namespace UiClickTestDSL.HelperPrograms {
             } else {
                 Mouse.Click(MouseButton.Left);
             }
+            Log.Debug("Selected file: " + file);
             return f;
         }
 
@@ -72,7 +73,7 @@ namespace UiClickTestDSL.HelperPrograms {
             List<ListUiItem> files = GetAllFiles();
             ListUiItem fileInExplorer = GetFile(files, file.Name);
             fileInExplorer.SetFocus();
-            Mouse.MoveTo(new Point(fileInExplorer.ClickablePoint.X+7,fileInExplorer.ClickablePoint.Y));
+            Mouse.MoveTo(new Point(fileInExplorer.ClickablePoint.X + 7, fileInExplorer.ClickablePoint.Y));
             Mouse.Down(MouseButton.Left);
             SleepMilliseconds(500);
             Mouse.MoveTo(new Point(1150, 600)); //ensure start of mouse drag
@@ -103,7 +104,7 @@ namespace UiClickTestDSL.HelperPrograms {
             for (int i = 1; i < filenames.Count() - 1; i++) {
                 fileInExplorer = SelectFile(files, filenames[i]);
             }
-            Mouse.MoveTo(new Point(fileInExplorer.ClickablePoint.X+7, fileInExplorer.ClickablePoint.Y));
+            Mouse.MoveTo(new Point(fileInExplorer.ClickablePoint.X + 7, fileInExplorer.ClickablePoint.Y));
             Mouse.Down(MouseButton.Left);
             Keyboard.Release(Key.Ctrl);
             SleepMilliseconds(500);

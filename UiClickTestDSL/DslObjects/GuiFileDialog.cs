@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows.Automation;
 using System.Windows.Forms;
@@ -56,6 +57,7 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public void SelectFile(string filePathAndName) {
+            var sw = Stopwatch.StartNew();
             //UiTestDslCoreCommon.WaitWhileBusy();
             //todo after upgradering to .Net 4.6: 
             UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromMinutes(5), () => GuiTextBox.GetTextBoxByName(_dialog, "File name:"));
@@ -67,6 +69,8 @@ namespace UiClickTestDSL.DslObjects {
             UiTestDslCoreCommon.SleepIfOnTestMachine(1);
             UiTestDslCoreCommon.WaitWhileBusy();
             UiTestDslCoreCommon.SleepIfOnTestMachine(5);
+            sw.Stop();
+            Log.Debug($"Selecting file in FileDialog elapsed: ({sw.Elapsed}): " + filePathAndName);
         }
 
         public void Cancel() {
