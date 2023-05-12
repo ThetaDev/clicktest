@@ -50,7 +50,7 @@ namespace UiClickTestDSL.HelperPrograms {
             }
         }
 
-        public void SelectFile(List<ListUiItem> files, string file) {
+        public ListUiItem SelectFile(List<ListUiItem> files, string file) {
             ListUiItem f = GetFile(files, file);
             f.SetFocus();
             Mouse.MoveTo(f.ClickablePoint);
@@ -61,6 +61,7 @@ namespace UiClickTestDSL.HelperPrograms {
             } else {
                 Mouse.Click(MouseButton.Left);
             }
+            return f;
         }
 
         internal void DragDropFileTo(FileInfo file, AutomationElement el) {
@@ -71,7 +72,7 @@ namespace UiClickTestDSL.HelperPrograms {
             List<ListUiItem> files = GetAllFiles();
             ListUiItem fileInExplorer = GetFile(files, file.Name);
             fileInExplorer.SetFocus();
-            Mouse.MoveTo(new Point(fileInExplorer.ClickablePoint.X+50,fileInExplorer.ClickablePoint.Y));
+            Mouse.MoveTo(new Point(fileInExplorer.ClickablePoint.X+7,fileInExplorer.ClickablePoint.Y));
             Mouse.Down(MouseButton.Left);
             SleepMilliseconds(500);
             Mouse.MoveTo(new Point(1150, 600)); //ensure start of mouse drag
@@ -98,11 +99,11 @@ namespace UiClickTestDSL.HelperPrograms {
             List<ListUiItem> files = GetAllFiles();
             SelectFile(files, filenames[0]);
             Keyboard.Press(Key.Ctrl);
+            ListUiItem fileInExplorer = null;
             for (int i = 1; i < filenames.Count() - 1; i++) {
-                SelectFile(files, filenames[i]);
+                fileInExplorer = SelectFile(files, filenames[i]);
             }
-            var fileInExplorer = GetFile(files, filenames.Last());
-            Mouse.MoveTo(new Point(fileInExplorer.ClickablePoint.X+50, fileInExplorer.ClickablePoint.Y));
+            Mouse.MoveTo(new Point(fileInExplorer.ClickablePoint.X+7, fileInExplorer.ClickablePoint.Y));
             Mouse.Down(MouseButton.Left);
             Keyboard.Release(Key.Ctrl);
             SleepMilliseconds(500);
