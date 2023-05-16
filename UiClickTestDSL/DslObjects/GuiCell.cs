@@ -65,13 +65,13 @@ namespace UiClickTestDSL.DslObjects {
 
         public void ShouldContain(params string[] expectedTexts) {
             foreach (var expectedText in expectedTexts) {
-                Assert.IsTrue(Text.ContainsIgnoreCase(expectedText), $"TextBox did not contain <{expectedText}>. Actual: <{Text}>.");
+                Assert.IsTrue(Text.ContainsIgnoreCase(expectedText), $"Cell did not contain <{expectedText}>. Actual: <{Text}>.");
             }
         }
 
         public bool ShouldContainValue(params string[] expectedTexts) {
             foreach (var expectedText in expectedTexts) {
-                Assert.IsTrue(Text.ContainsIgnoreCase(expectedText), $"TextBox did not contain <{expectedText}>. Actual: <{Text}>.");
+                Assert.IsTrue(Text.ContainsIgnoreCase(expectedText), $"Cell did not contain <{expectedText}>. Actual: <{Text}>.");
             }
             return true;
         }
@@ -79,7 +79,7 @@ namespace UiClickTestDSL.DslObjects {
 
         public bool ShouldContainText(params string[] expectedTexts) {
             foreach (var expectedText in expectedTexts) {
-                Assert.IsTrue(Text.ContainsIgnoreCase(expectedText), $"TextBox did not contain <{expectedText}>. Actual: <{Text}>.");
+                Assert.IsTrue(Text.ContainsIgnoreCase(expectedText), $"Cell did not contain <{expectedText}>. Actual: <{Text}>.");
             }
             return true;
         }

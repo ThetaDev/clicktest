@@ -96,6 +96,6 @@ namespace UiClickTestDSL.DslObjects {
 
         public virtual GuiListBox ListBox(string name) { return GuiListBox.Find(Window, name); }
         public virtual GuiTextBoxes TextBoxes(string prefix = "") { return GuiTextBoxes.GetAll(Window, prefix); }
-        public virtual GuiTextBox TextBox(string automationId) { return GuiTextBox.GetTextBox(Window, automationId); }
+        public virtual GuiTextBox TextBoxC(string automationId) { return GuiTextBox.GetTextBoxC(Window, automationId); }
     }
 }

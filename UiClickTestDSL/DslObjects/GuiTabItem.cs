@@ -13,7 +13,7 @@ namespace UiClickTestDSL.DslObjects {
         private static GuiTabItem _cachedTab = null;
         private static AutomationElement _currentParentWindow = null;
 
-        public static GuiTabItem GetTabByAutomationId(AutomationElement parentWindow, string automationId) {
+        public static GuiTabItem GetTabByAutomationIdC(AutomationElement parentWindow, string automationId) {
             if (_cachedTab == null || _cachedTab.AutomationId != automationId) {
                 var res = parentWindow.FindChildByControlTypeAndAutomationId(ControlType.TabItem, automationId);
                 _cachedTab = new GuiTabItem(res, automationId);
@@ -22,7 +22,7 @@ namespace UiClickTestDSL.DslObjects {
             return _cachedTab;
         }
 
-        public static GuiTabItem GetTabByName(AutomationElement parentWindow, string name) {
+        public static GuiTabItem GetTabByNameC(AutomationElement parentWindow, string name) {
             if (_cachedTab == null || _cachedTab.AutomationId != name) {
                 var res = parentWindow.FindChildByControlTypeAndName(ControlType.TabItem, name);
                 _cachedTab = new GuiTabItem(res, name);
@@ -38,7 +38,7 @@ namespace UiClickTestDSL.DslObjects {
         public static void ShouldExist(AutomationElement window, string automationId) {
             GuiTabItem tabItem = null;
             try {
-                tabItem = GetTabByAutomationId(window, automationId);
+                tabItem = GetTabByAutomationIdC(window, automationId);
             } catch { }
             Assert.IsNotNull(tabItem);
             Assert.AreEqual(automationId, tabItem.AutomationId);
@@ -61,7 +61,7 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public override void GetThisWindow() {
-            _cachedTab = GetTabByAutomationId(_currentParentWindow, AutomationId);
+            _cachedTab = GetTabByAutomationIdC(_currentParentWindow, AutomationId);
         }
 
         public void VerifyIsCurrentTab() {

@@ -12,7 +12,7 @@ namespace UiClickTestDSL.DslObjects {
         private static ApplicationLauncher _currentProgram = null;
         private static AutomationElement _currentParentWindow = null;
 
-        public static GuiDialog GetDialog(ApplicationLauncher program, AutomationElement parentWindow, string caption, bool quickCheck = false, bool skipNetworkWait = false) {
+        public static GuiDialog GetDialogC(ApplicationLauncher program, AutomationElement parentWindow, string caption, bool quickCheck = false, bool skipNetworkWait = false) {
             //kan kanskje få til noge med: window.GetMessageBox() i hoved dsl-klassen
             if (_cachedDialog == null || _cachedDialog.Caption != caption) {
                 AutomationElement dialog = null;
@@ -50,7 +50,7 @@ namespace UiClickTestDSL.DslObjects {
         }
         
         public override void GetThisWindow() {
-            _cachedDialog = GetDialog(_currentProgram, _currentParentWindow, Caption);
+            _cachedDialog = GetDialogC(_currentProgram, _currentParentWindow, Caption);
         }
 
         /*

@@ -247,7 +247,7 @@ namespace UiClickTestDSL {
             int i = RetriesToWaitForDialogToShow;
             while (isWaiting) {
                 try {
-                    Dialog(caption);
+                    DialogC(caption);
                     isWaiting = false;
                 } catch (Exception) {
                     i--;
@@ -287,13 +287,13 @@ namespace UiClickTestDSL {
         public virtual GuiExpander Expander(ByAutomationId automationId) { return GuiExpander.GetExpanderByAutomationId(Window, automationId.Value); }
         public virtual GuiExpander Expander(string caption) { return GuiExpander.GetExpander(Window, caption); }
 
-        protected virtual GuiDialog Dialog(string caption, bool quickCheck = false, bool skipNetworkWait = false) { return GuiDialog.GetDialog(Program, Window, caption, quickCheck, skipNetworkWait); }
+        protected virtual GuiDialog DialogC(string caption, bool quickCheck = false, bool skipNetworkWait = false) { return GuiDialog.GetDialogC(Program, Window, caption, quickCheck, skipNetworkWait); }
         protected virtual GuiFileDialog OpenFileDialog(string caption) { return GuiFileDialog.Find(Window, caption); }
 
         public virtual void PrintTextBoxes() { PrintControls(GuiTextBox.GetAll(Window)); }
-        public virtual GuiTextBox TextBox(string automationId) { return GuiTextBox.GetTextBox(Window, automationId); }
-        public virtual GuiTextBox TextBoxByName(string name) { return GuiTextBox.GetTextBoxByName(Window, name); }
-        public virtual GuiTextBox TextBox(ByAutomationId automationId) { return GuiTextBox.GetTextBox(Window, automationId.Value); }
+        public virtual GuiTextBox TextBoxC(string automationId) { return GuiTextBox.GetTextBoxC(Window, automationId); }
+        public virtual GuiTextBox TextBoxByNameC(string name) { return GuiTextBox.GetTextBoxByNameC(Window, name); }
+        public virtual GuiTextBox TextBoxC(ByAutomationId automationId) { return GuiTextBox.GetTextBoxC(Window, automationId.Value); }
         public virtual GuiTextBoxes TextBoxes(string prefix = "") { return GuiTextBoxes.GetAll(Window, prefix); }
 
         public virtual void PrintLabels(string prefix = "") { PrintControls(GuiLabel.GetAll(Window, prefix)); }
@@ -319,8 +319,8 @@ namespace UiClickTestDSL {
         public virtual GuiCheckBox CheckBox(ByAutomationId automationId) { return GuiCheckBox.Find(Window, automationId); }
 
         public virtual void PrintDataGrids() { PrintControls(GuiDataGrid.GetAll(Window)); }
-        public virtual GuiDataGrid DataGrid(string automationId) { return GuiDataGrid.GetDataGrid(Window, automationId); }
-        public virtual GuiDataGrid DataGrid(ByAutomationId automationId) { return GuiDataGrid.GetDataGrid(Window, automationId.Value); }
+        public virtual GuiDataGrid DataGridC(string automationId) { return GuiDataGrid.GetDataGridC(Window, automationId); }
+        public virtual GuiDataGrid DataGridC(ByAutomationId automationId) { return GuiDataGrid.GetDataGridC(Window, automationId.Value); }
 
         public virtual void PrintComboBoxes() { PrintControls(GuiComboBox.GetAll(Window)); }
         public virtual GuiComboBox ComboBox(string automationId) { return GuiComboBox.Find(Window, automationId); }
@@ -329,8 +329,8 @@ namespace UiClickTestDSL {
         public virtual GuiComboBoxes ComboBoxes(string prefix) { return GuiComboBoxes.Find(Window, prefix); }
 
         public virtual void PrintTabs() { PrintControls(GuiTabItem.GetAll(Window)); }
-        public virtual GuiTabItem Tab(string name) { return GuiTabItem.GetTabByName(Window, name); }
-        public virtual GuiTabItem Tab(ByAutomationId automationId) { return GuiTabItem.GetTabByAutomationId(Window, automationId.Value); }
+        public virtual GuiTabItem TabC(string name) { return GuiTabItem.GetTabByNameC(Window, name); }
+        public virtual GuiTabItem TabC(ByAutomationId automationId) { return GuiTabItem.GetTabByAutomationIdC(Window, automationId.Value); }
 
         public virtual GuiImage Image(string automationId) { return GuiImage.Find(Window, automationId); }
         public virtual GuiImage Image(ByAutomationId automationId) { return GuiImage.Find(Window, automationId.Value); }

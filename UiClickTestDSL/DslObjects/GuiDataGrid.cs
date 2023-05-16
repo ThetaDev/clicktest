@@ -30,7 +30,7 @@ namespace UiClickTestDSL.DslObjects {
         public AutomationElement Window;
         public virtual GuiCheckBox CheckBox(string caption) { return GuiCheckBox.Find(Window, caption); }
         private static GuiDataGrid _cachedDatagrid = null;
-        public static GuiDataGrid GetDataGrid(AutomationElement window, string automationId) {
+        public static GuiDataGrid GetDataGridC(AutomationElement window, string automationId) {
             if (_cachedDatagrid == null || _cachedDatagrid.AutomationId != automationId) {
                 var dataGrid = window.FindChildByClassAndAutomationId("DataGrid", automationId);
                 _cachedDatagrid = new GuiDataGrid(dataGrid, automationId);
@@ -240,7 +240,7 @@ namespace UiClickTestDSL.DslObjects {
 
         public int CountRowByCellContent(string datagrid, int count, int colIndex, string content, string columnName = null) { //"DeliveryLinesGrid"
 
-            //DataGrid(datgrid). //GetChildListItems().Count;
+            //DataGridC(datgrid). //GetChildListItems().Count;
             datagrid("")
 
             var isrowcount = 0;

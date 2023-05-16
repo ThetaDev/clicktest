@@ -59,8 +59,9 @@ namespace UiClickTestDSL.DslObjects {
         public void SelectFile(string filePathAndName) {
             var sw = Stopwatch.StartNew();
             //UiTestDslCoreCommon.WaitWhileBusy();
-            //todo after upgradering to .Net 4.6: 
-            UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromMinutes(5), () => GuiTextBox.GetTextBoxByName(_dialog, "File name:"));
+            GuiTextBox.InvalidateCache();
+            //todo after upgradering to .Net 4.6:
+            UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromMinutes(5), () => GuiTextBox.GetTextBoxByNameC(_dialog, "File name:"));
             UiTestDslCoreCommon.WaitWhileBusy();
             SendKeys.SendWait(filePathAndName);
             SendKeys.SendWait("{Enter}");
@@ -75,8 +76,9 @@ namespace UiClickTestDSL.DslObjects {
 
         public void Cancel() {
             //UiTestDslCoreCommon.WaitWhileBusy();
+            GuiTextBox.InvalidateCache();
             //todo after upgradering to .Net 4.6: 
-            UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromMinutes(5), () => GuiTextBox.GetTextBoxByName(_dialog, "File name:"));
+            UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromMinutes(5), () => GuiTextBox.GetTextBoxByNameC(_dialog, "File name:"));
             UiTestDslCoreCommon.WaitWhileBusy();
             SendKeys.SendWait("{Esc}");
             //TODO: Is all this sleep required?

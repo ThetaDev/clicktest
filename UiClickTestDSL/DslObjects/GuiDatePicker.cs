@@ -6,7 +6,7 @@ using UiClickTestDSL.AutomationCode;
 namespace UiClickTestDSL.DslObjects {
     public class GuiDatePicker : GuiUserControl {
         private static GuiDatePicker _cachedDp = null;
-        public static GuiDatePicker GetDatePicker(AutomationElement window, string automationId) {
+        public static GuiDatePicker GetDatePickerC(AutomationElement window, string automationId) {
             if (_cachedDp == null || _cachedDp.AutomationId != automationId) {
                 //var tb = window.FindChildByControlTypeAndAutomationId(ControlType.Calendar, automationId);
                 var d = window.FindChildByClassAndAutomationId("DatePicker", automationId);
@@ -15,7 +15,7 @@ namespace UiClickTestDSL.DslObjects {
             return _cachedDp;
         }
 
-        public static GuiDatePicker GetDatePickerExtended(AutomationElement window, string automationId) {
+        public static GuiDatePicker GetDatePickerExtendedC(AutomationElement window, string automationId) {
             if (_cachedDp == null || _cachedDp.AutomationId != automationId) {
                 //var tb = window.FindChildByControlTypeAndAutomationId(ControlType.Calendar, automationId);
                 var children = window.FindAllChildrenByAutomationId(automationId).ToList();
@@ -39,17 +39,17 @@ namespace UiClickTestDSL.DslObjects {
         public void SetText(DateTime? value) {
             GuiTextBox.InvalidateCache();
             if(value.HasValue)
-                TextBox("PART_TextBox").SetText(value.Value.ToShortDateString());
+                TextBoxC("PART_TextBox").SetText(value.Value.ToShortDateString());
             else
-                TextBox("PART_TextBox").SetText("");
+                TextBoxC("PART_TextBox").SetText("");
         }
 
         public void ShouldRead(DateTime? value){
             GuiTextBox.InvalidateCache();
             if(value.HasValue)
-                TextBox("PART_TextBox").ShouldRead(value.Value.ToShortDateString());
+                TextBoxC("PART_TextBox").ShouldRead(value.Value.ToShortDateString());
             else
-                TextBox("PART_TextBox").ShouldRead("");
+                TextBoxC("PART_TextBox").ShouldRead("");
         }
 
         public void SetToDaysFromNow(int days) {
@@ -62,12 +62,12 @@ namespace UiClickTestDSL.DslObjects {
 
         public void ShouldBeEditable() {
             GuiTextBox.InvalidateCache();
-            TextBox("PART_TextBox").AssertIsEditable();
+            TextBoxC("PART_TextBox").AssertIsEditable();
         }
 
         public void ShouldNotBeEditable() {
             GuiTextBox.InvalidateCache();
-            TextBox("PART_TextBox").AssertIsNotEditable();
+            TextBoxC("PART_TextBox").AssertIsNotEditable();
         }
     }
 }

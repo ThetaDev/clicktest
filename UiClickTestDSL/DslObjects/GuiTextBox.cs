@@ -14,7 +14,7 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         private static GuiTextBox _cachedtb = null;
-        public static GuiTextBox GetTextBox(AutomationElement window, string automationId) {
+        public static GuiTextBox GetTextBoxC(AutomationElement window, string automationId) {
             if (_cachedtb == null || _cachedtb.AutomationId != automationId) {
                 var tb = window.FindChildByControlTypeAndAutomationId(ControlType.Edit, automationId);
                 _cachedtb = new GuiTextBox(tb);
@@ -22,7 +22,7 @@ namespace UiClickTestDSL.DslObjects {
             return _cachedtb;
         }
 
-        public static GuiTextBox GetTextBoxByName(AutomationElement window, string name) {
+        public static GuiTextBox GetTextBoxByNameC(AutomationElement window, string name) {
             if (_cachedtb == null || _cachedtb.Name != name) {
                 var tb = window.FindChildByControlTypeAndName(ControlType.Edit, name);
                 _cachedtb = new GuiTextBox(tb);
