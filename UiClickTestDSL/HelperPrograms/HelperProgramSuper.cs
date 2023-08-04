@@ -112,12 +112,16 @@ namespace UiClickTestDSL.HelperPrograms {
 
         public void Maximize() {
             Process.Maximize();
-            Thread.Sleep(1000);
+            Thread.Sleep(500);
+            Process.WaitForInputIdle();
+            Thread.Sleep(500);
         }
 
         public void Minimize() {
             Process.Minimize();
-            Thread.Sleep(1000);
+            Thread.Sleep(500);
+            Process.WaitForInputIdle(); //only a sleep(1000) was not sufficient on windows 11 machines.
+            Thread.Sleep(500);
         }
     }
 }

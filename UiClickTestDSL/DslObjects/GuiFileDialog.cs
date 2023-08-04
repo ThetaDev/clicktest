@@ -58,6 +58,7 @@ namespace UiClickTestDSL.DslObjects {
 
         public void SelectFile(string filePathAndName) {
             var sw = Stopwatch.StartNew();
+            _dialog.SetFocus();
             //UiTestDslCoreCommon.WaitWhileBusy();
             GuiTextBox.InvalidateCache();
             //todo after upgradering to .Net 4.6:
@@ -76,6 +77,7 @@ namespace UiClickTestDSL.DslObjects {
 
         public void Cancel() {
             //UiTestDslCoreCommon.WaitWhileBusy();
+            _dialog.SetFocus();
             GuiTextBox.InvalidateCache();
             //todo after upgradering to .Net 4.6: 
             UiTestDslCoreCommon.RepeatTryingFor(TimeSpan.FromMinutes(5), () => GuiTextBox.GetTextBoxByNameC(_dialog, "File name:"));
