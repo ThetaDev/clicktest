@@ -120,6 +120,9 @@ namespace UiClickTestDSL.HelperPrograms {
         public void Minimize() {
             Process.Minimize();
             Thread.Sleep(500);
+            Process.WaitForInputIdle();
+            Process.Minimize(); //on windows 11 machines only one call acted as restore if the process was first maximized
+            Thread.Sleep(500);
             Process.WaitForInputIdle(); //only a sleep(1000) was not sufficient on windows 11 machines.
             Thread.Sleep(500);
         }

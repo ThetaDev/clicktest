@@ -65,7 +65,7 @@ namespace UiClickTestDSL.HelperPrograms {
             return f;
         }
 
-        internal void DragDropFileTo(FileInfo file, AutomationElement el) {
+        internal void DragDropFileTo(FileInfo file, AutomationElement el, AutomationElement mainWindow) {
             Start(file.DirectoryName);
             Maximize();
             WaitWhileBusy();
@@ -81,6 +81,7 @@ namespace UiClickTestDSL.HelperPrograms {
             Mouse.MoveTo(new Point(950, 500)); //trying to always move the cursor to the right of an approximated center on a 1080p display, which is still within a 1366x768 display
             SleepMilliseconds(500);
             Minimize();
+            mainWindow.SetFocus();
             SleepMilliseconds(500);
             var centerElement = el.GetClickablePoint().Convert();
             Log.DebugFormat("Point to drag to x/y: {0}, {1}", centerElement.X, centerElement.Y);
@@ -91,7 +92,7 @@ namespace UiClickTestDSL.HelperPrograms {
             SleepMilliseconds(500);
         }
 
-        internal void DragDropMultipleFilesTo(string[] filenames, string folder, AutomationElement el) {
+        internal void DragDropMultipleFilesTo(string[] filenames, string folder, AutomationElement el, AutomationElement mainWindow) {
             var dir = FileLocator.LocateFolder(folder);
             Start(dir.FullName);
             Maximize();
@@ -114,6 +115,7 @@ namespace UiClickTestDSL.HelperPrograms {
             SleepMilliseconds(500);
             ScreenShooter.SaveToFile(); //todo fjern
             Minimize();
+            mainWindow.SetFocus();
             SleepMilliseconds(500);
             var centerElement = el.GetClickablePoint().Convert();
             Log.DebugFormat("Point to drag to x/y: {0}, {1}", centerElement.X, centerElement.Y);

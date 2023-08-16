@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Windows;
 using System.Windows.Automation;
 using Microsoft.Test.Input;
@@ -71,22 +70,22 @@ namespace UiClickTestDSL.AutomationCode {
             Mouse.Click(btn);
         }
 
-        public static void DragAndDropFileFromExplorerToCenter(this AutomationElement el, FileInfo file, Explorer preStartedExplorer = null,string folder = "TestFiles") {
+        public static void DragAndDropFileFromExplorerToCenter(this AutomationElement el, AutomationElement mainWindow, FileInfo file, Explorer preStartedExplorer = null,string folder = "TestFiles") {
 			var explorer = preStartedExplorer ?? new Explorer(folder);
             try {
-                explorer.DragDropFileTo(file, el);
+                explorer.DragDropFileTo(file, el, mainWindow);
             } finally {
                 UiTestDslCoreCommon.Sleep(1);
                 explorer.Dispose();
             }
         }
 
-        public static void DragAndDropMultipleFilesFromExplorerToCenter(this AutomationElement el, string folder, Explorer preStartedExplorer, params string[] files) {
+        public static void DragAndDropMultipleFilesFromExplorerToCenter(this AutomationElement el, AutomationElement mainWindow, string folder, Explorer preStartedExplorer, params string[] files) {
             if (files.Count() < 2)
                 throw new Exception("Must have at least two files");
             var explorer = preStartedExplorer ?? new Explorer(folder);  // 
             try {
-                explorer.DragDropMultipleFilesTo(files, folder, el);
+                explorer.DragDropMultipleFilesTo(files, folder, el, mainWindow);
             } finally {
                 UiTestDslCoreCommon.Sleep(1);
                 explorer.Dispose();
