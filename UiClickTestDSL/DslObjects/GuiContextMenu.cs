@@ -17,7 +17,8 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         private readonly AutomationElement _element;
-        
+
+        public AutomationElement InternalElement { get; private set; }
 
         public GuiContextMenu(AutomationElement ae) {
             _element = ae;
@@ -30,7 +31,6 @@ namespace UiClickTestDSL.DslObjects {
             Mouse.Click(MouseButton.Left);
         }
 
-
         public void LeftClickElement(string elementname) {
             var all = _element.FindAllChildrenByName(elementname);
             foreach (var element in all) {
@@ -40,5 +40,20 @@ namespace UiClickTestDSL.DslObjects {
 
             }
         }
+
+        public void MouseScrollToBottom() {
+            var all = _element.FindAllChildrenByAutomationId("LineDown");
+            var allCount = all.Count();
+            if (Equals(allCount = 0)) {
+                return;
+            }
+            foreach (var element in all) {
+                System.Windows.Point clickablePoint = element.GetClickablePoint();
+                Mouse.MoveTo(new System.Drawing.Point((int)clickablePoint.X, (int)clickablePoint.Y));
+                Mouse.Click(MouseButton.Left);
+
+            }
         }
+
+    }
     }
