@@ -229,7 +229,7 @@ namespace UiClickTestDSL {
             if (t.Succeded == false) {
                 ErrorCount++; //only increase error count if the test fail was not a fluke.
             }
-            Log.Debug($"-- Test # {t.Id} done: {t.TotalTime} \nE: {ErrorCount} \n\n");
+            Log.Debug($"-- Test # {t.Id} done: {t.TotalTime} \nErr# {ErrorCount} \n\n");
             LogTestRun?.Invoke(t);
         }
 
@@ -316,7 +316,7 @@ namespace UiClickTestDSL {
             var testTimer = Stopwatch.StartNew();
             var startTimer = Stopwatch.StartNew();
             MethodInfo testmethod = test.Test;
-            Log.DebugFormat(Environment.NewLine + $"E: {ErrorCount} - {TestsRun}/{_totalNoTestsToRun} - {test.Id} - {test.CompleteTestName}");
+            Log.DebugFormat(Environment.NewLine + $"Err# {ErrorCount} - {TestsRun}/{_totalNoTestsToRun} - {test.Id} - {test.CompleteTestName}");
             ResetTestEnvironment?.Invoke();
             Log.Debug("ResetTestEnvironment time: " + startTimer.ElapsedMilliseconds);
             startTimer.Restart();
