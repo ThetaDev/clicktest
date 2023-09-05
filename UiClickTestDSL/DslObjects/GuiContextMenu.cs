@@ -7,6 +7,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using UiClickTestDSL.DslObjects;
 using System.Windows.Input;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace UiClickTestDSL.DslObjects {
 
