@@ -81,8 +81,10 @@ namespace UiClickTestDSL {
 
         private void StartProcess() {
             string fileName = ApplicationFolder + Path.DirectorySeparatorChar + ApplicationExeName;
-            if (!File.Exists(fileName))
-                throw new ArgumentException("path doesn't exist: " + fileName);
+            if (!File.Exists(fileName)) {
+                var curFolder = Directory.GetCurrentDirectory();
+                throw new ArgumentException("Path doesn't exist: " + fileName + " starting from: " + curFolder);
+            }
             Process = new Process {
                 StartInfo = {
                     FileName = fileName,
@@ -144,7 +146,7 @@ namespace UiClickTestDSL {
                             string errorDialogHeading = null;
                             try {
                                 errorDialogHeading = d.Current.Name;
-                            } catch {} //This is likely a dialog which has been closed when we get here and will then throw on not found
+                            } catch { } //This is likely a dialog which has been closed when we get here and will then throw on not found
                             if (string.IsNullOrEmpty(errorDialogHeading)) {
                                 continue; //Some controls like ContextMenus show up as dialogs, even though they do not support the WindowPattern
                             }
@@ -172,7 +174,7 @@ namespace UiClickTestDSL {
                     }
                 }
             } catch {
-                Log.Error("Error handling open dialogs when closing program. Screenshot: "+ ScreenShooter.SaveToFile());
+                Log.Error("Error handling open dialogs when closing program. Screenshot: " + ScreenShooter.SaveToFile());
                 throw;
             } finally {
                 if (!ConnectedInsteadOfStarted) {
