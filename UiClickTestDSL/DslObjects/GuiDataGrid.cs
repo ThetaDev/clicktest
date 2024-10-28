@@ -76,10 +76,10 @@ namespace UiClickTestDSL.DslObjects {
             }
         }
 
-        public GuiCell Cell(int row, string columnName) {
+        public GuiCell Cell(int row, string columnName, int offsetForHiddenColumnsBefore = 0) {
             if (HeaderNamesToIndex.Count == 0)
                 BuildHeaderDictCache();
-            int colIndex = HeaderNamesToIndex[columnName];
+            int colIndex = HeaderNamesToIndex[columnName] + offsetForHiddenColumnsBefore;
             var temp = tablePatt.GetItem(row, colIndex);
             return new GuiCell(temp, columnName);
         }
