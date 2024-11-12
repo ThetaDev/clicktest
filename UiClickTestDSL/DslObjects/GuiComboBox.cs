@@ -105,6 +105,16 @@ namespace UiClickTestDSL.DslObjects {
             item.First().Select();
         }
 
+
+        public void SelectItemWithoutCollapseContaining(string caption) {
+            List<GuiComboBoxItem> all = GetAllItems();
+            IEnumerable<GuiComboBoxItem> item = from i in all
+                                                where i.Text.Contains(caption)
+                                                select i;
+            item.First().SelectWithoutCollapse();
+        }
+
+
         private static bool RegexMatch(string text, string caption) {
             return text == caption || Regex.IsMatch(text, @"(.* name\:|\[.*,) " + caption + @"(\]){0,1}") || text.Trim().EndsWith(": " + caption);
         }
