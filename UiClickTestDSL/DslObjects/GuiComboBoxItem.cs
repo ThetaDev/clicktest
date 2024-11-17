@@ -29,9 +29,8 @@ namespace UiClickTestDSL.DslObjects {
             _parent.Collapse();
         }
 
-        public void SelectNoCollapse() {
+        public void SelectWithoutCollapse() {
             _selection.Select();
         }
-
     }
 }

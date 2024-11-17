@@ -105,14 +105,26 @@ namespace UiClickTestDSL.DslObjects {
             item.First().Select();
         }
 
-        public void SelectNoCollapseItemStartsWith(string caption) {
+
+        public void SelectItemWithoutCollapseContaining(string caption) {
+            List<GuiComboBoxItem> all = GetAllItems();
+            IEnumerable<GuiComboBoxItem> item = from i in all
+                                                where i.Text.Contains(caption)
+                                                select i;
+            item.First().SelectWithoutCollapse();
+        }
+
+        public void SelectItemWithoutCollapse(string caption) {
             List<GuiComboBoxItem> all = GetAllItems();
             IEnumerable<GuiComboBoxItem> items = from i in all
-                                                where i.Text.StartsWith(caption)
-                                                select i;
+                                                 where RegexMatch(i.Text.Trim(), caption)
+                                                 select i;
             var item = items.FirstOrDefault();
-            item.SelectNoCollapse();
+            if (item == null)
+                Assert.Fail("Unable to find ComboBoxItem with caption: " + caption + $" # found: {all.Count}");
+            item.SelectWithoutCollapse();
         }
+
 
         private static bool RegexMatch(string text, string caption) {
             return text == caption || Regex.IsMatch(text, @"(.* name\:|\[.*,) " + caption + @"(\]){0,1}") || text.Trim().EndsWith(": " + caption);
