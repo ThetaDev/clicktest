@@ -8,7 +8,10 @@ namespace UiClickTestDSL.AutomationCode {
         }
 
         public static T GetPattern<T>(this AutomationElement element, AutomationPattern pattern) where T : BasePattern {
-            var patternObject = element.GetCurrentPattern(pattern);
+            object patternObject;
+            if (!element.TryGetCurrentPattern(pattern, out patternObject))
+                return null;
+             //= element.GetCurrentPattern(pattern);
             return patternObject as T;
         }
     }

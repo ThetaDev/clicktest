@@ -148,14 +148,14 @@ namespace UiClickTestDSL.DslObjects {
         public void VerifyCountOfColumnsByName(string name, int nocolumns) {
             var res = dgAutoEl.FindAll(TreeScope.Descendants, Name(name)).Count;
             res = res - 1;
-            Assert.AreEqual(nocolumns, res); 
-            return ;
+            Assert.AreEqual(nocolumns, res);
+            return;
         }
 
         public bool VerifyNoOfColumnsByName(string name, int nocolumns) {
             var res = dgAutoEl.FindAll(TreeScope.Descendants, Name(name)).Count;
-            if (Equals(nocolumns, res)) { 
-            return true;
+            if (nocolumns == res) {
+                return true;
             }
             return false;
         }
@@ -305,7 +305,7 @@ namespace UiClickTestDSL.DslObjects {
             SelectRow(foundRow);
         }
 
-        public void SetTextInFollowingCellByCollumAndRowContent(string columnName, string rowcontent, int addedcolno , string txvalue) {  //TODO
+        public void SetTextInFollowingCellByCollumAndRowContent(string columnName, string rowcontent, int addedcolno, string txvalue) {  //TODO
             int foundRow = -1;
             int colIndex = HeaderNamesToIndex[columnName];
             for (int i = 0; i < RowCount; i++) {
@@ -388,7 +388,7 @@ namespace UiClickTestDSL.DslObjects {
             SelectRow(RowCount - 2);
             return RowCount - 2;
         }
-        
+
         private AutomationElement GetNewRowPlaceholder() {
             try {
                 var scroll = dgAutoEl.GetPattern<ScrollPattern>(ScrollPattern.Pattern);
@@ -406,7 +406,7 @@ namespace UiClickTestDSL.DslObjects {
             } catch (InvalidOperationException) {
                 //This means there was no scrollbar because the DataGrid is to short to be scrollable   
             }
-            return dgAutoEl.FindChildByControlTypeAndClass(ControlType.DataItem,"DataGridRow"); 
+            return dgAutoEl.FindChildByControlTypeAndClass(ControlType.DataItem, "DataGridRow");
         }
 
         public void AddNewRowMarkerToSelection() {
@@ -421,7 +421,7 @@ namespace UiClickTestDSL.DslObjects {
             Mouse.Click(MouseButton.Right);
         }
 
-        
+
         public void RightClickSelectedRow() {
             AutomationElement RowPlaceholder = GetRowPlaceholder();
             RowPlaceholder.MoveMouseToCenter();

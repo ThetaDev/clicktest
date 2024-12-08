@@ -37,7 +37,7 @@ namespace UiClickTestDSL.DslObjects {
         public void MouseScrollToBottom() {
             var all = _element.FindAllChildrenByAutomationId("LineDown");
             var allCount = all.Count();
-            if (Equals(allCount = 0)) {
+            if (allCount == 0) {
                 return;
             }
             foreach (var element in all) {
