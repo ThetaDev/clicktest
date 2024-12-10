@@ -28,7 +28,8 @@ namespace UiClickTestDSL.AutomationCode {
                 { "Yes", new List<string>{ "Ja" } },
                 { "Items View", new List<string>{ "Elementvisning" }},
                 { "OK", new List<string>{ "Ok" }},
-                { "File name:", new List<string>{ "Filnavn:" }}
+                { "File name:", new List<string>{ "Filnavn:" }},
+                { "tree view item", new List<string>{ "trevisningselement" }},
         };
 
         public static string[] DialogLocalizedControlNameOptions = { //different name options on different language settings
@@ -177,7 +178,14 @@ namespace UiClickTestDSL.AutomationCode {
             return res.Cast<AutomationElement>();
         }
         public static IEnumerable<AutomationElement> FindAllChildrenByByLocalizedControlType(this AutomationElement element, string controlType) {
-            var res = element.FindAll(TreeScope.Descendants, LocalizedControlType(controlType));
+            AutomationElementCollection res;
+            if (NameOptions.ContainsKey(controlType)) {
+                var all = NameOptions[controlType].ToList();
+                all.Insert(0, controlType);
+                res = element.FindAll(TreeScope.Descendants, Or(all.Select(LocalizedControlType)));
+            } else {
+                res = element.FindAll(TreeScope.Descendants, LocalizedControlType(controlType));
+            }
             return res.Cast<AutomationElement>();
         }
         public static IEnumerable<AutomationElement> FindAllChildrenByByLocalizedControlType(this AutomationElement element, params string[] controlTypes) {
