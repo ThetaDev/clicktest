@@ -76,10 +76,17 @@ namespace UiClickTestDSL.DslObjects {
             }
         }
 
+        private string AllColumnNames { get { return string.Join(", ", HeaderIndexToNames.Values); } }
+
         public GuiCell Cell(int row, string columnName, int offsetForHiddenColumnsBefore = 0) {
             if (HeaderNamesToIndex.Count == 0)
                 BuildHeaderDictCache();
-            int colIndex = HeaderNamesToIndex[columnName] + offsetForHiddenColumnsBefore;
+            int colIndex;
+            try {
+                colIndex = HeaderNamesToIndex[columnName] + offsetForHiddenColumnsBefore;
+            } catch (Exception e) {
+                throw new Exception("Column not found: " + columnName + " available columns: " + AllColumnNames + e.Message, e);
+            }
             var temp = tablePatt.GetItem(row, colIndex);
             return new GuiCell(temp, columnName);
         }
