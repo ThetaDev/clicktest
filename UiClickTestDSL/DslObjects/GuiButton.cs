@@ -6,6 +6,8 @@ using System.Windows.Automation;
 using log4net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UiClickTestDSL.AutomationCode;
+using Microsoft.Test.Input;
+using System.Drawing;
 
 namespace UiClickTestDSL.DslObjects {
     public class GuiButton {
@@ -32,7 +34,7 @@ namespace UiClickTestDSL.DslObjects {
 
         private readonly AutomationElement _btn;
         private readonly string _name;
-
+        public AutomationElement Window;
         public GuiButton(AutomationElement btnFound, string name) {
             _btn = btnFound;
             _name = name;
@@ -50,6 +52,14 @@ namespace UiClickTestDSL.DslObjects {
             if (_name != "Close" && _btn.Current.IsOffscreen)
                 throw new Exception("Trying to click a button that is not visible: " + _name);
             invoker.Invoke();
+        }
+
+        public virtual void MoveMouseHere() {
+            Mouse.MoveTo(ClickablePoint);
+        }
+
+        public virtual Point ClickablePoint {
+            get { return Window.GetClickablePoint().Convert(); }
         }
 
         public bool Enabled {
