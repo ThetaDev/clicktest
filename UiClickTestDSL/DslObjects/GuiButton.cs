@@ -34,7 +34,6 @@ namespace UiClickTestDSL.DslObjects {
 
         private readonly AutomationElement _btn;
         private readonly string _name;
-        public AutomationElement Window;
         public GuiButton(AutomationElement btnFound, string name) {
             _btn = btnFound;
             _name = name;
@@ -59,7 +58,7 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public virtual Point ClickablePoint {
-            get { return Window.GetClickablePoint().Convert(); }
+            get { return _btn.GetClickablePoint().Convert(); }
         }
 
         public bool Enabled {
