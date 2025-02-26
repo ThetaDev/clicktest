@@ -40,6 +40,7 @@ namespace UiClickTestDSL.DslObjects {
             Assert.AreEqual(text, Text, "Label text is wrong. " + additionalInformation);
         }
 
+
         public string DisplayText {
             get {
                 var selectionPattern = LabelElement.GetPattern<SelectionPattern>(SelectionPattern.Pattern);
@@ -52,6 +53,11 @@ namespace UiClickTestDSL.DslObjects {
 
         public void ShouldReadContaining(string text) {
             string displayed = DisplayText;
+            Assert.IsTrue(displayed.ContainsIgnoreCase(text), "Wrong value in label, should contain: " + text + ", was: " + displayed);
+        }
+
+        public void ShouldContainText(string text) {
+            string displayed = Text;
             Assert.IsTrue(displayed.ContainsIgnoreCase(text), "Wrong value in label, should contain: " + text + ", was: " + displayed);
         }
 
