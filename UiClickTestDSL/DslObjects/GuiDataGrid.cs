@@ -54,7 +54,7 @@ namespace UiClickTestDSL.DslObjects {
 
             AutomationId = automationId;
 
-            HeaderNamesToIndex = new Dictionary<string, int>();
+            HeaderNamesToIndex = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             HeaderIndexToNames = new Dictionary<int, string>();
             BuildHeaderDictCache();
         }
@@ -85,7 +85,7 @@ namespace UiClickTestDSL.DslObjects {
             try {
                 colIndex = HeaderNamesToIndex[columnName] + offsetForHiddenColumnsBefore;
             } catch (Exception e) {
-                throw new Exception("Column not found: " + columnName + " available columns: " + AllColumnNames + e.Message, e);
+                throw new Exception("Column not found: " + columnName + " ; available columns: " + AllColumnNames + e.Message, e);
             }
             var temp = tablePatt.GetItem(row, colIndex);
             return new GuiCell(temp, columnName);

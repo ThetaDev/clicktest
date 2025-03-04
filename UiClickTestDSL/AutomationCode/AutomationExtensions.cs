@@ -19,7 +19,7 @@ using System.Windows.Media;
 
 namespace UiClickTestDSL.AutomationCode {
     public static class AutomationExtensions {
-        private static readonly Dictionary<string, List<string>> NameOptions = new Dictionary<string, List<string>> {
+        private static readonly Dictionary<string, List<string>> NameOptions = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase) {
                 { "Cancel", new List<string>{ "Avbryt" } },
                 { "No", new List<string>{ "Nei" } },
                 { "Open", new List<string>{ "Åpne" } },
