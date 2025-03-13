@@ -36,8 +36,10 @@ namespace UiClickTestDSL.DslObjects {
 
         public bool Visible { get { return !LabelElement.Current.IsOffscreen; } }
 
-        public void ShouldRead(string text, string additionalInformation = "") {
-            Assert.AreEqual(text, Text, "Label text is wrong. " + additionalInformation);
+        public void ShouldRead(string text, string additionalInformation = "", int subString = -1) {
+            string txt = Text;
+            if (subString > 0) txt = txt.Substring(subString).Trim();
+            Assert.AreEqual(text, txt, "Label text is wrong. " + additionalInformation);
         }
 
 
@@ -51,23 +53,28 @@ namespace UiClickTestDSL.DslObjects {
             }
         }
 
-        public void ShouldReadContaining(string text) {
+        public void ShouldReadContaining(string text, int subString = -1) {
             string displayed = DisplayText;
+            if (subString > 0) displayed = displayed.Substring(subString).Trim();
             Assert.IsTrue(displayed.ContainsIgnoreCase(text), "Wrong value in label, should contain: " + text + ", was: " + displayed);
         }
 
-        public void ShouldContainText(string text) {
+        public void ShouldContainText(string text, int subString = -1) {
             string displayed = Text;
+            if (subString > 0) displayed = displayed.Substring(subString).Trim();
             Assert.IsTrue(displayed.ContainsIgnoreCase(text), "Wrong value in label, should contain: " + text + ", was: " + displayed);
         }
 
-        public void ShouldNotReadContaining(string text) {
+        public void ShouldNotReadContaining(string text, int subString = -1) {
             string displayed = DisplayText;
+            if (subString > 0) displayed = displayed.Substring(subString).Trim();
             Assert.IsFalse(displayed.ContainsIgnoreCase(text), "Wrong value in label, should not contain: " + text + ", was: " + displayed);
         }
 
-        public void ShouldNotRead(string text) {
-            Assert.AreNotEqual(text, Text, "Label text should not be: " + text);
+        public void ShouldNotRead(string text, int subString = -1) {
+            string txt = Text;
+            if (subString > 0) txt = txt.Substring(subString).Trim();
+            Assert.AreNotEqual(text, txt, "Label text should not be: " + text);
         }
 
         public Point GetScreenBottomRightPosition() {
