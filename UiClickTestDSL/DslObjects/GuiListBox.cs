@@ -9,8 +9,6 @@ using Microsoft.Test.Input;
 using System.Text;
 using UiClickTestDSL.DslObjects;
 
-
-
 namespace UiClickTestDSL.DslObjects {
     public class GuiListBox {
         private static ILog Log = LogManager.GetLogger(typeof(GuiListBox));
@@ -503,6 +501,42 @@ namespace UiClickTestDSL.DslObjects {
                     missing += txt + ",";
             }
             Assert.IsTrue(string.IsNullOrWhiteSpace(missing), missing);
+        }
+
+        public GuiListBoxItem ElementWithLabelIsSelected(string value, string additionalInfo = null, bool debug = false) {
+            List<GuiListBoxItem> completeSet = new List<GuiListBoxItem>();
+            List<GuiListBoxItem> all = GetChildListItems();
+            Log.Debug("Found elements: " + all.Count);
+            completeSet.AddRange(all);
+            IEnumerable<GuiListBoxItem> items = from i in all
+                                                where i.HasLabelWithText(text: value)
+                                                select i;
+            GuiListBoxItem item = items.FirstOrDefault();
+            if (item == null) {
+                if (debug) {
+                    var screenshotNo = ScreenShooter.SaveToFile();
+                    Log.Debug("Saved screenshot of view of listbox before scrolling: " + screenshotNo);
+                }
+                //try to scroll to the bottom, to see if we can find it there.
+                ScrollAllItemsIntoView();
+                all = GetChildListItems();
+                Log.Debug("Found elements: " + all.Count);
+                completeSet.AddRange(all);
+                items = from i in all
+                        where i.HasLabelWithText(text: value)
+                        select i;
+                item = items.FirstOrDefault();
+            }
+            if (item == null) {
+                var allLabels = completeSet.Distinct().Select(l => "[" + string.Join("\t", l.GetLabels(null)) + "]").ToList();
+                var labelsStr = string.Join(Environment.NewLine, allLabels);
+                var msg = $"Unable to find element with label, even after scrolling all items into view. Searching for \"{value}\". Found ({allLabels.Count} items): {Environment.NewLine}{labelsStr}";
+                UiTestDslCoreCommon.PrintLine(msg);
+            }
+            UiTestDslCoreCommon.PrintLine(item.ToString());
+            Assert.IsTrue(item.IsSelected, item.ToString() + " was not selected. " + (additionalInfo != null ? "At: " + additionalInfo : ""));
+            UiTestDslCoreCommon.WaitWhileBusy();
+            return item;
         }
     }
 }
