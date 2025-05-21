@@ -33,6 +33,7 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public string Text { get { return LabelElement.Current.Name; } }
+        public string ToolTip { get { return LabelElement.Current.HelpText; } }
 
         public bool Visible { get { return !LabelElement.Current.IsOffscreen; } }
 
