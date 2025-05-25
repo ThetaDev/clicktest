@@ -266,6 +266,13 @@ namespace UiClickTestDSL {
             }
         }
 
+        public void VerifyVisibleTextContains(params string[] texts) {
+            string visibleText = GetVisibleText();
+            foreach (var text in texts) {
+                Assert.Contains(text, visibleText);
+            }
+        }
+
         private string GetVisibleText() {
             IEnumerable<AutomationElement> labels = GuiLabel.GetAll(Window, "");
             IEnumerable<string> texts = from l in labels
