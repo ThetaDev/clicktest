@@ -34,6 +34,24 @@ namespace UiClickTestDSL.DslObjects {
             }
         }
 
+        public void RightClickElement(string elementname) {
+            var all = _element.FindAllChildrenByName(elementname);
+            foreach (var element in all) {
+                System.Windows.Point clickablePoint = element.GetClickablePoint();
+                Mouse.MoveTo(new System.Drawing.Point((int)clickablePoint.X, (int)clickablePoint.Y));
+                Mouse.Click(MouseButton.Right);
+            }
+        }
+
+        public void MoveMouseToElement(string elementname) {
+            var all = _element.FindAllChildrenByName(elementname);
+            foreach (var element in all) {
+                System.Windows.Point clickablePoint = element.GetClickablePoint();
+                Mouse.MoveTo(new System.Drawing.Point((int)clickablePoint.X, (int)clickablePoint.Y));
+            }
+        }
+
+
         public void MouseScrollToBottom() {
             var all = _element.FindAllChildrenByAutomationId("LineDown");
             var allCount = all.Count();
