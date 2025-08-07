@@ -312,23 +312,37 @@ namespace UiClickTestDSL.DslObjects {
             SelectRow(foundRow);
         }
 
-        public void SetTextInFollowingCellByCollumAndRowContent(string columnName, string rowcontent, int addedcolno, string txvalue) {  //TODO
+        public void SetTextInFollowingCellByCollumAndRowContent(string columnName, string content, int colNo, string txvalue) {
             int foundRow = -1;
             int colIndex = HeaderNamesToIndex[columnName];
             for (int i = 0; i < RowCount; i++) {
                 var cell = Cell(i, colIndex);
-                if (cell.ShouldContainText(rowcontent)) {
+                if (cell.Text == content) {
                     foundRow = i;
-                    var ci2 = colIndex + addedcolno;
-                    Cell(i, ci2).SetText(txvalue);
+                    Cell(i, colIndex + colNo).SetText(txvalue);
                     break;
                 }
             }
             if (foundRow == -1)
-                throw new Exception(string.Format("Error: No row with {0} in column {1} found!", rowcontent, columnName));
+                throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
             SelectRow(foundRow);
         }
 
+        public void SetTextInNextCellByContent(string columnName, string content, string txvalue) {
+            int foundRow = -1;
+            int colIndex = HeaderNamesToIndex[columnName];
+            for (int i = 0; i < RowCount; i++) {
+                var cell = Cell(i, colIndex);
+                if (cell.Text == content) {
+                    foundRow = i;
+                    Cell(i, colIndex + 1).SetText(txvalue);
+                    break;
+                }
+            }
+            if (foundRow == -1)
+                throw new Exception(string.Format("Error: No row with {0} in column {1} found!", content, columnName));
+            SelectRow(foundRow);
+        }
 
         public virtual void DoubleClick(MouseButton button = MouseButton.Left) {
             MoveMouseHere();
