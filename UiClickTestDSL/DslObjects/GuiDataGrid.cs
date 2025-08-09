@@ -272,7 +272,7 @@ namespace UiClickTestDSL.DslObjects {
                 var cell = Cell(i, colIndex);
                 if (cell.Text == content) {
                     foundRow = i;
-                    return foundRow;
+                    break;
                 }
             }
             if (foundRow == -1)

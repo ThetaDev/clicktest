@@ -169,11 +169,13 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public void CountShouldBe(int expectedCount) {
-            Assert.AreEqual(expectedCount, GetChildListItems().Count);
+            var c = GetChildListItems().Count;
+            Assert.AreEqual(expectedCount, c, $"Wrong number of items in list exp: {expectedCount}/{c}");
         }
 
-        public void ButtonCountShouldBe(int expectedCount) {                    //GetChildButtonItems
-            Assert.AreEqual(expectedCount, GetChildButtonItems().Count);
+        public void ButtonCountShouldBe(int expectedCount) {
+            var c = GetChildButtonItems().Count;
+            Assert.AreEqual(expectedCount, c, $"Wrong number of buttons in list exp: {expectedCount}/{c}");
         }
 
         public GuiListBoxItem SelectLastItem() {
