@@ -55,26 +55,30 @@ namespace UiClickTestDSL.DslObjects {
         }
 
         public void ShouldReadContaining(string text, int subString = -1) {
-            string displayed = DisplayText;
-            if (subString > 0) displayed = displayed.Substring(subString).Trim();
-            Assert.IsTrue(displayed.ContainsIgnoreCase(text), "Wrong value in label, should contain: " + text + ", was: " + displayed);
+            string txt = DisplayText;
+            if (subString > 0 && txt != null && txt.Length > subString)
+                txt = txt.Substring(subString).Trim();
+            Assert.IsTrue(txt.ContainsIgnoreCase(text), "Wrong value in label, should contain: " + text + ", was: " + txt);
         }
 
         public void ShouldContainText(string text, int subString = -1) {
-            string displayed = Text;
-            if (subString > 0) displayed = displayed.Substring(subString).Trim();
-            Assert.IsTrue(displayed.ContainsIgnoreCase(text), "Wrong value in label, should contain: " + text + ", was: " + displayed);
+            string txt = Text;
+            if (subString > 0 && txt != null && txt.Length > subString)
+                txt = txt.Substring(subString).Trim();
+            Assert.IsTrue(txt.ContainsIgnoreCase(text), "Wrong value in label, should contain: " + text + ", was: " + txt);
         }
 
         public void ShouldNotReadContaining(string text, int subString = -1) {
-            string displayed = DisplayText;
-            if (subString > 0) displayed = displayed.Substring(subString).Trim();
-            Assert.IsFalse(displayed.ContainsIgnoreCase(text), "Wrong value in label, should not contain: " + text + ", was: " + displayed);
+            string txt = DisplayText;
+            if (subString > 0 && txt != null && txt.Length > subString)
+                txt = txt.Substring(subString).Trim();
+            Assert.IsFalse(txt.ContainsIgnoreCase(text), "Wrong value in label, should not contain: " + text + ", was: " + txt);
         }
 
         public void ShouldNotRead(string text, int subString = -1) {
             string txt = Text;
-            if (subString > 0) txt = txt.Substring(subString).Trim();
+            if (subString > 0 && txt != null && txt.Length > subString)
+                txt = txt.Substring(subString).Trim();
             Assert.AreNotEqual(text, txt, "Label text should not be: " + text);
         }
 
