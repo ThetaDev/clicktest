@@ -68,17 +68,20 @@ namespace UiClickTestDSL.DslObjects {
             return all.Any(i => i.Current.AutomationId.Equals(imgNameId));
         }
 
+        public void ImageCountShouldBe(int expected) {
+            int imgcount = GuiImage.GetAll(Window).Count();
+            Assert.AreEqual(expected, imgcount, "Expected count of img : " + expected + "  ; # img found; " + imgcount);
+        }
+
         public bool HasCheckBoxWithId(string CheckBoxNameId) {
             var all = GuiCheckBox.GetAll(Window);
             return all.Any(i => i.Current.AutomationId.Equals(CheckBoxNameId));
         }
 
-
         public bool ImageIsNotOffscreen() {
             var all = GuiImage.GetAll(Window);
             return all.Any(i => i.Current.IsOffscreen.Equals(false));
         }
-
 
         public bool HasLabelStartingWithText(string buttonName) {
             var all = GuiLabel.GetAll(Window);
